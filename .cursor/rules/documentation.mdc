@@ -1,7 +1,7 @@
 ---
 description: Documentation Standards and README Guidelines
 globs: ["**/README.md", "**/*.md", "**/docs/**"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Documentation Standards and README Guidelines

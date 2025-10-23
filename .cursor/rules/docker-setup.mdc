@@ -1,7 +1,7 @@
 ---
 description: Docker Configuration and Build Setup
 globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**", "**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 

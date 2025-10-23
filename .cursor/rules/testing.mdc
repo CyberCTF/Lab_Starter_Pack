@@ -1,7 +1,7 @@
 ---
 description: Testing Framework and Validation
 globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Testing Framework and Validation

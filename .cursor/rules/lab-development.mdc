@@ -1,7 +1,7 @@
 ---
 description: Lab Development and Directory Structure for Build Folder
 globs: ["**/build/**"]
-alwaysApply: false
+alwaysApply: true
 ---
  
 # Lab Development and Directory Structure for Build Folder

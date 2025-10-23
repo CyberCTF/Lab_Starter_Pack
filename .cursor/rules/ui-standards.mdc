@@ -1,7 +1,7 @@
 ---
 description: UI Standards and Design System
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # UI Standards and Design System

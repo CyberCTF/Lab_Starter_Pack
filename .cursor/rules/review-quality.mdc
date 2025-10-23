@@ -1,7 +1,7 @@
 ---
 description: Quality Review and Warning Removal
 globs: ["**/.ctf/**", "**/test_results/**", "**/README.md", "**/*.html", "**/*.js"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Quality Review and Warning Removal

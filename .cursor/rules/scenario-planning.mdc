@@ -1,7 +1,7 @@
 ---
 description: Scenario Planning and Flag Definition
 globs: ["**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Scenario Planning and Flag Definition
@@ -51,6 +51,7 @@ The flag must be an element that can be added to a penetration test report to pr
 - **Real-world Value**: Must be information that would be valuable in an actual penetration test report
 - **Sensitive Data**: Should represent sensitive information that demonstrates successful exploitation
 - **Plausible**: Must be realistic and believable in the context of the vulnerability
+- **No Credentials**: Do not display any credentials, passwords, or sensitive information directly on the application interface - these must be discovered through exploitation
 
 ### Flag Examples by Vulnerability Type
 
