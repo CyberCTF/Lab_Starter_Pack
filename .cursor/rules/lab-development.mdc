@@ -1,6 +1,6 @@
 ---
 description: Lab Development and Directory Structure
-globs: ["**/README.md", "**/lab-*/**", "**/src/**"]
+globs: ["**/build/**"]
 alwaysApply: false
 ---
 
