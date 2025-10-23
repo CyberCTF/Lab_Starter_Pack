@@ -1,6 +1,6 @@
 ---
 description: Lab Development and Directory Structure
-globs: ["**/build"]
+globs: ["**/build/**"]
 alwaysApply: false
 ---
 
