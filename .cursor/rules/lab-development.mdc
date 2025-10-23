@@ -74,7 +74,6 @@ build/
  
 - **Source Code**: Place application code in service-specific directories (e.g., `web/src/`, `api/src/`)
 - **Configuration**: Keep config files at the root of `/build` or in `config/` subdirectory
-- **Tests**: Organize tests in `/build/tests/` directory
 - **Docker Files**: Place Dockerfiles in their respective service directories
 - **Docker Compose**: Keep docker-compose files at the root of `/build`
 
