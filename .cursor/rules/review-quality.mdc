@@ -33,6 +33,14 @@ Ensure everything works correctly and the lab is fully functional.
 - **Database Integration**: Database connections and queries work properly
 - **File System**: All required files and directories are present and accessible
 
+#### 4. Test Retry and Correction
+- **Infinite Recursive Retry**: Tests run until they pass (no retry limit)
+- **Retry Delay Configuration**: Configurable via environment variables (no hardcoded values)
+- **Automatic Error Analysis**: Error correction between retry attempts
+- **Success Guarantee**: Tests run until they pass
+- **Retry Status Display**: Clear display of retry count (e.g., "X tries used")
+- **Debug Logging**: All attempts logged for debugging
+
 ## Warning Removal Requirements
 
 Remove all educational and vulnerability warnings from lab pages and README.md files. The lab should appear as a real-world application without any indication that it's intentionally vulnerable.

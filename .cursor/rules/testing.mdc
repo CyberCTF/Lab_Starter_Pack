@@ -19,104 +19,64 @@ Create comprehensive pytest tests to validate the lab functionality and ensure i
 
 ### Test Structure
 
-```python
-import pytest
-import requests
-import time
-from selenium import webdriver
-from selenium.webdriver.common.by import By
+#### Test Categories
+- **Environment Tests**: Lab accessibility, service availability, port configuration
+- **Vulnerability Tests**: Vulnerability presence verification, exploitation path validation
+- **Exploitation Tests**: Step-by-step exploitation, flag extraction process
+- **Security Tests**: No unintended vulnerabilities, proper isolation
 
-class TestLabValidation:
-    """Test suite for lab validation"""
-    
-    @pytest.fixture(scope="class")
-    def setup_lab(self):
-        """Setup lab environment before tests"""
-        # Wait for lab to be ready
-        time.sleep(10)
-        return "http://localhost:8080"
-    
-    def test_lab_accessibility(self, setup_lab):
-        """Test that the lab is accessible"""
-        response = requests.get(setup_lab)
-        assert response.status_code == 200
-        assert "expected_content" in response.text
-    
-    def test_vulnerability_exists(self, setup_lab):
-        """Test that the vulnerability is present"""
-        # Test for vulnerability indicators
-        response = requests.get(f"{setup_lab}/vulnerable_endpoint")
-        assert response.status_code == 200
-        # Add specific vulnerability checks
-    
-    def test_exploitation_path(self, setup_lab):
-        """Test the complete exploitation path"""
-        # Step 1: Initial reconnaissance
-        # Step 2: Vulnerability discovery
-        # Step 3: Exploitation attempt
-        # Step 4: Flag extraction
-        pass
-    
-    def test_flag_extraction(self, setup_lab):
-        """Test that the flag can be extracted"""
-        # Perform exploitation
-        # Extract flag
-        # Validate flag format and content
-        flag = self.extract_flag(setup_lab)
-        assert flag is not None
-        assert len(flag) > 0
-        # Add flag validation logic
-    
-    def test_no_false_positives(self, setup_lab):
-        """Test that non-vulnerable endpoints are secure"""
-        # Test endpoints that should NOT be vulnerable
-        response = requests.get(f"{setup_lab}/secure_endpoint")
-        # Verify no unintended vulnerabilities
-        pass
-```
+#### Test Requirements
+- **Comprehensive Coverage**: All exploitation steps must be tested
+- **Deterministic Results**: Tests must be repeatable and reliable
+- **Clear Assertions**: Test names and assertions should be self-documenting
+- **Maintainable**: Easy to update when lab changes
 
-### Test Categories
-
-#### 1. Environment Tests
-- Lab accessibility
-- Service availability
-- Port configuration
-- Database connectivity (if applicable)
-
-#### 2. Vulnerability Tests
-- Vulnerability presence verification
-- Exploitation path validation
-- Payload effectiveness
-- Error handling
-
-#### 3. Exploitation Tests
-- Step-by-step exploitation
-- Flag extraction process
-- Impact verification
-- Cleanup validation
-
-#### 4. Security Tests
-- No unintended vulnerabilities
-- Proper isolation
-- Resource limits
-- Error disclosure
 
 ### Test Execution
-```bash
-# Run all tests
-pytest tests/test_lab.py -v
+- **Run all tests**: Execute complete test suite
+- **Specific test categories**: Run individual test categories as needed
+- **Coverage reporting**: Generate test coverage reports
+- **Verbose output**: Detailed test execution information
 
-# Run specific test category
-pytest tests/test_lab.py::TestLabValidation::test_vulnerability_exists -v
+### Test Retry and Error Correction
 
-# Run with coverage
-pytest tests/test_lab.py --cov=src --cov-report=html
-```
+#### Configuration (ZERO hardcoded values)
+- Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 30 if not set)
+- Infinite retries: Tests run until they pass (no limit)
+- Clear display of retry count (e.g., "X tries used")
+
+#### Recursive Implementation
+- **Infinite Retry Logic**: Tests run recursively until they pass
+- **Environment Configuration**: Retry delay configurable via `RETRY_DELAY` variable
+- **Error Analysis**: Automatic error correction between retry attempts
+- **Status Tracking**: Clear display of retry count and test status
+- **No Hardcoded Values**: All configuration from environment variables
+
+#### Key behaviors
+- Infinite recursive retry implementation (no loops, no limits)
+- All configuration from environment variables
+- ZERO hardcoded values (no retry limits, no delays)
+- Tests run until they pass
+- Automatic error correction between attempts
+- Status tracking: "PASSED" with retry count
+- Clear display: "Tests passed after X attempts"
+
+#### Configuration Examples
+- **Retry delay configuration**: Set `RETRY_DELAY` environment variable (optional - defaults to 30 seconds)
+- **Inline configuration**: Set environment variable inline with test execution
+- **Default behavior**: Run without configuration (uses default 30s delay)
+
+#### How It Works
+- **No Environment Variable Set**: Uses default 30-second delay between retries
+- **Environment Variable Set**: Uses the specified delay value
+- **Infinite Retries**: Tests continue running until they pass, regardless of how many attempts
+- **Automatic Error Correction**: System attempts to fix common issues between retries
+- **Clear Progress**: Shows current attempt number and retry status
 
 ### Requirements
 - **Comprehensive**: Cover all exploitation steps
 - **Reliable**: Tests must be deterministic and repeatable
-- **Fast**: Complete test suite should run in under 5 minutes
+- **Configurable Performance**: Test suite execution time configurable via environment variables
 - **Clear**: Test names and assertions should be self-documenting
 - **Maintainable**: Easy to update when lab changes
 

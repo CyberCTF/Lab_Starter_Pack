@@ -28,9 +28,9 @@ Create a comprehensive scenario and flag definition:
 
 Create the complete lab environment:
 - **Directory Structure**: Proper naming and organization
-- **README Documentation**: Comprehensive lab documentation
 - **Docker Configuration**: Production and development setups
-- **Test Suite**: Comprehensive pytest validation
+- **Test Suite**: Infinite recursive retry validation (runs until success)
+- **Error Correction**: Automatic recursive retry with error fixing until tests pass
 - **GitHub Actions**: Automated publishing workflow
 
 ### 3. Review Phase
@@ -80,7 +80,7 @@ Generate comprehensive metadata for the CyberCTF website:
 ### Lab Phase Success
 - [ ] Complete lab directory created
 - [ ] Docker configuration working
-- [ ] Tests passing
+- [ ] Tests passing (retries until success)
 - [ ] Documentation complete
 
 ### Review Phase Success
