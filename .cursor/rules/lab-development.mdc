@@ -109,5 +109,3 @@ build/
 2. **Create Services**: Build each service component in its respective directory
 3. **Configure Integration**: Set up docker-compose for service orchestration
 4. **Implement Vulnerability**: Add realistic security flaws within the application logic
-5. **Add Documentation**: Create comprehensive README with setup and exploitation instructions
-6. **Create Tests**: Develop automated tests to verify the lab functionality
