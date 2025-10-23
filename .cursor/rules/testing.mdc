@@ -1,95 +1,98 @@
 ---
-description: Testing Framework and Validation
+description: Docker and Application Testing Framework
 globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
 alwaysApply: true
 ---
-
-# Testing Framework and Validation
-
+ 
+# Docker and Application Testing Framework
+ 
 ## Test Requirements
-
-Create comprehensive pytest tests to validate the lab functionality and ensure it works correctly throughout all exploitation steps.
-
+ 
+Create focused pytest tests to validate Docker container functionality and basic application operations.
+ 
 ### Test Coverage
-- **End-to-End Validation**: Ensure the complete exploitation path works
-- **Step-by-Step Verification**: Validate each individual step of the exploitation
-- **Vulnerability Confirmation**: Verify the vulnerability exists and is exploitable
-- **Flag Extraction**: Confirm the flag can be obtained through exploitation
-- **Environment Validation**: Ensure the lab environment is properly configured
-
+ 
+- **Docker Container Tests**: Verify containers are running and accessible
+- **Service Availability**: Test that all required services are up and responding
+- **Application Functionality**: Basic application features work correctly
+- **Port Configuration**: Verify all required ports are open and accessible
+- **Database Connectivity**: Test database connections and basic operations
+ 
 ### Test Structure
-
+ 
 #### Test Categories
-- **Environment Tests**: Lab accessibility, service availability, port configuration
-- **Vulnerability Tests**: Vulnerability presence verification, exploitation path validation
-- **Exploitation Tests**: Step-by-step exploitation, flag extraction process
-- **Security Tests**: No unintended vulnerabilities, proper isolation
-
+ 
+- **Docker Tests**: Container status, health checks, port accessibility
+- **Service Tests**: Web application, database, and other services availability
+- **Application Tests**: Basic functionality, user interface, API endpoints
+- **Integration Tests**: End-to-end application workflow
+ 
 #### Test Requirements
-- **Comprehensive Coverage**: All exploitation steps must be tested
+ 
+- **Focused Coverage**: Essential Docker and application functionality
 - **Deterministic Results**: Tests must be repeatable and reliable
 - **Clear Assertions**: Test names and assertions should be self-documenting
-- **Maintainable**: Easy to update when lab changes
-
-
+- **Fast Execution**: Quick feedback on Docker and application status
+ 
 ### Test Execution
+ 
 - **Run all tests**: Execute complete test suite
-- **Specific test categories**: Run individual test categories as needed
-- **Coverage reporting**: Generate test coverage reports
+- **Docker-specific tests**: Run only Docker container tests
+- **Application tests**: Run only application functionality tests
 - **Verbose output**: Detailed test execution information
-
+ 
 ### Test Retry and Error Correction
-
+ 
 #### Configuration (ZERO hardcoded values)
-- Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 30 if not set)
-- Infinite retries: Tests run until they pass (no limit)
+ 
+- Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 10 if not set)
+- Maximum retries: Configurable via `MAX_RETRIES` environment variable (defaults to 5 if not set)
 - Clear display of retry count (e.g., "X tries used")
-
-#### Recursive Implementation
-- **Infinite Retry Logic**: Tests run recursively until they pass
-- **Environment Configuration**: Retry delay configurable via `RETRY_DELAY` variable
+ 
+#### Retry Implementation
+ 
+- **Smart Retry Logic**: Tests retry with exponential backoff
+- **Environment Configuration**: Retry delay and max retries configurable via environment variables
 - **Error Analysis**: Automatic error correction between retry attempts
 - **Status Tracking**: Clear display of retry count and test status
 - **No Hardcoded Values**: All configuration from environment variables
-
+ 
 #### Key behaviors
-- Infinite recursive retry implementation (no loops, no limits)
+ 
+- Configurable retry limits (not infinite)
 - All configuration from environment variables
 - ZERO hardcoded values (no retry limits, no delays)
-- Tests run until they pass
+- Tests retry until they pass or max retries reached
 - Automatic error correction between attempts
-- Status tracking: "PASSED" with retry count
-- Clear display: "Tests passed after X attempts"
-
+- Status tracking: "PASSED" or "FAILED" with retry count
+ 
 #### Configuration Examples
-- **Retry delay configuration**: Set `RETRY_DELAY` environment variable (optional - defaults to 30 seconds)
-- **Inline configuration**: Set environment variable inline with test execution
-- **Default behavior**: Run without configuration (uses default 30s delay)
-
+ 
+- **Retry configuration**: Set `RETRY_DELAY=5` and `MAX_RETRIES=3` environment variables
+- **Inline configuration**: Set environment variables inline with test execution
+- **Default behavior**: Run without configuration (uses default 10s delay, 5 max retries)
+ 
 #### How It Works
-- **No Environment Variable Set**: Uses default 30-second delay between retries
-- **Environment Variable Set**: Uses the specified delay value
-- **Infinite Retries**: Tests continue running until they pass, regardless of how many attempts
+ 
+- **No Environment Variables Set**: Uses default 10-second delay, 5 max retries
+- **Environment Variables Set**: Uses the specified delay and retry values
+- **Limited Retries**: Tests retry up to max retries, then fail if still unsuccessful
 - **Automatic Error Correction**: System attempts to fix common issues between retries
 - **Clear Progress**: Shows current attempt number and retry status
-
+ 
 ### Requirements
-- **Comprehensive**: Cover all exploitation steps
+ 
+- **Focused**: Cover essential Docker and application functionality
 - **Reliable**: Tests must be deterministic and repeatable
-- **Configurable Performance**: Test suite execution time configurable via environment variables
+- **Fast**: Quick execution for rapid feedback
 - **Clear**: Test names and assertions should be self-documenting
-- **Maintainable**: Easy to update when lab changes
-
+- **Maintainable**: Easy to update when application changes
+ 
 ### Quality Assurance
-
+ 
 #### Automated Testing
-- **CI/CD Integration**: Tests run automatically on code changes
-- **Multiple Environments**: Testing on different operating systems
-- **Performance Monitoring**: Response time and resource usage tracking
-- **Security Scanning**: Vulnerability scanning of containers and code
-
-#### Manual Testing
-- **User Journey**: Complete walkthrough from start to finish
-- **Edge Cases**: Testing unusual inputs and scenarios
-- **Error Scenarios**: Testing error conditions and recovery
-- **Documentation Review**: Verifying all instructions are accurate
+ 
+- **Docker Health Checks**: Verify container status and health
+- **Service Monitoring**: Test service availability and response times
+- **Application Testing**: Basic functionality verification
+- **Integration Testing**: End-to-end application workflow
