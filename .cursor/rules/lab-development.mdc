@@ -34,10 +34,8 @@ The lab directory should have a name that clearly identifies the vulnerability t
  
 ```
 build/
-├── README.md
+│ 
 ├── docker-compose.dev.yml
-├── tests/
-│   └── test_lab.py
 ├── web/ (or other service type)
 │   ├── Dockerfile
 │   └── src/ (application code)
