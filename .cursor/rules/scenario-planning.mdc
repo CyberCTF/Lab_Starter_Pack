@@ -1,0 +1,88 @@
+---
+description: Scenario Planning and Flag Definition
+globs: ["**/SCENARIO.md", "**/FLAG.md", "**/scenario*.md", "**/flag*.md"]
+alwaysApply: false
+---
+
+# Scenario Planning and Flag Definition
+
+## SCENARIO.md Requirements
+
+Create a comprehensive SCENARIO.md file that includes:
+
+### Technical Context
+- **Application Purpose**: Clearly explain what the application does and its business value
+- **Vulnerability Context**: Describe how Application Y exposes functionality X with vulnerability Z
+- **Real-world Relevance**: Reference a specific engagement case where this vulnerability was found and where the Library page would have been useful
+
+### Scenario Breakdown
+- **Company Profile**:
+  - Appropriate company name and industry
+  - Company size and market position
+  - Business model and revenue streams
+
+- **Crown Jewels**:
+  - Critical business assets (data, systems, intellectual property)
+  - Most valuable information or services
+  - Business-critical processes
+
+- **Application Typology**:
+  - Type of applications (web, mobile, API, etc.)
+  - Technology stack and architecture
+  - User base and access patterns
+
+- **Business Risk Analysis**:
+  - Technical risks associated with the vulnerability
+  - Business impact of potential exploitation
+  - Clear link between technical vulnerability and business consequences
+  - Financial, reputational, and operational risks
+
+### Real-world Case Study
+- **Engagement Example**: One specific case from your experience where this vulnerability was discovered
+- **Technology Focus**: One specific technology stack where this vulnerability manifests
+- **Library Page Utility**: Explain how the Library page would have been valuable in this specific case
+
+## FLAG.md Requirements
+
+The flag must be an element that can be added to a penetration test report to prove successful exploitation of the vulnerability.
+
+### Core Requirements
+- **No CTF Format**: Must NOT use formats like `CTF{...}`, `CYBER_CTF{...}`, or similar
+- **Real-world Value**: Must be information that would be valuable in an actual penetration test report
+- **Sensitive Data**: Should represent sensitive information that demonstrates successful exploitation
+- **Plausible**: Must be realistic and believable in the context of the vulnerability
+
+### Flag Examples by Vulnerability Type
+
+#### Remote Code Execution (RCE)
+- Password hash from `/etc/passwd` file
+- SSH private key stored on the machine
+- Database connection string with credentials
+- API keys or tokens from environment variables
+- User session tokens or authentication cookies
+
+#### SQL Injection
+- Database schema information
+- User credentials (hashed passwords)
+- Sensitive business data from database
+- Admin user account details
+- Database version and configuration details
+
+#### Cross-Site Scripting (XSS)
+- Stolen session cookies
+- User account information
+- CSRF tokens
+- Admin panel access credentials
+- Sensitive user data
+
+#### File Upload Vulnerabilities
+- Web shell execution proof
+- System file access (e.g., `/etc/passwd`)
+- Application source code
+- Configuration files with sensitive data
+
+### Flag Validation
+- The flag must be extractable through the exploitation process
+- It should demonstrate the full impact of the vulnerability
+- Must be specific enough to prove successful exploitation
+- Should be unique to the specific lab instance

@@ -1,0 +1,171 @@
+---
+description: Docker Configuration and Build Setup
+globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**"]
+alwaysApply: false
+---
+
+# Docker Configuration and Build Setup
+
+## Production Configuration (docker-compose.yml)
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    image: cybergen/lab-name:latest
+    container_name: lab-web
+    ports:
+      - "8080:80"
+    environment:
+      - ENV=production
+      - DEBUG=false
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  database:
+    image: mysql:8.0
+    container_name: lab-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=labdb
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpass
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  db_data:
+```
+
+## Development Configuration (build/docker-compose.dev.yml)
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: lab-web-dev
+    ports:
+      - "8080:80"
+    environment:
+      - ENV=development
+      - DEBUG=true
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+    restart: unless-stopped
+
+  database:
+    image: mysql:8.0
+    container_name: lab-db-dev
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=labdb
+      - MYSQL_USER=labuser
+      - MYSQL_PASSWORD=labpass
+    volumes:
+      - db_data_dev:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+volumes:
+  db_data_dev:
+```
+
+## Dockerfile Configuration
+
+```dockerfile
+# Multi-stage build for optimization
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:18-alpine AS runtime
+
+# Create non-root user
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+WORKDIR /app
+
+# Copy built application
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package*.json ./
+COPY . .
+
+# Set ownership
+RUN chown -R nextjs:nodejs /app
+USER nextjs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:3000/health || exit 1
+
+# Start application
+CMD ["npm", "start"]
+```
+
+## Build Directory Structure
+
+```
+build/
+├── docker-compose.dev.yml
+└── web/ (or other service type)
+    ├── Dockerfile
+    ├── requirements.txt (if Python)
+    ├── package.json (if Node.js)
+    ├── composer.json (if PHP)
+    └── src/
+        └── application files
+```
+
+## Configuration Requirements
+
+### Service Configuration
+- **Web Service**: Main application container
+- **Database Service**: Data persistence (if needed)
+- **Port Mapping**: Expose necessary ports
+- **Environment Variables**: Configuration management
+- **Volume Mounts**: Data persistence and development
+
+### Health Checks
+- **Web Service**: HTTP health check endpoint
+- **Database**: Connection validation
+- **Interval**: 30 seconds
+- **Timeout**: 10 seconds
+- **Retries**: 3 attempts
+
+### Security Considerations
+- **Non-root User**: Run containers as non-root
+- **Resource Limits**: Set memory and CPU limits
+- **Network Isolation**: Use custom networks
+- **Secret Management**: Use Docker secrets for sensitive data
+
+### Development Features
+- **Hot Reload**: Source code changes trigger automatic rebuilds
+- **Volume Mounts**: Local source code mounted into container
+- **Debug Mode**: Enhanced logging and error reporting
+- **Database Access**: Direct database port exposure for debugging
+- **Development Tools**: Additional debugging and development utilities
+
+## Docker Hub Integration
+- **Image Repository**: `cybergen/lab-name`
+- **Tagging Strategy**: `latest` for production, `dev` for development
+- **Automated Builds**: Triggered by GitHub commits
+- **Multi-architecture**: Support for different platforms

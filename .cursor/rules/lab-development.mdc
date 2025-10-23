@@ -1,0 +1,78 @@
+---
+description: Lab Development and Directory Structure
+globs: ["**/README.md", "**/lab-*/**", "**/src/**"]
+alwaysApply: false
+---
+
+# Lab Development and Directory Structure
+
+You are a senior web developer tasked with creating a complete lab based on a provided files.
+ 
+Your goal is to **analyze** the template folder, detect the technology stack, adapt to its conventions, and fully implement the scenario as a realistic business application with one vulnerability realistic.
+ 
+## Directory Naming Convention
+
+The lab directory should have a name that clearly identifies the vulnerability type and is appropriate for the specific vulnerability being demonstrated.
+
+### Naming Guidelines
+- **Vulnerability-based**: Use the vulnerability name as the primary identifier
+- **Descriptive**: Include enough context to understand what the lab covers
+- **Consistent**: Follow a consistent naming pattern across all labs
+- **URL-friendly**: Use lowercase, hyphens instead of spaces, no special characters
+
+### Examples
+- `sql-injection-basic`
+- `xss-stored-payload`
+- `file-upload-rce`
+- `xxe-internal-entities`
+- `ssrf-localhost-bypass`
+- `ldap-injection-auth-bypass`
+
+### Directory Structure
+```
+lab-name/
+├── README.md
+├── docker-compose.yml
+├── tests/
+│   └── test_lab.py
+├── build/
+│   ├── docker-compose.dev.yml
+│   └── web/ (or other service type)
+│       └── Dockerfile
+├── .github/
+│   └── workflows/
+│       └── publish.yml
+└── src/ (if needed for application code)
+```
+
+### Requirements
+- Directory name must be unique across all labs
+- Must be descriptive of the vulnerability being demonstrated
+- Should be easily searchable and identifiable
+- Must follow kebab-case convention
+
+## Development Best Practices
+
+### Code Organization
+- **Separation of Concerns**: Keep application logic separate from vulnerability code
+- **Modular Design**: Use clear module boundaries
+- **Configuration Management**: Externalize configuration settings
+- **Error Handling**: Implement proper error handling without revealing sensitive information
+
+### Security Considerations
+- **Realistic Vulnerabilities**: Create vulnerabilities that mirror real-world scenarios
+- **No Obvious Indicators**: Avoid making vulnerabilities too obvious
+- **Professional Appearance**: Maintain realistic business application appearance
+- **Data Sanitization**: Implement proper input validation where appropriate
+
+### Application Architecture
+- **Technology Stack**: Choose appropriate technologies for the vulnerability type
+- **Database Design**: Create realistic database schemas
+- **API Design**: Implement RESTful APIs where applicable
+- **Frontend Integration**: Create professional-looking user interfaces
+
+### File Organization
+- **Source Code**: Place application code in `src/` directory
+- **Configuration**: Keep config files at appropriate levels
+- **Documentation**: Maintain comprehensive documentation
+- **Tests**: Organize tests in dedicated `tests/` directory

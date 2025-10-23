@@ -1,0 +1,135 @@
+---
+description: Testing Framework and Validation
+globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
+alwaysApply: false
+---
+
+# Testing Framework and Validation
+
+## Test Requirements
+
+Create comprehensive pytest tests to validate the lab functionality and ensure it works correctly throughout all exploitation steps.
+
+### Test Coverage
+- **End-to-End Validation**: Ensure the complete exploitation path works
+- **Step-by-Step Verification**: Validate each individual step of the exploitation
+- **Vulnerability Confirmation**: Verify the vulnerability exists and is exploitable
+- **Flag Extraction**: Confirm the flag can be obtained through exploitation
+- **Environment Validation**: Ensure the lab environment is properly configured
+
+### Test Structure
+
+```python
+import pytest
+import requests
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+
+class TestLabValidation:
+    """Test suite for lab validation"""
+    
+    @pytest.fixture(scope="class")
+    def setup_lab(self):
+        """Setup lab environment before tests"""
+        # Wait for lab to be ready
+        time.sleep(10)
+        return "http://localhost:8080"
+    
+    def test_lab_accessibility(self, setup_lab):
+        """Test that the lab is accessible"""
+        response = requests.get(setup_lab)
+        assert response.status_code == 200
+        assert "expected_content" in response.text
+    
+    def test_vulnerability_exists(self, setup_lab):
+        """Test that the vulnerability is present"""
+        # Test for vulnerability indicators
+        response = requests.get(f"{setup_lab}/vulnerable_endpoint")
+        assert response.status_code == 200
+        # Add specific vulnerability checks
+    
+    def test_exploitation_path(self, setup_lab):
+        """Test the complete exploitation path"""
+        # Step 1: Initial reconnaissance
+        # Step 2: Vulnerability discovery
+        # Step 3: Exploitation attempt
+        # Step 4: Flag extraction
+        pass
+    
+    def test_flag_extraction(self, setup_lab):
+        """Test that the flag can be extracted"""
+        # Perform exploitation
+        # Extract flag
+        # Validate flag format and content
+        flag = self.extract_flag(setup_lab)
+        assert flag is not None
+        assert len(flag) > 0
+        # Add flag validation logic
+    
+    def test_no_false_positives(self, setup_lab):
+        """Test that non-vulnerable endpoints are secure"""
+        # Test endpoints that should NOT be vulnerable
+        response = requests.get(f"{setup_lab}/secure_endpoint")
+        # Verify no unintended vulnerabilities
+        pass
+```
+
+### Test Categories
+
+#### 1. Environment Tests
+- Lab accessibility
+- Service availability
+- Port configuration
+- Database connectivity (if applicable)
+
+#### 2. Vulnerability Tests
+- Vulnerability presence verification
+- Exploitation path validation
+- Payload effectiveness
+- Error handling
+
+#### 3. Exploitation Tests
+- Step-by-step exploitation
+- Flag extraction process
+- Impact verification
+- Cleanup validation
+
+#### 4. Security Tests
+- No unintended vulnerabilities
+- Proper isolation
+- Resource limits
+- Error disclosure
+
+### Test Execution
+```bash
+# Run all tests
+pytest tests/test_lab.py -v
+
+# Run specific test category
+pytest tests/test_lab.py::TestLabValidation::test_vulnerability_exists -v
+
+# Run with coverage
+pytest tests/test_lab.py --cov=src --cov-report=html
+```
+
+### Requirements
+- **Comprehensive**: Cover all exploitation steps
+- **Reliable**: Tests must be deterministic and repeatable
+- **Fast**: Complete test suite should run in under 5 minutes
+- **Clear**: Test names and assertions should be self-documenting
+- **Maintainable**: Easy to update when lab changes
+
+### Quality Assurance
+
+#### Automated Testing
+- **CI/CD Integration**: Tests run automatically on code changes
+- **Multiple Environments**: Testing on different operating systems
+- **Performance Monitoring**: Response time and resource usage tracking
+- **Security Scanning**: Vulnerability scanning of containers and code
+
+#### Manual Testing
+- **User Journey**: Complete walkthrough from start to finish
+- **Edge Cases**: Testing unusual inputs and scenarios
+- **Error Scenarios**: Testing error conditions and recovery
+- **Documentation Review**: Verifying all instructions are accurate

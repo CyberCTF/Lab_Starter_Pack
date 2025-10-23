@@ -1,0 +1,237 @@
+---
+description: UI Standards and Design System
+globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
+alwaysApply: false
+---
+
+# UI Standards and Design System
+
+## User Interface Requirements
+
+The UI should be close to what we can find on shadcn/ui with dark mode and minimalist design. No fancy color gradients should be used.
+
+### Design System Requirements
+
+#### 1. Component Library
+- **Shadcn/ui Components**: Use shadcn/ui component library
+- **Consistent Design**: Maintain design consistency across all pages
+- **Professional Appearance**: Look like a real company website
+- **Minimalist Approach**: Clean, simple, and functional design
+
+#### 2. Styling Framework
+- **TailwindCSS**: Use TailwindCSS for styling
+- **Dark Mode**: Implement dark mode as the primary theme
+- **Responsive Design**: Ensure mobile and desktop compatibility
+- **Accessibility**: Follow accessibility best practices
+
+#### 3. Visual Guidelines
+- **No Fancy Colors**: Avoid colorful gradients and flashy elements
+- **Professional Palette**: Use business-appropriate color schemes
+- **Clean Typography**: Use readable, professional fonts
+- **Minimal Animations**: Subtle, purposeful animations only
+
+### UI Component Requirements
+
+#### 1. Layout Components
+```tsx
+// Header Component
+<Header>
+  <Navigation />
+  <UserMenu />
+</Header>
+
+// Sidebar Component
+<Sidebar>
+  <Navigation />
+  <UserProfile />
+</Sidebar>
+
+// Main Content
+<MainContent>
+  <PageHeader />
+  <Content />
+  <Footer />
+</MainContent>
+```
+
+#### 2. Form Components
+```tsx
+// Input Fields
+<Input placeholder="Enter your search term" />
+<Textarea placeholder="Enter your message" />
+<Select>
+  <Option value="option1">Option 1</Option>
+</Select>
+
+// Buttons
+<Button variant="primary">Submit</Button>
+<Button variant="secondary">Cancel</Button>
+<Button variant="outline">Reset</Button>
+```
+
+#### 3. Data Display Components
+```tsx
+// Tables
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>John Doe</TableCell>
+      <TableCell>john@example.com</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+// Cards
+<Card>
+  <CardHeader>
+    <CardTitle>User Information</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>User details here</p>
+  </CardContent>
+</Card>
+```
+
+### Design Specifications
+
+#### 1. Color Palette
+```css
+/* Dark Mode Colors */
+--background: 0 0% 3.9%;
+--foreground: 0 0% 98%;
+--card: 0 0% 3.9%;
+--card-foreground: 0 0% 98%;
+--popover: 0 0% 3.9%;
+--popover-foreground: 0 0% 98%;
+--primary: 0 0% 98%;
+--primary-foreground: 0 0% 9%;
+--secondary: 0 0% 14.9%;
+--secondary-foreground: 0 0% 98%;
+--muted: 0 0% 14.9%;
+--muted-foreground: 0 0% 63.9%;
+--accent: 0 0% 14.9%;
+--accent-foreground: 0 0% 98%;
+--destructive: 0 62.8% 30.6%;
+--destructive-foreground: 0 0% 98%;
+--border: 0 0% 14.9%;
+--input: 0 0% 14.9%;
+--ring: 0 0% 83.1%;
+```
+
+#### 2. Typography
+```css
+/* Font Families */
+--font-sans: 'Inter', system-ui, sans-serif;
+--font-mono: 'JetBrains Mono', monospace;
+
+/* Font Sizes */
+--text-xs: 0.75rem;
+--text-sm: 0.875rem;
+--text-base: 1rem;
+--text-lg: 1.125rem;
+--text-xl: 1.25rem;
+--text-2xl: 1.5rem;
+--text-3xl: 1.875rem;
+```
+
+#### 3. Spacing
+```css
+/* Spacing Scale */
+--space-1: 0.25rem;
+--space-2: 0.5rem;
+--space-3: 0.75rem;
+--space-4: 1rem;
+--space-5: 1.25rem;
+--space-6: 1.5rem;
+--space-8: 2rem;
+--space-10: 2.5rem;
+--space-12: 3rem;
+--space-16: 4rem;
+--space-20: 5rem;
+--space-24: 6rem;
+```
+
+### Page Structure Requirements
+
+#### 1. Essential Pages Only
+- **Home/Dashboard**: Main application interface
+- **Login**: User authentication
+- **User Management**: User administration (if applicable)
+- **Settings**: Application configuration (if applicable)
+
+#### 2. Page Layout
+```tsx
+// Standard Page Layout
+<div className="min-h-screen bg-background">
+  <Header />
+  <div className="flex">
+    <Sidebar />
+    <main className="flex-1 p-6">
+      <PageHeader />
+      <Content />
+    </main>
+  </div>
+  <Footer />
+</div>
+```
+
+#### 3. Navigation Structure
+```tsx
+// Navigation Menu
+<nav className="space-y-2">
+  <NavItem href="/dashboard" icon={Home}>
+    Dashboard
+  </NavItem>
+  <NavItem href="/users" icon={Users}>
+    Users
+  </NavItem>
+  <NavItem href="/settings" icon={Settings}>
+    Settings
+  </NavItem>
+</nav>
+```
+
+### Quality Assurance
+
+#### 1. Design Review
+- [ ] Consistent with shadcn/ui design system
+- [ ] Dark mode implemented correctly
+- [ ] No fancy colors or gradients
+- [ ] Professional appearance maintained
+- [ ] Responsive design working
+
+#### 2. Component Review
+- [ ] All components follow design system
+- [ ] Consistent spacing and typography
+- [ ] Proper color usage
+- [ ] Accessibility standards met
+- [ ] Cross-browser compatibility
+
+#### 3. User Experience Review
+- [ ] Intuitive navigation
+- [ ] Clear user flows
+- [ ] Professional appearance
+- [ ] Fast loading times
+- [ ] Mobile-friendly design
+
+### Common Issues to Avoid
+
+#### Design Issues
+- Using bright, flashy colors
+- Implementing complex gradients
+- Over-animating elements
+- Inconsistent spacing
+- Poor typography choices
+
+#### UX Issues
+- Confusing navigation
+- Unclear user flows
+- Poor mobile experience
+- Slow loading times
+- Inaccessible design

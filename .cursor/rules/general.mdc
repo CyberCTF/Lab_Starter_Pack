@@ -1,0 +1,96 @@
+---
+description: CyberGen Lab Generation Workflow - General Guidelines
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# CyberGen Lab Generation Workflow
+
+## Overview
+
+A lab is generated in 4 main steps, each with specific inputs and outputs, following a structured workflow to create realistic, educational cybersecurity labs.
+
+## Workflow Steps
+
+### 1. Plan Phase
+**Input:** `LIBRARY_PAGE.md`  
+**Artefact:** `SCENARIO.md` + `FLAG.md`
+
+Create a comprehensive scenario and flag definition:
+- **Scenario Development**: Company profile, crown jewels, application typology, business risks
+- **Technical Context**: Application purpose, vulnerability context, real-world relevance
+- **Flag Definition**: Real-world sensitive data that proves successful exploitation
+- **Case Study**: Specific engagement example where the vulnerability was found
+
+### 2. Lab Phase
+**Input:** `SCENARIO.md` + `FLAG.md` + `LIBRARY_PAGE.md`  
+**Artefact:** Complete lab directory
+
+Create the complete lab environment:
+- **Directory Structure**: Proper naming and organization
+- **README Documentation**: Comprehensive lab documentation
+- **Docker Configuration**: Production and development setups
+- **Test Suite**: Comprehensive pytest validation
+- **GitHub Actions**: Automated publishing workflow
+
+### 3. Review Phase
+**Input:** `.ctf/` directory and lab directory  
+**Artefact:** `.ctf/test_results/` markdown files
+
+Validate lab quality and compliance:
+- **Functionality Testing**: Ensure everything works correctly
+- **Flag Validation**: Verify flag can be extracted and is appropriate
+- **Warning Removal**: Remove all educational and vulnerability warnings
+- **Help Content Review**: Ensure no hints that help users find the flag
+- **UI Review**: Verify professional appearance with shadcn/ui components
+
+### 4. Metadata Phase
+**Input:** Lab directory + `/.ctf`  
+**Artefact:** `/.ctf/metadata.md` or `.json`
+
+Generate comprehensive metadata for the CyberCTF website:
+- **Basic Information**: Title, description, difficulty, time estimate
+- **Questions**: At least one question to find the flag, with hints and solutions
+- **Prerequisites**: Required knowledge and skills
+- **Skills Learned**: Comprehensive list of skills developed
+- **Flag Information**: Flag value and validation
+
+## Quality Assurance
+
+### Cross-Phase Validation
+- **Consistency**: Ensure all phases align with the original scenario
+- **Completeness**: Verify all required components are present
+- **Quality**: Maintain high standards throughout all phases
+- **Professionalism**: Ensure realistic, business-appropriate content
+
+### Final Validation
+- **End-to-End Testing**: Complete lab walkthrough
+- **Documentation Review**: Verify all documentation is accurate
+- **User Experience**: Ensure smooth user experience
+- **Technical Validation**: Confirm all technical requirements are met
+
+## Success Criteria
+
+### Plan Phase Success
+- [ ] Realistic company scenario created
+- [ ] Appropriate flag defined
+- [ ] Real-world case study included
+- [ ] Business context established
+
+### Lab Phase Success
+- [ ] Complete lab directory created
+- [ ] Docker configuration working
+- [ ] Tests passing
+- [ ] Documentation complete
+
+### Review Phase Success
+- [ ] All functionality working
+- [ ] Flag extractable and appropriate
+- [ ] No warnings present
+- [ ] Professional UI implemented
+
+### Metadata Phase Success
+- [ ] All required metadata present
+- [ ] Questions and hints appropriate
+- [ ] Difficulty level accurate
+- [ ] Skills learned comprehensive
