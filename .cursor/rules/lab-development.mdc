@@ -1,78 +1,113 @@
 ---
-description: Lab Development and Directory Structure
+description: Lab Development and Directory Structure for Build Folder
 globs: ["**/build/**"]
 alwaysApply: false
 ---
-
-# Lab Development and Directory Structure
-
-You are a senior web developer tasked with creating a complete lab based on a provided files.
  
-Your goal is to **analyze** the template folder, detect the technology stack, adapt to its conventions, and fully implement the scenario as a realistic business application with one vulnerability realistic.
+# Lab Development and Directory Structure for Build Folder
+ 
+You are a senior web developer tasked with creating a complete lab directly in the `/build` folder based on provided files.
+ 
+Your goal is to **analyze** the template folder, detect the technology stack, adapt to its conventions, and fully implement the scenario as a realistic business application with one vulnerability realistic **directly within the build directory structure**.
  
 ## Directory Naming Convention
-
+ 
 The lab directory should have a name that clearly identifies the vulnerability type and is appropriate for the specific vulnerability being demonstrated.
-
+ 
 ### Naming Guidelines
+ 
 - **Vulnerability-based**: Use the vulnerability name as the primary identifier
 - **Descriptive**: Include enough context to understand what the lab covers
 - **Consistent**: Follow a consistent naming pattern across all labs
 - **URL-friendly**: Use lowercase, hyphens instead of spaces, no special characters
-
+ 
 ### Examples
+ 
 - `sql-injection-basic`
 - `xss-stored-payload`
 - `file-upload-rce`
 - `xxe-internal-entities`
 - `ssrf-localhost-bypass`
 - `ldap-injection-auth-bypass`
-
-### Directory Structure
+ 
+### Directory Structure for Build Folder
+ 
 ```
-lab-name/
+build/
 ├── README.md
-├── docker-compose.yml
+├── docker-compose.dev.yml
 ├── tests/
 │   └── test_lab.py
-├── build/
-│   ├── docker-compose.dev.yml
-│   └── web/ (or other service type)
-│       └── Dockerfile
+├── web/ (or other service type)
+│   ├── Dockerfile
+│   └── src/ (application code)
 ├── .github/
 │   └── workflows/
 │       └── publish.yml
-└── src/ (if needed for application code)
+└── config/ (configuration files)
 ```
-
-### Requirements
-- Directory name must be unique across all labs
+ 
+### Requirements for Build Folder Structure
+ 
+- All lab components must be created directly within the `/build` directory
+- Service directories (web, api, database) should be created as subdirectories of `/build`
+- Configuration files should be placed at the root of `/build` or in a dedicated `config/` subdirectory
 - Must be descriptive of the vulnerability being demonstrated
 - Should be easily searchable and identifiable
-- Must follow kebab-case convention
-
+- Must follow kebab-case convention for service names
+ 
 ## Development Best Practices
-
+ 
 ### Code Organization
+ 
 - **Separation of Concerns**: Keep application logic separate from vulnerability code
 - **Modular Design**: Use clear module boundaries
 - **Configuration Management**: Externalize configuration settings
 - **Error Handling**: Implement proper error handling without revealing sensitive information
-
+ 
 ### Security Considerations
+ 
 - **Realistic Vulnerabilities**: Create vulnerabilities that mirror real-world scenarios
 - **No Obvious Indicators**: Avoid making vulnerabilities too obvious
 - **Professional Appearance**: Maintain realistic business application appearance
 - **Data Sanitization**: Implement proper input validation where appropriate
-
+ 
 ### Application Architecture
+ 
 - **Technology Stack**: Choose appropriate technologies for the vulnerability type
 - **Database Design**: Create realistic database schemas
 - **API Design**: Implement RESTful APIs where applicable
 - **Frontend Integration**: Create professional-looking user interfaces
-
-### File Organization
-- **Source Code**: Place application code in `src/` directory
-- **Configuration**: Keep config files at appropriate levels
-- **Documentation**: Maintain comprehensive documentation
-- **Tests**: Organize tests in dedicated `tests/` directory
+ 
+### File Organization for Build Folder
+ 
+- **Source Code**: Place application code in service-specific directories (e.g., `web/src/`, `api/src/`)
+- **Configuration**: Keep config files at the root of `/build` or in `config/` subdirectory
+- **Documentation**: Maintain comprehensive documentation in `/build/README.md`
+- **Tests**: Organize tests in `/build/tests/` directory
+- **Docker Files**: Place Dockerfiles in their respective service directories
+- **Docker Compose**: Keep docker-compose files at the root of `/build`
+ 
+## Build Folder Development Guidelines
+ 
+### Directory Creation Strategy
+ 
+- **Direct Implementation**: Create all lab components directly within the `/build` directory
+- **Service Isolation**: Each service (web, database, api) should have its own subdirectory
+- **Flat Structure**: Avoid nested build directories - keep the structure flat and accessible
+ 
+### Service Organization
+ 
+- **Web Services**: Create in `/build/web/` with Dockerfile and source code
+- **Database Services**: Create in `/build/database/` with initialization scripts
+- **API Services**: Create in `/build/api/` with endpoint implementations
+- **Configuration**: Centralize in `/build/config/` or at root level
+ 
+### Development Workflow
+ 
+1. **Analyze Template**: Understand the existing structure and technology stack
+2. **Create Services**: Build each service component in its respective directory
+3. **Configure Integration**: Set up docker-compose for service orchestration
+4. **Implement Vulnerability**: Add realistic security flaws within the application logic
+5. **Add Documentation**: Create comprehensive README with setup and exploitation instructions
+6. **Create Tests**: Develop automated tests to verify the lab functionality
