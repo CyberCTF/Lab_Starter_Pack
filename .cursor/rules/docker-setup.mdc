@@ -1,136 +1,18 @@
 ---
 description: Docker Configuration and Build Setup
-globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**"]
+globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**", "**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
 alwaysApply: false
 ---
 
-# Docker Configuration and Build Setup
-
-## Production Configuration (docker-compose.yml)
-
-```yaml
-version: '3.8'
-
-services:
-  web:
-    image: cybergen/lab-name:latest
-    container_name: lab-web
-    ports:
-      - "8080:80"
-    environment:
-      - ENV=production
-      - DEBUG=false
-    volumes:
-      - ./data:/app/data
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-  database:
-    image: mysql:8.0
-    container_name: lab-db
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=labdb
-      - MYSQL_USER=labuser
-      - MYSQL_PASSWORD=labpass
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: unless-stopped
-
-volumes:
-  db_data:
-```
-
-## Development Configuration (build/docker-compose.dev.yml)
-
-```yaml
-version: '3.8'
-
-services:
-  web:
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-    container_name: lab-web-dev
-    ports:
-      - "8080:80"
-    environment:
-      - ENV=development
-      - DEBUG=true
-    volumes:
-      - ./src:/app/src
-      - ./data:/app/data
-    restart: unless-stopped
-
-  database:
-    image: mysql:8.0
-    container_name: lab-db-dev
-    environment:
-      - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=labdb
-      - MYSQL_USER=labuser
-      - MYSQL_PASSWORD=labpass
-    volumes:
-      - db_data_dev:/var/lib/mysql
-    ports:
-      - "3306:3306"
-
-volumes:
-  db_data_dev:
-```
-
-## Dockerfile Configuration
-
-```dockerfile
-# Multi-stage build for optimization
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-
-FROM node:18-alpine AS runtime
-
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nextjs -u 1001
-
-WORKDIR /app
-
-# Copy built application
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY . .
-
-# Set ownership
-RUN chown -R nextjs:nodejs /app
-USER nextjs
-
-# Expose port
-EXPOSE 3000
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
-
-# Start application
-CMD ["npm", "start"]
-```
 
 ## Build Directory Structure
 
 ```
 build/
 ├── docker-compose.dev.yml
-└── web/ (or other service type)
+└── [service-type]/ (adapt based on project context)
     ├── Dockerfile
-    ├── requirements.txt (if Python)
-    ├── package.json (if Node.js)
-    ├── composer.json (if PHP)
+    ├── [dependency-files] (based on technology stack)
     └── src/
         └── application files
 ```
@@ -138,34 +20,60 @@ build/
 ## Configuration Requirements
 
 ### Service Configuration
-- **Web Service**: Main application container
-- **Database Service**: Data persistence (if needed)
-- **Port Mapping**: Expose necessary ports
-- **Environment Variables**: Configuration management
-- **Volume Mounts**: Data persistence and development
+- **Main Service**: Primary application container (adapt name and type based on project)
+- **Database Service**: Data persistence (if needed by project context)
+- **Port Mapping**: Expose necessary ports (adapt based on application requirements)
+- **Environment Variables**: Configuration management (adapt based on project needs)
+- **Volume Mounts**: Data persistence and development (adapt paths based on project structure)
 
 ### Health Checks
-- **Web Service**: HTTP health check endpoint
-- **Database**: Connection validation
-- **Interval**: 30 seconds
-- **Timeout**: 10 seconds
-- **Retries**: 3 attempts
+- **Main Service**: Appropriate health check endpoint (adapt based on service type)
+- **Database**: Connection validation (if database is used)
+- **Interval**: 30 seconds (adjust based on application requirements)
+- **Timeout**: 10 seconds (adjust based on application response time)
+- **Retries**: 3 attempts (adjust based on reliability requirements)
 
 ### Security Considerations
-- **Non-root User**: Run containers as non-root
-- **Resource Limits**: Set memory and CPU limits
-- **Network Isolation**: Use custom networks
-- **Secret Management**: Use Docker secrets for sensitive data
+- **Non-root User**: Run containers as non-root (adapt user creation based on base image)
+- **Resource Limits**: Set memory and CPU limits (adapt based on application requirements)
+- **Network Isolation**: Use custom networks (adapt based on service communication needs)
+- **Secret Management**: Use Docker secrets for sensitive data (adapt based on security requirements)
 
 ### Development Features
-- **Hot Reload**: Source code changes trigger automatic rebuilds
-- **Volume Mounts**: Local source code mounted into container
-- **Debug Mode**: Enhanced logging and error reporting
-- **Database Access**: Direct database port exposure for debugging
-- **Development Tools**: Additional debugging and development utilities
+- **Hot Reload**: Source code changes trigger automatic rebuilds (adapt based on technology stack)
+- **Volume Mounts**: Local source code mounted into container (adapt paths based on project structure)
+- **Debug Mode**: Enhanced logging and error reporting (adapt based on debugging needs)
+- **Database Access**: Direct database port exposure for debugging (if database is used)
+- **Development Tools**: Additional debugging and development utilities (adapt based on technology stack)
 
 ## Docker Hub Integration
-- **Image Repository**: `cybergen/lab-name`
-- **Tagging Strategy**: `latest` for production, `dev` for development
-- **Automated Builds**: Triggered by GitHub commits
-- **Multi-architecture**: Support for different platforms
+- **Image Repository**: Adapt based on project context and organization
+- **Tagging Strategy**: Adapt based on deployment requirements
+- **Automated Builds**: Configure based on CI/CD pipeline
+- **Multi-architecture**: Support for different platforms (adapt based on target platforms)
+
+## Context Adaptation Guidelines
+
+### Technology Stack Detection
+- **Analyze project files** to determine the appropriate technology stack
+- **Adapt Dockerfile** based on detected language/framework (Node.js, Python, PHP, etc.)
+- **Configure dependencies** based on detected package managers (npm, pip, composer, etc.)
+- **Set appropriate base images** based on technology requirements
+
+### Project Structure Adaptation
+- **Service naming** should reflect the actual project purpose
+- **Port configuration** should match the application's actual ports
+- **Volume mounts** should align with the project's directory structure
+- **Environment variables** should be relevant to the specific application
+
+### Database Integration
+- **Include database service** only if the project requires data persistence
+- **Configure appropriate database** based on project requirements (MySQL, PostgreSQL, MongoDB, etc.)
+- **Set up proper database credentials** and connection strings
+- **Configure database volumes** for data persistence
+
+### Security Adaptation
+- **User permissions** should be appropriate for the application type
+- **Resource limits** should be based on actual application requirements
+- **Network configuration** should support the application's communication needs
+- **Secret management** should handle the specific sensitive data of the project
