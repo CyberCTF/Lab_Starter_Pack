@@ -14,13 +14,6 @@ Your goal is to **analyze** the template folder, detect the technology stack, ad
  
 The lab directory should have a name that clearly identifies the vulnerability type and is appropriate for the specific vulnerability being demonstrated.
  
-### Naming Guidelines
- 
-- **Vulnerability-based**: Use the vulnerability name as the primary identifier
-- **Descriptive**: Include enough context to understand what the lab covers
-- **Consistent**: Follow a consistent naming pattern across all labs
-- **URL-friendly**: Use lowercase, hyphens instead of spaces, no special characters
- 
 ### Examples
  
 - `sql-injection-basic`
@@ -81,12 +74,10 @@ build/
  
 - **Source Code**: Place application code in service-specific directories (e.g., `web/src/`, `api/src/`)
 - **Configuration**: Keep config files at the root of `/build` or in `config/` subdirectory
-- **Documentation**: Maintain comprehensive documentation in `/build/README.md`
 - **Tests**: Organize tests in `/build/tests/` directory
 - **Docker Files**: Place Dockerfiles in their respective service directories
 - **Docker Compose**: Keep docker-compose files at the root of `/build`
- 
-## Build Folder Development Guidelines
+
  
 ### Directory Creation Strategy
  
