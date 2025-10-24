@@ -37,6 +37,11 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   ```
 - **Verification Required**: Always check the base OS of Docker images before writing installation commands
 
+### Common Dockerfile Errors
+- **File Recreation**: When Dockerfiles are recreated, ensure they use correct package manager
+- **Permission Errors**: Use `chmod 755` instead of `chmod +x` for script files
+- **Script Execution**: Ensure init scripts are executable and have correct permissions
+
 ## Extensions and Runtimes
 - PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
 - Python: document/install toolchain if native wheels are required.
@@ -85,6 +90,9 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   - Continue sequence for additional services
 - **Port Mapping**: Use same internal and external ports (3206:3206, 3207:3207, etc.)
 - **Service Configuration**: Configure services to listen on their assigned internal ports (3206, 3207, 3208, etc.)
+- **Port Consistency**: All services must use identical internal and external ports
+  - ❌ Incorrect: `3207:3206` (database external 3207, internal 3206)
+  - ✅ Correct: `3207:3207` (database external 3207, internal 3207)
 - Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
 - Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
 

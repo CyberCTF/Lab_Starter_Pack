@@ -159,13 +159,14 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **Final Summary**: Display complete review results and status
 
 #### Review Phase Steps
-- **Step 1**: Docker container health verification
-- **Step 2**: Service availability testing (web, database, etc.)
-- **Step 3**: Application functionality testing
-- **Step 4**: Flag extraction testing (Python pytest execution)
-- **Step 5**: Vulnerability exploitation validation
-- **Step 6**: UI/UX quality verification
-- **Step 7**: Documentation completeness check
+- **Step 1**: Docker container health verification (timeout: 30s)
+- **Step 2**: Service availability testing (timeout: 60s)
+- **Step 3**: Application functionality testing (timeout: 45s)
+- **Step 4**: Flag extraction testing - Python pytest execution (timeout: 120s)
+- **Step 5**: Vulnerability exploitation validation (timeout: 90s)
+- **Step 6**: UI/UX quality verification (timeout: 30s)
+- **Step 7**: Documentation completeness check (timeout: 15s)
+- **Total Maximum Time**: 6 minutes (360 seconds) for complete review
 
 #### Review Phase Logging
 - **Terminal Output**: All review steps visible in real-time with timestamps
@@ -182,6 +183,14 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **Test Coverage**: Ensure all critical functionality is tested
 - **Timeout Handling**: Set reasonable timeouts for test execution
 
+#### Review Phase Timeout Logic
+- **Global Timeout**: Maximum 6 minutes (360 seconds) for entire review phase
+- **Step Timeouts**: Each step has individual timeout limits
+- **Progress Tracking**: Show percentage completion and remaining time
+- **Auto-Advance**: If step exceeds timeout, log warning and proceed to next step
+- **Failure Threshold**: If 3+ steps fail, abort review and report failure
+- **Success Criteria**: At least 5 out of 7 steps must succeed for review to pass
+
 ### Environment Variables
 
 #### Test Configuration
@@ -196,6 +205,12 @@ Create focused pytest tests to validate Docker container functionality and basic
 - `ENABLE_TIMING` (default true) — enable phase timing logging
 - `TIMING_LOG_LEVEL` (default INFO) — timing log level
 - `TIMING_LOG_RETENTION_DAYS` (default 30) — timing log retention period
+
+#### Review Phase Configuration
+- `REVIEW_GLOBAL_TIMEOUT` (default 360) — global timeout for review phase in seconds
+- `REVIEW_STEP_TIMEOUT` (default 60) — default timeout for individual steps in seconds
+- `REVIEW_MAX_FAILURES` (default 3) — maximum failed steps before aborting review
+- `REVIEW_MIN_SUCCESS` (default 5) — minimum successful steps required to pass review
 
 ### Quality Assurance
 
