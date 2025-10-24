@@ -146,30 +146,48 @@ Create focused pytest tests to validate Docker container functionality and basic
 ### Review Phase Specific Rules
 
 #### Retry Limits for Review Phase
-- **Maximum Attempts**: 10 retry attempts maximum for review phase
-- **Hard Limit**: No infinite retry loops allowed
-- **Failure Action**: After 10 failed attempts, stop and report failure with detailed logs
-- **Configuration**: Override via `REVIEW_MAX_RETRIES` environment variable (default: 10)
+- **Maximum Attempts**: 1 retry attempt maximum for review phase (no loops)
+- **Hard Limit**: Single attempt only to prevent infinite loops
+- **Failure Action**: After 1 failed attempt, stop and report failure with detailed logs
+- **Configuration**: Override via `REVIEW_MAX_RETRIES` environment variable (default: 1)
 
 #### Live Progress Monitoring
-- **Real-time Display**: Show retry progress in terminal during review phase
-- **Progress Format**: `[REVIEW] Attempt X/10 - [STATUS] - [ERROR_DETAILS]`
-- **Timestamp**: Include timestamp for each attempt
+- **Real-time Display**: Show detailed progress in terminal during review phase
+- **Progress Format**: `[REVIEW] [TIMESTAMP] - [STATUS] - [DETAILS]`
+- **Detailed Logging**: Log each step of the review process
 - **Error Logging**: Log specific error details for debugging
-- **Final Summary**: Display total attempts used and final status
+- **Final Summary**: Display complete review results and status
+
+#### Review Phase Steps
+- **Step 1**: Docker container health verification
+- **Step 2**: Service availability testing (web, database, etc.)
+- **Step 3**: Application functionality testing
+- **Step 4**: Flag extraction testing (Python pytest execution)
+- **Step 5**: Vulnerability exploitation validation
+- **Step 6**: UI/UX quality verification
+- **Step 7**: Documentation completeness check
 
 #### Review Phase Logging
-- **Terminal Output**: All review attempts visible in real-time
+- **Terminal Output**: All review steps visible in real-time with timestamps
 - **Log Files**: Store detailed logs in `.ctf/review_logs/` directory
-- **Error Analysis**: Log specific errors that caused retry attempts
-- **Success Metrics**: Track which attempts succeeded and why
+- **Python Test Execution**: Log pytest execution and results
+- **Flag Extraction**: Log flag discovery and validation process
+- **Error Analysis**: Log specific errors that caused failures
+- **Success Metrics**: Track which steps succeeded and execution time
+
+#### Python Testing Requirements
+- **Pytest Execution**: Run all tests in `/tests/` directory
+- **Flag Validation**: Verify flag can be extracted and is appropriate
+- **Vulnerability Testing**: Test exploitation paths work correctly
+- **Test Coverage**: Ensure all critical functionality is tested
+- **Timeout Handling**: Set reasonable timeouts for test execution
 
 ### Environment Variables
 
 #### Test Configuration
 - `RETRY_DELAY` (default 10) — delay between retry attempts in seconds
 - `MAX_RETRIES` (default 10) — maximum retry attempts for general tests
-- `REVIEW_MAX_RETRIES` (default 10) — maximum retry attempts for review phase
+- `REVIEW_MAX_RETRIES` (default 1) — maximum retry attempts for review phase (single attempt only)
 - `CLEANUP_BEFORE_TESTS` (default true) — execute cleanup before tests
 - `REMOVE_VOLUMES` (default true) — remove volumes during cleanup
 - `CLEANUP_NETWORKS` (default true) — clean networks during cleanup

@@ -18,6 +18,25 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - **Solution**: Use `microdnf` for MySQL/Oracle Linux images, `yum` for CentOS/RHEL
 - **Package Name Differences**: `g++` (Debian) vs `gcc-c++` (Oracle Linux)
 
+### Dockerfile Package Manager Examples
+- **MySQL Images** (`mysql:8.0` = Oracle Linux):
+  ```dockerfile
+  RUN microdnf update && microdnf install -y \
+      gcc \
+      gcc-c++ \
+      make \
+      && microdnf clean all
+  ```
+- **PHP/Apache Images** (`php:8.1-apache` = Debian):
+  ```dockerfile
+  RUN apt-get update && apt-get install -y \
+      gcc \
+      g++ \
+      make \
+      && rm -rf /var/lib/apt/lists/*
+  ```
+- **Verification Required**: Always check the base OS of Docker images before writing installation commands
+
 ## Extensions and Runtimes
 - PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
 - Python: document/install toolchain if native wheels are required.
@@ -60,10 +79,12 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - Use non-standard port sequence to avoid conflicts: 3206, 3207, 3208, etc.
 - Standard port assignments:
   - `WEB_PORT` (default 3206) — web service host port
-  - `DB_HOST_PORT` (default 3207) — database host port (internal remains 3306)
+  - `DB_HOST_PORT` (default 3207) — database host port
   - `API_PORT` (default 3208) — API service host port
   - `REDIS_PORT` (default 3209) — Redis host port
   - Continue sequence for additional services
+- **Port Mapping**: Use same internal and external ports (3206:3206, 3207:3207, etc.)
+- **Service Configuration**: Configure services to listen on their assigned internal ports (3206, 3207, 3208, etc.)
 - Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
 - Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
 
@@ -71,6 +92,13 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - Do not use the `version:` key (obsolete in Compose V2).
 - Mandatory dev/prod parity: services, paths and options consistent between `docker-compose.dev.yml` and `docker-compose.yml`.
 - Read readiness state via healthchecks. Consumers must wait for `service_healthy` (or use a standard wait utility).
+
+### Docker Compose Common Errors
+- **Version Key Obsolete**: Remove `version: '3.8'` completely (Compose V2 doesn't need it)
+- **Port Conflicts**: Check for port conflicts before deployment
+  - Common conflicts: 8080, 3306, 80, 443
+  - Solution: Use non-standard ports (3206, 3207, 3208, etc.)
+- **Service Dependencies**: Use `depends_on` with `condition: service_healthy` for proper startup order
 
 ## Databases
 - MySQL 8: standardize authentication plugin or use compatible client drivers.
@@ -84,6 +112,18 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   - ✅ Correct: `GRANT SELECT ON database.* TO 'user'@'%'; GRANT FILE ON *.* TO 'user'@'%';`
 - **User Creation**: Always use `IF NOT EXISTS` for user creation to avoid conflicts.
   - ✅ Correct: `CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';`
+
+### MySQL Privilege Examples
+```sql
+-- Database-specific privileges
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON database.* TO 'user'@'%';
+
+-- Global privileges (separate statement)
+GRANT FILE ON *.* TO 'user'@'%';
+
+-- User creation with error handling
+CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
+```
 
 ## Localization and Time
 - Define `TZ` explicitly and ensure application/DB use expected charset/collation.
@@ -112,10 +152,10 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 ---
 
 ## Standard Environment Variables (Documentation)
-- `WEB_PORT` (default 3206) — host port for web service
-- `DB_HOST_PORT` (default 3207) — host port exposed to internal port 3306 of DB container
-- `API_PORT` (default 3208) — host port for API service
-- `REDIS_PORT` (default 3209) — host port for Redis service
+- `WEB_PORT` (default 3206) — host port for web service (internal port 3206)
+- `DB_HOST_PORT` (default 3207) — host port for database service (internal port 3207)
+- `API_PORT` (default 3208) — host port for API service (internal port 3208)
+- `REDIS_PORT` (default 3209) — host port for Redis service (internal port 3209)
 - `APP_BASE_URL` — base URL used by tests/integrations
 - `CLEANUP_BEFORE_TESTS` (bool) — execute cleanup before tests
 - `REMOVE_VOLUMES` (bool) — remove volumes during cleanup
@@ -128,9 +168,9 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 
 ## Examples (Descriptive)
 - Port mappings (host → container): 
-  - Web: `${WEB_PORT:-3206}:80`
-  - DB: `${DB_HOST_PORT:-3207}:3306`
-  - API: `${API_PORT:-3208}:3000`
+  - Web: `${WEB_PORT:-3206}:3206`
+  - DB: `${DB_HOST_PORT:-3207}:3207`
+  - API: `${API_PORT:-3208}:3208`
 - Healthcheck: define a simple command (ping service/port), adapted interval/timeout/retries, and make consumer services depend on `service_healthy` state.
 - Retry policy: delays and attempts only via env; clearly display attempt counter.
 
