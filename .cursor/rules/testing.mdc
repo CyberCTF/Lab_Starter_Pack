@@ -5,7 +5,15 @@ alwaysApply: true
 ---
  
 # Docker and Application Testing Framework
- 
+
+## Test Directory Structure
+
+### Tests Location
+- **Tests Directory**: Must be at **root level** (same level as `/build` directory)
+- **Structure**: `/tests/` alongside `/build/` and `docker-compose.yml`
+- **Organization**: Tests should be organized by functionality and test type
+- **Configuration**: Test configuration files (pytest.ini, conftest.py) at root level
+
 ## Test Requirements
  
 Create focused pytest tests to validate Docker container functionality and basic application operations.
@@ -35,11 +43,27 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **Fast Execution**: Quick feedback on Docker and application status
  
 ### Test Execution
- 
+
 - **Run all tests**: Execute complete test suite
 - **Docker-specific tests**: Run only Docker container tests
 - **Application tests**: Run only application functionality tests
 - **Verbose output**: Detailed test execution information
+
+### Automatic Docker Cleanup
+
+#### Pre-Test Cleanup
+- **Before every test run**: Execute `docker-compose down -v` to ensure clean state
+- **Purpose**: 
+  - Stop all running containers
+  - Remove volumes for fresh database/service state
+  - Prevent test interference from previous runs
+- **Configuration**: Cleanup behavior configurable via environment variables (no hardcoded values)
+- **Error Handling**: Graceful handling of cleanup failures
+
+#### Cleanup Configuration
+- **Environment Variables**: Use `CLEANUP_BEFORE_TESTS` (default: true)
+- **Volume Removal**: Configurable via `REMOVE_VOLUMES` (default: true)
+- **Network Cleanup**: Configurable via `CLEANUP_NETWORKS` (default: true)
  
 ### Test Retry and Error Correction
  
@@ -88,10 +112,31 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **Clear**: Test names and assertions should be self-documenting
 - **Maintainable**: Easy to update when application changes
  
+### Phase Timing and Logging
+
+#### Timing Requirements
+- **Track Duration**: Log start time, end time, and total duration for each workflow phase
+- **Phases to Track**:
+  - Plan Phase (SCENARIO.md + FLAG.md creation)
+  - Lab Phase (complete lab directory creation)
+  - Review Phase (validation and testing)
+  - Metadata Phase (metadata.md/json creation)
+
+#### Logging Format
+- **Log Format**: `[PHASE_NAME] Started: {timestamp}, Completed: {timestamp}, Duration: {duration}`
+- **Storage Location**: `.ctf/timing_logs/` directory
+- **File Naming**: `timing_log_{date}.log` or similar structured naming
+- **Configuration**: Timing behavior configurable via environment variables
+
+#### Timing Configuration
+- **Environment Variables**: Use `ENABLE_TIMING` (default: true)
+- **Log Level**: Configurable via `TIMING_LOG_LEVEL` (default: INFO)
+- **Retention**: Configurable via `TIMING_LOG_RETENTION_DAYS` (default: 30)
+
 ### Quality Assurance
- 
+
 #### Automated Testing
- 
+
 - **Docker Health Checks**: Verify container status and health
 - **Service Monitoring**: Test service availability and response times
 - **Application Testing**: Basic functionality verification

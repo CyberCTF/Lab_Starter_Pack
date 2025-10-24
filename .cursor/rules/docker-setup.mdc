@@ -17,6 +17,22 @@ build/
         └── application files
 ```
 
+## Docker Compose File Structure
+
+### Development Configuration
+- **Location**: `build/docker-compose.dev.yml` (development environment)
+- **Purpose**: Development with hot reload, debugging, and volume mounts
+- **Usage**: Local development and testing
+
+### Production Configuration
+- **Location**: `docker-compose.yml` at **root level** (same level as `/build` directory)
+- **Purpose**: Production-ready deployment configuration
+- **Requirements**: 
+  - Must mirror the development compose structure
+  - Reference the same service directories in `/build`
+  - Production-optimized settings (no debug mode, optimized builds)
+  - Environment-specific configurations
+
 ## Configuration Requirements
 
 ### Service Configuration

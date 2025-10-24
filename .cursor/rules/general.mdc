@@ -21,6 +21,7 @@ Create a comprehensive scenario and flag definition:
 - **Technical Context**: Application purpose, vulnerability context, real-world relevance
 - **Flag Definition**: Real-world sensitive data that proves successful exploitation
 - **Case Study**: Specific engagement example where the vulnerability was found
+- **Timing**: Log start time, end time, and duration for performance analysis
 
 ### 2. Lab Phase
 **Input:** `SCENARIO.md` + `FLAG.md` + `LIBRARY_PAGE.md`  
@@ -32,6 +33,7 @@ Create the complete lab environment:
 - **Test Suite**: Infinite recursive retry validation (runs until success)
 - **Error Correction**: Automatic recursive retry with error fixing until tests pass
 - **GitHub Actions**: Automated publishing workflow
+- **Timing**: Log start time, end time, and duration for performance analysis
 
 ### 3. Review Phase
 **Input:** `.ctf/` directory and lab directory  
@@ -43,6 +45,7 @@ Validate lab quality and compliance:
 - **Warning Removal**: Remove all educational and vulnerability warnings
 - **Help Content Review**: Ensure no hints that help users find the flag
 - **UI Review**: Verify professional appearance with shadcn/ui components
+- **Timing**: Log start time, end time, and duration for performance analysis
 
 ### 4. Metadata Phase
 **Input:** Lab directory + `/.ctf`  
@@ -54,6 +57,7 @@ Generate comprehensive metadata for the CyberCTF website:
 - **Prerequisites**: Required knowledge and skills
 - **Skills Learned**: Comprehensive list of skills developed
 - **Flag Information**: Flag value and validation
+- **Timing**: Log start time, end time, and duration for performance analysis
 
 ## Quality Assurance
 

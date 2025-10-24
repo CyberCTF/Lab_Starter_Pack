@@ -1,0 +1,94 @@
+---
+description: Global Quality Guardrails — Prevent Common Pitfalls Across All Labs
+globs: ["**/Dockerfile", "**/docker-compose*.yml", "**/*.sh", "**/*.bash", "**/*.php", "**/*.js", "**/*.ts", "**/*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py", ".github/workflows/**"]
+alwaysApply: true
+---
+
+# Quality Guardrails (Applicable to All Labs)
+
+These rules centralize common pitfalls and impose cross-cutting safeguards. They are prescriptive, without hardcoding, and driven by environment variables.
+
+## Base Images and Package Managers
+- Package manager MUST match the base image:
+  - Debian/Ubuntu: `apt-get`
+  - Alpine: `apk`
+  - RHEL/Oracle: `microdnf`/`dnf`
+- Do not assume `apt-get` by default.
+
+## Extensions and Runtimes
+- PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
+- Python: document/install toolchain if native wheels are required.
+- Node: locked dependencies (lockfile) and ports via env.
+
+## Scripts and System Compliance
+- All shell scripts must be LF line endings and executable (+x).
+- Avoid `/bin/sh^M` errors by applying `.gitattributes` or conversion at build time if necessary.
+
+## Multi-architecture and Optimization
+- Images must be multi-arch (amd64, arm64) and support Buildx.
+- Use multi-stage builds and clean layers to limit size.
+
+## Security and Permissions
+- Run containers as non-root. Writable directories must be owned by the runtime user.
+- No secrets should be baked into the image. Secrets provided at runtime (env/secrets/volumes).
+
+## Network and Ports
+- NO host port should be hardcoded. All exposed ports are driven by environment variables.
+- Standard DB host port: `DB_HOST_PORT` with default 3206 (override possible via env). Internal MySQL port remains 3306.
+- Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
+- Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
+
+## Docker Compose (V2)
+- Do not use the `version:` key (obsolete in Compose V2).
+- Mandatory dev/prod parity: services, paths and options consistent between `docker-compose.dev.yml` and `docker-compose.yml`.
+- Read readiness state via healthchecks. Consumers must wait for `service_healthy` (or use a standard wait utility).
+
+## Databases
+- MySQL 8: standardize authentication plugin or use compatible client drivers.
+- Init DB: scripts in `/docker-entrypoint-initdb.d` with correct file types/permissions.
+- Explicit charset/collation (e.g., `utf8mb4` / `utf8mb4_unicode_ci`).
+
+## Localization and Time
+- Define `TZ` explicitly and ensure application/DB use expected charset/collation.
+
+## Logging
+- Structured logs (key=value/JSON) and levels configurable via environment variables.
+- No error display in production (PHP). Errors must be logged.
+
+## Tests and Robustness
+- Before each test execution: perform cleanup (`docker-compose down -v`) — driven by environment variables (no hardcoding).
+- Centralized retries/backoff 100% configurable via env (no hardcoded values).
+- No hardcoded URLs/ports in tests. Use `APP_BASE_URL`, `WEB_PORT`, `DB_HOST_PORT`, etc.
+- Tests must wait for readiness via healthchecks and backoff.
+
+## CI/CD
+- Validate presence of required environment variables/secrets, with explicit error messages.
+- Consistent caching based on lockfiles; documented invalidation.
+- Multi-platform builds enabled.
+
+## Network Timeouts
+- Critical network operations (pull/build/test) must support retries configurable via env.
+
+## Phase Timing
+- Track start/end/duration for each phase (Plan, Lab, Review, Metadata) in `.ctf/timing_logs/`. Behavior is enableable/disableable via env.
+
+---
+
+## Standard Environment Variables (Documentation)
+- `DB_HOST_PORT` (default 3206) — host port exposed to internal port 3306 of DB container
+- `WEB_PORT` — host port for web service
+- `APP_BASE_URL` — base URL used by tests/integrations
+- `CLEANUP_BEFORE_TESTS` (bool) — execute cleanup before tests
+- `REMOVE_VOLUMES` (bool) — remove volumes during cleanup
+- `CLEANUP_NETWORKS` (bool) — clean networks during cleanup
+- `RETRY_DELAY`, `MAX_RETRIES` — retry/backoff configuration
+- `ENABLE_TIMING`, `TIMING_LOG_LEVEL`, `TIMING_LOG_RETENTION_DAYS` — phase timing configuration
+- `TZ`, `DB_CHARSET`, `DB_COLLATION` — localization and encoding
+
+---
+
+## Examples (Descriptive)
+- DB mapping (host → container): `${DB_HOST_PORT:-3206}:3306`.
+- Healthcheck: define a simple command (ping service/port), adapted interval/timeout/retries, and make consumer services depend on `service_healthy` state.
+- Retry policy: delays and attempts only via env; clearly display attempt counter.
+
