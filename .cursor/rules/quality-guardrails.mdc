@@ -14,15 +14,38 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   - Alpine: `apk`
   - RHEL/Oracle: `microdnf`/`dnf`
 - Do not assume `apt-get` by default.
+- **Common Error**: `apt-get: command not found` on Oracle Linux images
+- **Solution**: Use `microdnf` for MySQL/Oracle Linux images, `yum` for CentOS/RHEL
+- **Package Name Differences**: `g++` (Debian) vs `gcc-c++` (Oracle Linux)
 
 ## Extensions and Runtimes
 - PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
 - Python: document/install toolchain if native wheels are required.
 - Node: locked dependencies (lockfile) and ports via env.
 
+## Database Connection Errors
+- **Common Error**: "Database connection failed" in applications
+- **Root Causes**:
+  - User not created properly or missing privileges
+  - Database not initialized with required tables
+  - Incorrect connection parameters (host, port, credentials)
+  - Privilege separation issues in MySQL
+- **Prevention**:
+  - Always test database connection after container startup
+  - Use proper privilege separation (database vs global privileges)
+  - Include `IF NOT EXISTS` in user creation scripts
+  - Verify database initialization order in scripts
+
 ## Scripts and System Compliance
 - All shell scripts must be LF line endings and executable (+x).
 - Avoid `/bin/sh^M` errors by applying `.gitattributes` or conversion at build time if necessary.
+
+## Database Initialization Scripts
+- **Script Order**: Database creation must come before user creation and privilege grants
+- **Common Error**: "Incorrect usage of DB GRANT and GLOBAL PRIVILEGES"
+- **Solution**: Separate database-specific and global privileges into different GRANT statements
+- **Script Naming**: Use numbered prefixes (01-, 02-, 03-) to ensure execution order
+- **Error Handling**: Include `IF NOT EXISTS` clauses to prevent conflicts on re-runs
 
 ## Multi-architecture and Optimization
 - Images must be multi-arch (amd64, arm64) and support Buildx.
@@ -56,6 +79,11 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - MySQL privileges: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-specific grants.
   - ❌ Incorrect: `GRANT CREATE FUNCTION ON database.* TO 'user'@'%';`
   - ✅ Correct: `GRANT CREATE ROUTINE ON database.* TO 'user'@'%';`
+- **MySQL Privilege Separation**: Never mix database and global privileges in single GRANT statement.
+  - ❌ Incorrect: `GRANT SELECT, FILE ON database.* TO 'user'@'%';`
+  - ✅ Correct: `GRANT SELECT ON database.* TO 'user'@'%'; GRANT FILE ON *.* TO 'user'@'%';`
+- **User Creation**: Always use `IF NOT EXISTS` for user creation to avoid conflicts.
+  - ✅ Correct: `CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';`
 
 ## Localization and Time
 - Define `TZ` explicitly and ensure application/DB use expected charset/collation.
