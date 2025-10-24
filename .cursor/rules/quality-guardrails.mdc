@@ -34,7 +34,13 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 
 ## Network and Ports
 - NO host port should be hardcoded. All exposed ports are driven by environment variables.
-- Standard DB host port: `DB_HOST_PORT` with default 3206 (override possible via env). Internal MySQL port remains 3306.
+- Use non-standard port sequence to avoid conflicts: 3206, 3207, 3208, etc.
+- Standard port assignments:
+  - `WEB_PORT` (default 3206) — web service host port
+  - `DB_HOST_PORT` (default 3207) — database host port (internal remains 3306)
+  - `API_PORT` (default 3208) — API service host port
+  - `REDIS_PORT` (default 3209) — Redis host port
+  - Continue sequence for additional services
 - Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
 - Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
 
@@ -47,6 +53,9 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - MySQL 8: standardize authentication plugin or use compatible client drivers.
 - Init DB: scripts in `/docker-entrypoint-initdb.d` with correct file types/permissions.
 - Explicit charset/collation (e.g., `utf8mb4` / `utf8mb4_unicode_ci`).
+- MySQL privileges: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-specific grants.
+  - ❌ Incorrect: `GRANT CREATE FUNCTION ON database.* TO 'user'@'%';`
+  - ✅ Correct: `GRANT CREATE ROUTINE ON database.* TO 'user'@'%';`
 
 ## Localization and Time
 - Define `TZ` explicitly and ensure application/DB use expected charset/collation.
@@ -75,8 +84,10 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 ---
 
 ## Standard Environment Variables (Documentation)
-- `DB_HOST_PORT` (default 3206) — host port exposed to internal port 3306 of DB container
-- `WEB_PORT` — host port for web service
+- `WEB_PORT` (default 3206) — host port for web service
+- `DB_HOST_PORT` (default 3207) — host port exposed to internal port 3306 of DB container
+- `API_PORT` (default 3208) — host port for API service
+- `REDIS_PORT` (default 3209) — host port for Redis service
 - `APP_BASE_URL` — base URL used by tests/integrations
 - `CLEANUP_BEFORE_TESTS` (bool) — execute cleanup before tests
 - `REMOVE_VOLUMES` (bool) — remove volumes during cleanup
@@ -88,7 +99,10 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 ---
 
 ## Examples (Descriptive)
-- DB mapping (host → container): `${DB_HOST_PORT:-3206}:3306`.
+- Port mappings (host → container): 
+  - Web: `${WEB_PORT:-3206}:80`
+  - DB: `${DB_HOST_PORT:-3207}:3306`
+  - API: `${API_PORT:-3208}:3000`
 - Healthcheck: define a simple command (ping service/port), adapted interval/timeout/retries, and make consumer services depend on `service_healthy` state.
 - Retry policy: delays and attempts only via env; clearly display attempt counter.
 

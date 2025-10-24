@@ -1,20 +1,24 @@
 ---
 description: Docker Configuration and Build Setup
-globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**", "**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
+globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**", "**/tests/**", "**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
 alwaysApply: true
 ---
 
 
-## Build Directory Structure
+## Directory Structure
 
 ```
+tests/
+docker-compose.yml
 build/
 ├── docker-compose.dev.yml
-└── [service-type]/ (adapt based on project context)
-    ├── Dockerfile
-    ├── [dependency-files] (based on technology stack)
-    └── src/
-        └── application files
+├── web/ (or other service type)
+│   ├── Dockerfile
+│   └── src/ (application code)
+├── .github/
+│   └── workflows/
+│       └── publish.yml
+└── config/ (configuration files)
 ```
 
 ## Docker Compose File Structure
@@ -25,7 +29,7 @@ build/
 - **Usage**: Local development and testing
 
 ### Production Configuration
-- **Location**: `docker-compose.yml` at **root level** (same level as `/build` directory)
+- **Location**: `docker-compose.yml` at **root level** (same level as `/build` and `/tests` directories)
 - **Purpose**: Production-ready deployment configuration
 - **Requirements**: 
   - Must mirror the development compose structure

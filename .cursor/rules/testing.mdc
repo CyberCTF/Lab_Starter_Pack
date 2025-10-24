@@ -68,10 +68,11 @@ Create focused pytest tests to validate Docker container functionality and basic
 ### Test Retry and Error Correction
  
 #### Configuration (ZERO hardcoded values)
- 
+
 - Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 10 if not set)
-- Maximum retries: Configurable via `MAX_RETRIES` environment variable (defaults to 5 if not set)
+- Maximum retries: Configurable via `MAX_RETRIES` environment variable (defaults to 10 if not set)
 - Clear display of retry count (e.g., "X tries used")
+- **Review Phase Limit**: Maximum 10 retry attempts for review phase to prevent infinite loops
  
 #### Retry Implementation
  
@@ -82,13 +83,22 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **No Hardcoded Values**: All configuration from environment variables
  
 #### Key behaviors
- 
+
 - Configurable retry limits (not infinite)
 - All configuration from environment variables
 - ZERO hardcoded values (no retry limits, no delays)
 - Tests retry until they pass or max retries reached
 - Automatic error correction between attempts
 - Status tracking: "PASSED" or "FAILED" with retry count
+
+#### Live Logging and Progress Display
+
+- **Real-time Logs**: Display retry attempts in terminal with timestamps
+- **Progress Indicators**: Show current attempt number and total attempts (e.g., "Attempt 3/10")
+- **Error Details**: Log specific error messages for each failed attempt
+- **Success/Failure Summary**: Clear final status with total attempts used
+- **Log Format**: `[TIMESTAMP] [ATTEMPT X/Y] [STATUS] [ERROR_DETAILS]`
+- **Terminal Output**: All retry logs visible in real-time during execution
  
 #### Configuration Examples
  
@@ -132,6 +142,42 @@ Create focused pytest tests to validate Docker container functionality and basic
 - **Environment Variables**: Use `ENABLE_TIMING` (default: true)
 - **Log Level**: Configurable via `TIMING_LOG_LEVEL` (default: INFO)
 - **Retention**: Configurable via `TIMING_LOG_RETENTION_DAYS` (default: 30)
+
+### Review Phase Specific Rules
+
+#### Retry Limits for Review Phase
+- **Maximum Attempts**: 10 retry attempts maximum for review phase
+- **Hard Limit**: No infinite retry loops allowed
+- **Failure Action**: After 10 failed attempts, stop and report failure with detailed logs
+- **Configuration**: Override via `REVIEW_MAX_RETRIES` environment variable (default: 10)
+
+#### Live Progress Monitoring
+- **Real-time Display**: Show retry progress in terminal during review phase
+- **Progress Format**: `[REVIEW] Attempt X/10 - [STATUS] - [ERROR_DETAILS]`
+- **Timestamp**: Include timestamp for each attempt
+- **Error Logging**: Log specific error details for debugging
+- **Final Summary**: Display total attempts used and final status
+
+#### Review Phase Logging
+- **Terminal Output**: All review attempts visible in real-time
+- **Log Files**: Store detailed logs in `.ctf/review_logs/` directory
+- **Error Analysis**: Log specific errors that caused retry attempts
+- **Success Metrics**: Track which attempts succeeded and why
+
+### Environment Variables
+
+#### Test Configuration
+- `RETRY_DELAY` (default 10) — delay between retry attempts in seconds
+- `MAX_RETRIES` (default 10) — maximum retry attempts for general tests
+- `REVIEW_MAX_RETRIES` (default 10) — maximum retry attempts for review phase
+- `CLEANUP_BEFORE_TESTS` (default true) — execute cleanup before tests
+- `REMOVE_VOLUMES` (default true) — remove volumes during cleanup
+- `CLEANUP_NETWORKS` (default true) — clean networks during cleanup
+
+#### Timing Configuration
+- `ENABLE_TIMING` (default true) — enable phase timing logging
+- `TIMING_LOG_LEVEL` (default INFO) — timing log level
+- `TIMING_LOG_RETENTION_DAYS` (default 30) — timing log retention period
 
 ### Quality Assurance
 

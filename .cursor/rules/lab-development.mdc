@@ -26,6 +26,8 @@ The lab directory should have a name that clearly identifies the vulnerability t
 ### Directory Structure for Build Folder
  
 ```
+tests/
+docker-compose.yml
 build/
 │ 
 ├── docker-compose.dev.yml
