@@ -1,0 +1,29 @@
+---
+description: UI Overview — Design System Requirements and Visual Guidelines
+globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
+alwaysApply: true
+---
+
+# User Interface Requirements
+
+The UI should be close to what we can find on shadcn/ui with dark mode and minimalist design. No fancy color gradients should be used.
+
+## Design System Requirements
+
+### 1. Component Library
+- **Shadcn/ui Components**: Use shadcn/ui component library
+- **Consistent Design**: Maintain design consistency across all pages
+- **Professional Appearance**: Look like a real company website
+- **Minimalist Approach**: Clean, simple, and functional design
+
+### 2. Styling Framework
+- **TailwindCSS**: Use TailwindCSS for styling
+- **Dark Mode**: Implement dark mode as the primary theme
+- **Responsive Design**: Ensure mobile and desktop compatibility
+- **Accessibility**: Follow accessibility best practices
+
+### 3. Visual Guidelines
+- **No Fancy Colors**: Avoid colorful gradients and flashy elements
+- **Professional Palette**: Use business-appropriate color schemes
+- **Clean Typography**: Use readable, professional fonts
+- **Minimal Animations**: Subtle, purposeful animations only
