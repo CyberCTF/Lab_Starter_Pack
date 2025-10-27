@@ -1,0 +1,24 @@
+---
+description: Typography — Font Families and Font Sizes
+globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
+alwaysApply: true
+---
+
+# Typography
+
+## Font Families
+```css
+--font-sans: 'Inter', system-ui, sans-serif;
+--font-mono: 'JetBrains Mono', monospace;
+```
+
+## Font Sizes
+```css
+--text-xs: 0.75rem;
+--text-sm: 0.875rem;
+--text-base: 1rem;
+--text-lg: 1.125rem;
+--text-xl: 1.25rem;
+--text-2xl: 1.5rem;
+--text-3xl: 1.875rem;
+```

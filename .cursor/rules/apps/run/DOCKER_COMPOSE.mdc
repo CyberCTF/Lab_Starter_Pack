@@ -1,3 +1,48 @@
 ---
+description: Docker Compose Configuration — V2, Network, Ports, and Security
+globs: ["**/docker-compose*.yml"]
 alwaysApply: true
 ---
+
+# Docker Compose Configuration
+
+## Docker Compose (V2)
+
+- Do not use the `version:` key (obsolete in Compose V2).
+- Mandatory dev/prod parity: services, paths and options consistent between `docker-compose.dev.yml` and `docker-compose.yml`.
+- Read readiness state via healthchecks. Consumers must wait for `service_healthy` (or use a standard wait utility).
+
+### Docker Compose Common Errors
+- **Version Key Obsolete**: Remove `version: '3.8'` completely (Compose V2 doesn't need it)
+- **Port Conflicts**: Check for port conflicts before deployment
+  - Common conflicts: 8080, 3306, 80, 443
+  - Solution: Use non-standard ports (3206, 3207, 3208, etc.)
+- **Service Dependencies**: Use `depends_on` with `condition: service_healthy` for proper startup order
+
+## Network and Ports
+
+- NO host port should be hardcoded. All exposed ports are driven by environment variables.
+- Use non-standard port sequence to avoid conflicts: 3206, 3207, 3208, etc.
+- Standard port assignments:
+  - `WEB_PORT` (default 3206) — web service host port
+  - `DB_HOST_PORT` (default 3207) — database host port
+  - `API_PORT` (default 3208) — API service host port
+  - `REDIS_PORT` (default 3209) — Redis host port
+  - Continue sequence for additional services
+- **Port Mapping**: Use same internal and external ports (3206:3206, 3207:3207, etc.)
+- **Service Configuration**: Configure services to listen on their assigned internal ports (3206, 3207, 3208, etc.)
+- **Port Consistency**: All services must use identical internal and external ports
+  -  Incorrect: `3207:3206` (database external 3207, internal 3206)
+  -  Correct: `3207:3207` (database external 3207, internal 3207)
+- Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
+- Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
+
+## Multi-architecture and Optimization
+
+- Images must be multi-arch (amd64, arm64) and support Buildx.
+- Use multi-stage builds and clean layers to limit size.
+
+## Security and Permissions
+
+- Run containers as non-root user. Writable directories must be owned by the runtime user.
+- No secrets should be baked into the image. Secrets provided at runtime (env/secrets/volumes).

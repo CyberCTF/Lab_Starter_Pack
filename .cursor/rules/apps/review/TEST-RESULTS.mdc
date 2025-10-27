@@ -1,0 +1,42 @@
+---
+description: Test Results Documentation — Lab Validation Results Template
+globs: ["**/.ctf/test_results/**", "**/test_results/**"]
+alwaysApply: true
+---
+
+# Test Results Documentation
+
+Create markdown files in `.ctf/test_results/` documenting:
+
+## test_results.md Template
+```markdown
+# Lab Validation Results
+
+## Test Summary
+- **Date**: [Current Date]
+- **Lab**: [Lab Name]
+- **Status**: [PASS/FAIL]
+- **Duration**: [Test Duration]
+
+## Test Results
+### Environment Tests
+- [ ] Docker containers: PASS/FAIL
+- [ ] Network connectivity: PASS/FAIL
+- [ ] Database access: PASS/FAIL
+
+### Exploitation Tests
+- [ ] Vulnerability discovery: PASS/FAIL
+- [ ] Exploitation execution: PASS/FAIL
+- [ ] Flag extraction: PASS/FAIL
+
+### User Experience Tests
+- [ ] Documentation clarity: PASS/FAIL
+- [ ] Instruction accuracy: PASS/FAIL
+- [ ] Error handling: PASS/FAIL
+
+## Issues Found
+[List any issues discovered during testing]
+
+## Recommendations
+[Suggestions for improvement]
+```

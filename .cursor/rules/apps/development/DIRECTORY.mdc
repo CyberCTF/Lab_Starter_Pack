@@ -1,3 +1,146 @@
 ---
+description: Directory Structure — Complete Project Directory Organization
+globs: ["**/*"]
 alwaysApply: true
 ---
+
+# Directory Structure
+
+## Complete Project Structure
+
+```
+Lab_Starter_Pack/
+├── build/                          # Lab application code
+│   ├── docker-compose.dev.yml     # Development docker-compose
+│   ├── web/                        # Web service
+│   │   ├── Dockerfile             # Web service Dockerfile
+│   │   └── src/                   # Web application source code
+│   ├── database/                   # Database service (optional)
+│   │   ├── init/                  # Database initialization scripts
+│   │   │   ├── 01-create-database.sql
+│   │   │   ├── 02-create-users.sql
+│   │   │   └── 03-init-data.sql
+│   │   └── Dockerfile             # Custom database Dockerfile (optional)
+│   ├── .github/                   # GitHub Actions workflows
+│   │   └── workflows/
+│   │       └── publish.yml        # CI/CD publishing workflow
+│   └── config/                    # Configuration files (optional)
+├── tests/                          # Test suite
+│   ├── conftest.py               # Pytest configuration
+│   ├── test_docker.py            # Docker container tests
+│   └── test_functionality.py     # Application functionality tests
+├── docker-compose.yml             # Production docker-compose
+└── .ctf/                          # CTF metadata and results
+    ├── SCENARIO.md               # Lab scenario description
+    ├── FLAG.md                   # Flag definition
+    ├── metadata.json             # Lab metadata
+    ├── test_results/             # Test results documentation
+    └── timing_logs/              # Phase timing logs
+```
+
+## Directory Naming Conventions
+
+### Lab Directory Names
+- Use **kebab-case**: lowercase letters with hyphens
+- Be descriptive of the vulnerability type
+- Examples:
+  - `sql-injection-basic`
+  - `xss-stored-payload`
+  - `file-upload-rce`
+  - `xxe-internal-entities`
+
+### Service Directory Names
+- Use **lowercase** with hyphens if needed
+- Common service names:
+  - `web` - Web application service
+  - `api` - API service
+  - `database` - Database service
+  - `auth` - Authentication service
+  - `admin` - Admin panel service
+
+## Build Folder Requirements
+
+### Required Files
+- `docker-compose.dev.yml` - Development configuration
+- At least one service directory (e.g., `web/`)
+- Service `Dockerfile` in each service directory
+- Service `src/` directory for application code
+
+### Optional Files
+- `docker-compose.yml` - Production configuration (if different from dev)
+- `.github/workflows/publish.yml` - CI/CD workflow
+- `config/` directory for configuration files
+- `database/` directory if database is used
+
+### Service Structure
+```
+web/
+├── Dockerfile                    # Required
+└── src/                          # Required
+    ├── index.php (or app.js, etc.)
+    ├── config/
+    └── components/
+
+database/
+├── Dockerfile                    # Optional (uses official image by default)
+└── init/                         # Required if using init scripts
+    ├── 01-*.sql
+    ├── 02-*.sql
+    └── 03-*.sql
+```
+
+## CTF Metadata Directory
+
+### `.ctf/` Structure
+```
+.ctf/
+├── SCENARIO.md                   # Lab scenario description
+├── FLAG.md                       # Flag definition
+├── metadata.json                 # Lab metadata for website
+├── test_results/                 # Test results
+│   ├── test_results.md          # Detailed test results
+│   └── summary.md               # Test summary
+└── timing_logs/                  # Phase timing logs
+    └── timing_log_YYYY-MM-DD.log
+```
+
+## Tests Directory
+
+### Structure
+```
+tests/
+├── conftest.py                   # Pytest configuration and fixtures
+├── test_docker.py               # Docker container tests
+├── test_functionality.py        # Application functionality tests
+└── test_exploitation.py         # Vulnerability exploitation tests
+```
+
+## Root Level Files
+
+### Required Files
+- `docker-compose.yml` - Production docker-compose configuration
+
+### Optional Files
+- `README.md` - Lab documentation
+- `.env.example` - Environment variables example
+- `.gitignore` - Git ignore rules
+
+## Configuration File Locations
+
+### Docker Configuration
+- `build/docker-compose.dev.yml` - Development environment
+- `docker-compose.yml` - Production environment
+
+### Application Configuration
+- `build/config/` - Shared configuration files
+- `build/web/src/config/` - Web-specific configuration
+- `build/api/src/config/` - API-specific configuration
+
+## File Organization Best Practices
+
+1. **Source Code**: Always in service-specific `src/` directories
+2. **Configuration**: Centralized in `config/` or service-specific config folders
+3. **Docker Files**: One `Dockerfile` per service in service directory
+4. **Initialization Scripts**: Numbered SQL files in `database/init/`
+5. **Tests**: Organized by test type in `tests/` directory
+6. **Metadata**: All CTF-related files in `.ctf/` directory

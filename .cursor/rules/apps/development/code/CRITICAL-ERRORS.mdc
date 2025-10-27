@@ -1,0 +1,44 @@
+---
+description: Critical Errors Quick Reference — Top 7 Docker Errors to Avoid
+globs: ["**/Dockerfile", "**/docker-compose*.yml", "**/*.sql"]
+alwaysApply: true
+---
+
+# Critical Errors Quick Reference
+
+## Top 7 Docker Errors to AVOID
+
+1. **Wrong Package Manager** (`apt-get` on Oracle Linux)
+   - Error: `apt-get: command not found`
+   - Solution: Use `microdnf` for MySQL/Oracle Linux images
+   - See: [../docker/PACKAGES.mdc](../docker/PACKAGES.mdc#base-images-and-package-managers)
+
+2. **Obsolete Package** (`libmysqlclient-dev`)
+   - Error: `Package 'libmysqlclient-dev' has no installation candidate`
+   - Solution: Use `libmariadb-dev` on recent Debian
+   - See: [../docker/PACKAGES.mdc](../docker/PACKAGES.mdc#common-dockerfile-errors)
+
+3. **Special Characters in Passwords** (#, @)
+   - Error: YAML parsing error, `#` interpreted as comment
+   - Solution: Use quoted syntax: `MYSQL_PASS: "value#with@chars"`
+   - See: [../run/SYNTAX.mdc](../run/SYNTAX.mdc#special-characters-in-passwords)
+
+4. **Apache Not Listening on Custom Port**
+   - Error: Healthcheck fails, connection refused
+   - Solution: Add `Listen 3206` in ports.conf and VirtualHost config
+   - See: [../docker/SERVERS.mdc](../docker/SERVERS.mdc#apache-configuration-for-custom-ports)
+
+5. **Database User Not Created**
+   - Error: `Access denied for user 'app_user'@'localhost'`
+   - Solution: Always CREATE USER before GRANT privileges
+   - See: [DATABASE.mdc](DATABASE.mdc#database-user-creation)
+
+6. **MySQL CREATE FUNCTION Privilege Error**
+   - Error: MySQL syntax error with `CREATE FUNCTION` on database-specific grants
+   - Solution: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-level privileges
+   - See: [DATABASE.mdc](DATABASE.mdc#mysql-create-function-error)
+
+7. **MySQL Privilege Mixing Error**
+   - Error: `ERROR 1221 (HY000): Incorrect usage of DB GRANT and GLOBAL PRIVILEGES`
+   - Solution: Separate database-specific and global privileges into different GRANT statements
+   - See: [DATABASE.mdc](DATABASE.mdc#mysql-privilege-separation-error)

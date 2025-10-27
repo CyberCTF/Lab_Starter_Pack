@@ -1,0 +1,44 @@
+---
+description: UI Quality Assurance — Design Review, Component Review, and Common Issues
+globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss"]
+alwaysApply: true
+---
+
+# Quality Assurance
+
+## 1. Design Review
+- [ ] Consistent with shadcn/ui design system
+- [ ] Dark mode implemented correctly
+- [ ] No fancy colors or gradients
+- [ ] Professional appearance maintained
+- [ ] Responsive design working
+
+## 2. Component Review
+- [ ] All components follow design system
+- [ ] Consistent spacing and typography
+- [ ] Proper color usage
+- [ ] Accessibility standards met
+- [ ] Cross-browser compatibility
+
+## 3. User Experience Review
+- [ ] Intuitive navigation
+- [ ] Clear user flows
+- [ ] Professional appearance
+- [ ] Fast loading times
+- [ ] Mobile-friendly design
+
+## Common Issues to Avoid
+
+### Design Issues
+- Using bright, flashy colors
+- Implementing complex gradients
+- Over-animating elements
+- Inconsistent spacing
+- Poor typography choices
+
+### UX Issues
+- Confusing navigation
+- Unclear user flows
+- Poor mobile experience
+- Slow loading times
+- Inaccessible design

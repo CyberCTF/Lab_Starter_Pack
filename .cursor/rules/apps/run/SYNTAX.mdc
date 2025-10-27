@@ -1,0 +1,40 @@
+---
+description: Syntax Rules — Environment Variables and Special Characters
+globs: ["**/docker-compose*.yml", "**/.env*"]
+alwaysApply: true
+---
+
+# Docker Compose Environment Variables
+
+## Special Characters in Passwords
+
+- **ALWAYS use quoted syntax** for passwords containing special characters (`#`, `@`, `$`, `%`, `!`, `&`, etc.)
+- **Never use list syntax** (`- KEY=value`) with special characters
+- Use mapping syntax with quotes instead
+
+### INCORRECT - Will Fail
+```yaml
+environment:
+  - MYSQL_ADMIN_PASS=FtgY#WCXnZT5@#c:    #  # interpreted as comment
+  - MYSQL_ADMIN_USER=admin1274@cyberctf.fr  #  Special chars not escaped
+```
+
+### CORRECT - Will Work
+```yaml
+environment:
+  MYSQL_ADMIN_PASS: "FtgY#WCXnZT5@#c:"          #  Quoted value
+  MYSQL_ADMIN_USER: "admin1274@cyberctf.fr"     #  Quoted value
+  MYSQL_ROOT_PASSWORD: "MyPassword123"          #  Safe to quote all passwords
+```
+
+## Environment Variables Best Practices
+
+```yaml
+#  CORRECT - Always quote passwords
+environment:
+  MYSQL_ROOT_PASSWORD: "root_password"
+  MYSQL_DATABASE: project_management  # No quotes needed if no special chars
+  MYSQL_USER: app_user               # No quotes needed
+  MYSQL_PASSWORD: "app_password"     # Quoted for consistency
+  DB_PASS: "FtgY#WCXnZT5@#c:"        # MUST quote if special chars
+```

@@ -1,0 +1,22 @@
+---
+description: Runtime Extensions — PHP, Python, Node.js Extensions and Dependencies
+globs: ["**/Dockerfile", "**/package.json", "**/requirements.txt", "**/composer.json"]
+alwaysApply: true
+---
+
+# Extensions and Runtimes
+
+## PHP Extensions
+- Explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
+- Example:
+```dockerfile
+RUN docker-php-ext-install mysqli pdo_mysql
+```
+
+## Python
+- Document/install toolchain if native wheels are required.
+- Ensure requirements.txt is present and complete.
+
+## Node.js
+- Locked dependencies (lockfile) and ports via env.
+- Use package-lock.json or yarn.lock for dependency versions.

@@ -1,0 +1,24 @@
+---
+description: Script Configuration — Shell Scripts and System Compliance
+globs: ["**/*.sh", "**/*.bash"]
+alwaysApply: true
+---
+
+# Scripts and System Compliance
+
+## Shell Script Requirements
+
+- All shell scripts must be LF line endings and executable (+x).
+- Avoid `/bin/sh^M` errors by applying `.gitattributes` or conversion at build time if necessary.
+
+## Script Execution
+
+- **Permission Errors**: Use `chmod 755` instead of `chmod +x` for script files
+- **Script Execution**: Ensure init scripts are executable and have correct permissions
+
+## Example
+```bash
+# In Dockerfile
+COPY scripts/ /usr/local/bin/
+RUN chmod 755 /usr/local/bin/*.sh
+```

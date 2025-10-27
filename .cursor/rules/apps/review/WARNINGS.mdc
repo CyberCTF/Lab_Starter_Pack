@@ -1,0 +1,67 @@
+---
+description: Warning Removal — Educational and Vulnerability Warnings
+globs: ["**/*.html", "**/*.js", "**/*.jsx", "**/*.tsx"]
+alwaysApply: true
+---
+
+# Warning Removal Requirements
+
+Remove all educational and vulnerability warnings from lab pages. The lab should appear as a real-world application without any indication that it's intentionally vulnerable.
+
+## Warnings to Remove
+
+### Educational Purpose Warnings
+- "This lab is for educational purposes only"
+- "Made for educational purposes"
+- "Educational lab only"
+- "For learning purposes"
+- "Training environment"
+- "Educational demonstration"
+
+### Vulnerability Warnings
+- "Voluntarily vulnerable"
+- "Intentionally vulnerable"
+- "Made vulnerable for learning"
+- "This application is vulnerable"
+- "Contains security vulnerabilities"
+- "Vulnerable by design"
+
+### Disclaimer Warnings
+- "Do not use in production"
+- "Not for production use"
+- "For testing only"
+- "This is a test environment"
+- "Demo environment"
+- "Not secure"
+
+### Legal Warnings
+- "Use at your own risk"
+- "No warranty provided"
+- "Educational use only"
+- "Not responsible for misuse"
+- "Use responsibly"
+
+## Professional Content Guidelines
+
+### Instead of Warnings, Use:
+- **Professional descriptions**: "This application demonstrates..."
+- **Business context**: "The system handles..."
+- **Functional descriptions**: "Users can..."
+- **Technical specifications**: "The application supports..."
+
+### Example Transformations
+
+**Before:**
+```markdown
+# SQL Injection Lab
+⚠️ WARNING: This lab is for educational purposes only!
+This application is intentionally vulnerable to SQL injection.
+Do not use in production!
+```
+
+**After:**
+```markdown
+# Customer Management System
+A web-based customer management system that allows users to search and manage customer information.
+The system provides real-time search capabilities and user management features.
+```

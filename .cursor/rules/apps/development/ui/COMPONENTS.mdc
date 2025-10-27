@@ -1,0 +1,73 @@
+---
+description: UI Components — Layout, Form, and Data Display Components
+globs: ["**/components/**", "**/*.tsx", "**/*.jsx"]
+alwaysApply: true
+---
+
+# UI Component Requirements
+
+## 1. Layout Components
+```tsx
+// Header Component
+<Header>
+  <Navigation />
+  <UserMenu />
+</Header>
+
+// Sidebar Component
+<Sidebar>
+  <Navigation />
+  <UserProfile />
+</Sidebar>
+
+// Main Content
+<MainContent>
+  <PageHeader />
+  <Content />
+  <Footer />
+</MainContent>
+```
+
+## 2. Form Components
+```tsx
+// Input Fields
+<Input placeholder="Enter your search term" />
+<Textarea placeholder="Enter your message" />
+<Select>
+  <Option value="option1">Option 1</Option>
+</Select>
+
+// Buttons
+<Button variant="primary">Submit</Button>
+<Button variant="secondary">Cancel</Button>
+<Button variant="outline">Reset</Button>
+```
+
+## 3. Data Display Components
+```tsx
+// Tables
+<Table>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Name</TableHead>
+      <TableHead>Email</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>John Doe</TableCell>
+      <TableCell>john@example.com</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
+// Cards
+<Card>
+  <CardHeader>
+    <CardTitle>User Information</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <p>User details here</p>
+  </CardContent>
+</Card>
+```
