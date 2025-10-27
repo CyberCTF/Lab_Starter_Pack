@@ -1,9 +1,9 @@
 ---
-description: Docker and Application Testing Framework
+description: Docker and Application Testing Framework - Overview
 globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
 alwaysApply: true
 ---
- 
+
 # Docker and Application Testing Framework
 
 ## Test Directory Structure
@@ -15,208 +15,29 @@ alwaysApply: true
 - **Configuration**: Test configuration files (pytest.ini, conftest.py) at root level
 
 ## Test Requirements
- 
+
 Create focused pytest tests to validate Docker container functionality and basic application operations.
- 
-### Test Coverage
- 
-- **Docker Container Tests**: Verify containers are running and accessible
-- **Service Availability**: Test that all required services are up and responding
-- **Application Functionality**: Basic application features work correctly
-- **Port Configuration**: Verify all required ports are open and accessible
-- **Database Connectivity**: Test database connections and basic operations
- 
-### Test Structure
- 
-#### Test Categories
- 
+
+## Quick Reference
+
+### Test Categories
 - **Docker Tests**: Container status, health checks, port accessibility
 - **Service Tests**: Web application, database, and other services availability
 - **Application Tests**: Basic functionality, user interface, API endpoints
 - **Integration Tests**: End-to-end application workflow
- 
-#### Test Requirements
- 
-- **Focused Coverage**: Essential Docker and application functionality
-- **Deterministic Results**: Tests must be repeatable and reliable
-- **Clear Assertions**: Test names and assertions should be self-documenting
-- **Fast Execution**: Quick feedback on Docker and application status
- 
-### Test Execution
 
-- **Run all tests**: Execute complete test suite
-- **Docker-specific tests**: Run only Docker container tests
-- **Application tests**: Run only application functionality tests
-- **Verbose output**: Detailed test execution information
-
-### Automatic Docker Cleanup
-
-#### Pre-Test Cleanup
-- **Before every test run**: Execute `docker-compose down -v` to ensure clean state
-- **Purpose**: 
-  - Stop all running containers
-  - Remove volumes for fresh database/service state
-  - Prevent test interference from previous runs
-- **Configuration**: Cleanup behavior configurable via environment variables (no hardcoded values)
-- **Error Handling**: Graceful handling of cleanup failures
-
-#### Cleanup Configuration
-- **Environment Variables**: Use `CLEANUP_BEFORE_TESTS` (default: true)
-- **Volume Removal**: Configurable via `REMOVE_VOLUMES` (default: true)
-- **Network Cleanup**: Configurable via `CLEANUP_NETWORKS` (default: true)
- 
-### Test Retry and Error Correction
- 
-#### Configuration (ZERO hardcoded values)
-
-- Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 10 if not set)
-- Maximum retries: Configurable via `MAX_RETRIES` environment variable (defaults to 10 if not set)
-- Clear display of retry count (e.g., "X tries used")
-- **Review Phase Limit**: Maximum 10 retry attempts for review phase to prevent infinite loops
- 
-#### Retry Implementation
- 
-- **Smart Retry Logic**: Tests retry with exponential backoff
-- **Environment Configuration**: Retry delay and max retries configurable via environment variables
-- **Error Analysis**: Automatic error correction between retry attempts
-- **Status Tracking**: Clear display of retry count and test status
-- **No Hardcoded Values**: All configuration from environment variables
- 
-#### Key behaviors
-
-- Configurable retry limits (not infinite)
-- All configuration from environment variables
-- ZERO hardcoded values (no retry limits, no delays)
-- Tests retry until they pass or max retries reached
-- Automatic error correction between attempts
-- Status tracking: "PASSED" or "FAILED" with retry count
-
-#### Live Logging and Progress Display
-
-- **Real-time Logs**: Display retry attempts in terminal with timestamps
-- **Progress Indicators**: Show current attempt number and total attempts (e.g., "Attempt 3/10")
-- **Error Details**: Log specific error messages for each failed attempt
-- **Success/Failure Summary**: Clear final status with total attempts used
-- **Log Format**: `[TIMESTAMP] [ATTEMPT X/Y] [STATUS] [ERROR_DETAILS]`
-- **Terminal Output**: All retry logs visible in real-time during execution
- 
-#### Configuration Examples
- 
-- **Retry configuration**: Set `RETRY_DELAY=5` and `MAX_RETRIES=3` environment variables
-- **Inline configuration**: Set environment variables inline with test execution
-- **Default behavior**: Run without configuration (uses default 10s delay, 5 max retries)
- 
-#### How It Works
- 
-- **No Environment Variables Set**: Uses default 10-second delay, 5 max retries
-- **Environment Variables Set**: Uses the specified delay and retry values
-- **Limited Retries**: Tests retry up to max retries, then fail if still unsuccessful
-- **Automatic Error Correction**: System attempts to fix common issues between retries
-- **Clear Progress**: Shows current attempt number and retry status
- 
-### Requirements
- 
+### Core Principles
 - **Focused**: Cover essential Docker and application functionality
 - **Reliable**: Tests must be deterministic and repeatable
 - **Fast**: Quick execution for rapid feedback
 - **Clear**: Test names and assertions should be self-documenting
 - **Maintainable**: Easy to update when application changes
- 
-### Phase Timing and Logging
 
-#### Timing Requirements
-- **Track Duration**: Log start time, end time, and total duration for each workflow phase
-- **Phases to Track**:
-  - Plan Phase (SCENARIO.md + FLAG.md creation)
-  - Lab Phase (complete lab directory creation)
-  - Review Phase (validation and testing)
-  - Metadata Phase (metadata.md/json creation)
+## Related Documentation
 
-#### Logging Format
-- **Log Format**: `[PHASE_NAME] Started: {timestamp}, Completed: {timestamp}, Duration: {duration}`
-- **Storage Location**: `.ctf/timing_logs/` directory
-- **File Naming**: `timing_log_{date}.log` or similar structured naming
-- **Configuration**: Timing behavior configurable via environment variables
-
-#### Timing Configuration
-- **Environment Variables**: Use `ENABLE_TIMING` (default: true)
-- **Log Level**: Configurable via `TIMING_LOG_LEVEL` (default: INFO)
-- **Retention**: Configurable via `TIMING_LOG_RETENTION_DAYS` (default: 30)
-
-### Review Phase Specific Rules
-
-#### Retry Limits for Review Phase
-- **Maximum Attempts**: 1 retry attempt maximum for review phase (no loops)
-- **Hard Limit**: Single attempt only to prevent infinite loops
-- **Failure Action**: After 1 failed attempt, stop and report failure with detailed logs
-- **Configuration**: Override via `REVIEW_MAX_RETRIES` environment variable (default: 1)
-
-#### Live Progress Monitoring
-- **Real-time Display**: Show detailed progress in terminal during review phase
-- **Progress Format**: `[REVIEW] [TIMESTAMP] - [STATUS] - [DETAILS]`
-- **Detailed Logging**: Log each step of the review process
-- **Error Logging**: Log specific error details for debugging
-- **Final Summary**: Display complete review results and status
-
-#### Review Phase Steps
-- **Step 1**: Docker container health verification (timeout: 30s)
-- **Step 2**: Service availability testing (timeout: 60s)
-- **Step 3**: Application functionality testing (timeout: 45s)
-- **Step 4**: Flag extraction testing - Python pytest execution (timeout: 120s)
-- **Step 5**: Vulnerability exploitation validation (timeout: 90s)
-- **Step 6**: UI/UX quality verification (timeout: 30s)
-- **Step 7**: Documentation completeness check (timeout: 15s)
-- **Total Maximum Time**: 6 minutes (360 seconds) for complete review
-
-#### Review Phase Logging
-- **Terminal Output**: All review steps visible in real-time with timestamps
-- **Log Files**: Store detailed logs in `.ctf/review_logs/` directory
-- **Python Test Execution**: Log pytest execution and results
-- **Flag Extraction**: Log flag discovery and validation process
-- **Error Analysis**: Log specific errors that caused failures
-- **Success Metrics**: Track which steps succeeded and execution time
-
-#### Python Testing Requirements
-- **Pytest Execution**: Run all tests in `/tests/` directory
-- **Flag Validation**: Verify flag can be extracted and is appropriate
-- **Vulnerability Testing**: Test exploitation paths work correctly
-- **Test Coverage**: Ensure all critical functionality is tested
-- **Timeout Handling**: Set reasonable timeouts for test execution
-
-#### Review Phase Timeout Logic
-- **Global Timeout**: Maximum 6 minutes (360 seconds) for entire review phase
-- **Step Timeouts**: Each step has individual timeout limits
-- **Progress Tracking**: Show percentage completion and remaining time
-- **Auto-Advance**: If step exceeds timeout, log warning and proceed to next step
-- **Failure Threshold**: If 3+ steps fail, abort review and report failure
-- **Success Criteria**: At least 5 out of 7 steps must succeed for review to pass
-
-### Environment Variables
-
-#### Test Configuration
-- `RETRY_DELAY` (default 10) — delay between retry attempts in seconds
-- `MAX_RETRIES` (default 10) — maximum retry attempts for general tests
-- `REVIEW_MAX_RETRIES` (default 1) — maximum retry attempts for review phase (single attempt only)
-- `CLEANUP_BEFORE_TESTS` (default true) — execute cleanup before tests
-- `REMOVE_VOLUMES` (default true) — remove volumes during cleanup
-- `CLEANUP_NETWORKS` (default true) — clean networks during cleanup
-
-#### Timing Configuration
-- `ENABLE_TIMING` (default true) — enable phase timing logging
-- `TIMING_LOG_LEVEL` (default INFO) — timing log level
-- `TIMING_LOG_RETENTION_DAYS` (default 30) — timing log retention period
-
-#### Review Phase Configuration
-- `REVIEW_GLOBAL_TIMEOUT` (default 360) — global timeout for review phase in seconds
-- `REVIEW_STEP_TIMEOUT` (default 60) — default timeout for individual steps in seconds
-- `REVIEW_MAX_FAILURES` (default 3) — maximum failed steps before aborting review
-- `REVIEW_MIN_SUCCESS` (default 5) — minimum successful steps required to pass review
-
-### Quality Assurance
-
-#### Automated Testing
-
-- **Docker Health Checks**: Verify container status and health
-- **Service Monitoring**: Test service availability and response times
-- **Application Testing**: Basic functionality verification
-- **Integration Testing**: End-to-end application workflow
+- **Test Requirements**: See `test-requirements.mdc` for detailed coverage requirements
+- **Test Execution**: See `test-execution.mdc` for execution and cleanup procedures
+- **Test Retry**: See `test-retry.mdc` for retry logic and error correction
+- **Review Phase**: See `review-phase.mdc` for review-specific rules
+- **Phase Timing**: See `phase-timing.mdc` for timing and logging
+- **Environment Variables**: See `test-env-vars.mdc` for configuration

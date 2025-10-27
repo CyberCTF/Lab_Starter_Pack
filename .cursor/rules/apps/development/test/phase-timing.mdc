@@ -1,0 +1,75 @@
+---
+description: Phase Timing and Logging
+globs: ["**/.ctf/timing_logs/**", "**/.ctf/**"]
+alwaysApply: true
+---
+
+# Phase Timing and Logging
+
+## Timing Requirements
+
+### Track Duration
+Log start time, end time, and total duration for each workflow phase
+
+### Phases to Track
+- Plan Phase (SCENARIO.md + FLAG.md creation)
+- Lab Phase (complete lab directory creation)
+- Review Phase (validation and testing)
+- Metadata Phase (metadata.md/json creation)
+
+## Logging Format
+
+### Log Structure
+- **Log Format**: `[PHASE_NAME] Started: {timestamp}, Completed: {timestamp}, Duration: {duration}`
+- **Storage Location**: `.ctf/timing_logs/` directory
+- **File Naming**: `timing_log_{date}.log` or similar structured naming
+- **Configuration**: Timing behavior configurable via environment variables
+
+### Example Log Entry
+```
+[PLAN] Started: 2024-01-15 10:00:00, Completed: 2024-01-15 10:05:30, Duration: 5m 30s
+[LAB] Started: 2024-01-15 10:05:30, Completed: 2024-01-15 10:45:15, Duration: 39m 45s
+[REVIEW] Started: 2024-01-15 10:45:15, Completed: 2024-01-15 10:52:00, Duration: 6m 45s
+[METADATA] Started: 2024-01-15 10:52:00, Completed: 2024-01-15 10:55:10, Duration: 3m 10s
+```
+
+## Timing Configuration
+
+### Environment Variables
+- `ENABLE_TIMING` (default: true) — enable phase timing logging
+- `TIMING_LOG_LEVEL` (default: INFO) — timing log level
+- `TIMING_LOG_RETENTION_DAYS` (default: 30) — timing log retention period
+
+### Configuration Details
+
+#### ENABLE_TIMING
+- Controls whether timing logs are generated
+- Default: true (enabled)
+- Set to false to disable timing logs
+
+#### TIMING_LOG_LEVEL
+- Controls the level of detail in timing logs
+- Options: DEBUG, INFO, WARNING, ERROR
+- Default: INFO
+
+#### TIMING_LOG_RETENTION_DAYS
+- Number of days to keep timing logs
+- Default: 30 days
+- Older logs are automatically cleaned up
+
+## Usage
+
+### Enable Timing
+```bash
+ENABLE_TIMING=true python generate_lab.py
+```
+
+### Disable Timing
+```bash
+ENABLE_TIMING=false python generate_lab.py
+```
+
+### Custom Retention
+```bash
+TIMING_LOG_RETENTION_DAYS=90 python generate_lab.py
+```

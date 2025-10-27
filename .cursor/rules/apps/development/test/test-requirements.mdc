@@ -1,0 +1,72 @@
+---
+description: Test Requirements and Coverage
+globs: ["**/test*.py", "**/tests/**"]
+alwaysApply: true
+---
+
+# Test Requirements and Coverage
+
+## Test Coverage
+
+### Docker Container Tests
+- Verify containers are running and accessible
+- Test container health status
+- Validate port accessibility
+
+### Service Availability Tests
+- Test that all required services are up and responding
+- Verify service connectivity
+- Check service health endpoints
+
+### Application Functionality Tests
+- Basic application features work correctly
+- User interface elements function properly
+- API endpoints respond correctly
+
+### Port Configuration Tests
+- Verify all required ports are open and accessible
+- Test port mappings are correct
+- Validate service listening on correct ports
+
+### Database Connectivity Tests
+- Test database connections work properly
+- Validate database initialization
+- Test basic database operations
+
+## Test Structure
+
+### Test Organization
+- **Docker Tests**: Container status, health checks, port accessibility
+- **Service Tests**: Web application, database, and other services availability
+- **Application Tests**: Basic functionality, user interface, API endpoints
+- **Integration Tests**: End-to-end application workflow
+
+### Test Requirements
+
+#### Focused Coverage
+- Cover essential Docker and application functionality
+- Test critical user workflows
+- Validate security and performance basics
+
+#### Deterministic Results
+- Tests must be repeatable and reliable
+- No race conditions or timing dependencies
+- Consistent test environment setup
+
+#### Clear Assertions
+- Test names should be self-documenting
+- Assertion messages should be descriptive
+- Error output should be actionable
+
+#### Fast Execution
+- Quick feedback on Docker and application status
+- Minimize unnecessary waits and delays
+- Optimize test data setup and teardown
+
+## Quality Assurance
+
+### Automated Testing
+- **Docker Health Checks**: Verify container status and health
+- **Service Monitoring**: Test service availability and response times
+- **Application Testing**: Basic functionality verification
+- **Integration Testing**: End-to-end application workflow

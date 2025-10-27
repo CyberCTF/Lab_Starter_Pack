@@ -1,0 +1,80 @@
+---
+description: Test Environment Variables Configuration
+globs: ["**/.env*", "**/conftest.py"]
+alwaysApply: true
+---
+
+# Test Environment Variables
+
+## Test Configuration
+
+### Retry Configuration
+- `RETRY_DELAY` (default: 10) — delay between retry attempts in seconds
+- `MAX_RETRIES` (default: 10) — maximum retry attempts for general tests
+- `REVIEW_MAX_RETRIES` (default: 1) — maximum retry attempts for review phase (single attempt only)
+
+### Cleanup Configuration
+- `CLEANUP_BEFORE_TESTS` (default: true) — execute cleanup before tests
+- `REMOVE_VOLUMES` (default: true) — remove volumes during cleanup
+- `CLEANUP_NETWORKS` (default: true) — clean networks during cleanup
+
+## Timing Configuration
+
+### Timing Settings
+- `ENABLE_TIMING` (default: true) — enable phase timing logging
+- `TIMING_LOG_LEVEL` (default: INFO) — timing log level
+- `TIMING_LOG_RETENTION_DAYS` (default: 30) — timing log retention period
+
+## Review Phase Configuration
+
+### Review Settings
+- `REVIEW_GLOBAL_TIMEOUT` (default: 360) — global timeout for review phase in seconds
+- `REVIEW_STEP_TIMEOUT` (default: 60) — default timeout for individual steps in seconds
+
+### Failure Thresholds
+- `REVIEW_MAX_FAILURES` (default: 3) — maximum failed steps before aborting review
+- `REVIEW_MIN_SUCCESS` (default: 5) — minimum successful steps required to pass review
+
+## Usage Examples
+
+### Custom Retry Configuration
+```bash
+RETRY_DELAY=5 MAX_RETRIES=3 pytest tests/
+```
+
+### Disable Cleanup
+```bash
+CLEANUP_BEFORE_TESTS=false pytest tests/
+```
+
+### Custom Review Timeout
+```bash
+REVIEW_GLOBAL_TIMEOUT=600 REVIEW_STEP_TIMEOUT=120 pytest tests/
+```
+
+### Multiple Configuration
+```bash
+RETRY_DELAY=5 \
+MAX_RETRIES=3 \
+CLEANUP_BEFORE_TESTS=true \
+REMOVE_VOLUMES=true \
+pytest tests/
+```
+
+## Environment Variables Summary
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `RETRY_DELAY` | 10 | Delay between retry attempts (seconds) |
+| `MAX_RETRIES` | 10 | Maximum retry attempts for general tests |
+| `REVIEW_MAX_RETRIES` | 1 | Maximum retry attempts for review phase |
+| `CLEANUP_BEFORE_TESTS` | true | Execute cleanup before tests |
+| `REMOVE_VOLUMES` | true | Remove volumes during cleanup |
+| `CLEANUP_NETWORKS` | true | Clean networks during cleanup |
+| `ENABLE_TIMING` | true | Enable phase timing logging |
+| `TIMING_LOG_LEVEL` | INFO | Timing log level |
+| `TIMING_LOG_RETENTION_DAYS` | 30 | Timing log retention period (days) |
+| `REVIEW_GLOBAL_TIMEOUT` | 360 | Global timeout for review phase (seconds) |
+| `REVIEW_STEP_TIMEOUT` | 60 | Default timeout for individual steps (seconds) |
+| `REVIEW_MAX_FAILURES` | 3 | Maximum failed steps before aborting review |
+| `REVIEW_MIN_SUCCESS` | 5 | Minimum successful steps required to pass review |

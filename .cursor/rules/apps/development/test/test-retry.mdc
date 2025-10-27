@@ -1,0 +1,71 @@
+---
+description: Test Retry Logic and Error Correction
+globs: ["**/test*.py", "**/tests/**"]
+alwaysApply: true
+---
+
+# Test Retry Logic and Error Correction
+
+## Configuration (ZERO hardcoded values)
+
+### Retry Settings
+- Retry delay: Configurable via `RETRY_DELAY` environment variable (in seconds, defaults to 10 if not set)
+- Maximum retries: Configurable via `MAX_RETRIES` environment variable (defaults to 10 if not set)
+- Clear display of retry count (e.g., "X tries used")
+- **Review Phase Limit**: Maximum 10 retry attempts for review phase to prevent infinite loops
+
+## Retry Implementation
+
+### Smart Retry Logic
+- Tests retry with exponential backoff
+- Environment Configuration: Retry delay and max retries configurable via environment variables
+- Error Analysis: Automatic error correction between retry attempts
+- Status Tracking: Clear display of retry count and test status
+- No Hardcoded Values: All configuration from environment variables
+
+## Key Behaviors
+
+### Retry Characteristics
+- Configurable retry limits (not infinite)
+- All configuration from environment variables
+- ZERO hardcoded values (no retry limits, no delays)
+- Tests retry until they pass or max retries reached
+- Automatic error correction between attempts
+- Status tracking: "PASSED" or "FAILED" with retry count
+
+### Live Logging and Progress Display
+
+#### Real-time Logs
+- Display retry attempts in terminal with timestamps
+- Progress Indicators: Show current attempt number and total attempts (e.g., "Attempt 3/10")
+- Error Details: Log specific error messages for each failed attempt
+- Success/Failure Summary: Clear final status with total attempts used
+- Log Format: `[TIMESTAMP] [ATTEMPT X/Y] [STATUS] [ERROR_DETAILS]`
+- Terminal Output: All retry logs visible in real-time during execution
+
+## Configuration Examples
+
+### Retry Configuration
+- **Custom settings**: Set `RETRY_DELAY=5` and `MAX_RETRIES=3` environment variables
+- **Inline configuration**: Set environment variables inline with test execution
+- **Default behavior**: Run without configuration (uses default 10s delay, 5 max retries)
+
+## How It Works
+
+### Behavior Based on Configuration
+
+#### No Environment Variables Set
+- Uses default 10-second delay
+- Uses default 5 max retries
+- Applies to all tests
+
+#### Environment Variables Set
+- Uses the specified delay and retry values
+- Overrides defaults for this test run
+- Applies specified configuration
+
+#### Retry Flow
+- Tests retry up to max retries, then fail if still unsuccessful
+- Automatic Error Correction: System attempts to fix common issues between retries
+- Clear Progress: Shows current attempt number and retry status
+- Final Result: "PASSED" or "FAILED" with total attempts used
