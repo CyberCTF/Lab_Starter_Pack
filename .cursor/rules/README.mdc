@@ -1,10 +1,10 @@
 ---
-description: CyberGen Lab Generation Workflow - General Guidelines
+description: Lab Generation Workflow
 globs: ["**/*"]
 alwaysApply: true
 ---
 
-# CyberGen Lab Generation Workflow
+# Lab Generation Workflow
 
 ## Overview
 

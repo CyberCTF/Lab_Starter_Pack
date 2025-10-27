@@ -1,7 +1,6 @@
 ---
-description: Scenario Planning and Flag Definition
 globs: ["**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Scenario Planning and Flag Definition
