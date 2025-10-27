@@ -1,9 +1,66 @@
 ---
+description: The lab production workflow formalizes how a CyberCTF lab is created, validated, and published.
 alwaysApply: false
 ---
 
-The lab production workflow is in 4 phases. 
+# Lab Production Workflow
+
+The lab production workflow is in 5 phases : 
 1. Context creation
 2. Lab Generation
 3. Review and valiation
-4. Metadata generation
+4. Correction (optionnal)
+5. Metadata generation
+
+## Phase 1 - Context creation
+
+Purpose: collect and validate the library page (source of truth) and any author-provided overrides before generation.
+
+**Rules:** `.cursor/rules/context` 
+
+**Input:** `.ctf/LIBRARY_PAGE.md`
+
+**Output:** `.ctf/context/SCENARIO.md` + `.ctf/context/FLAG.md`
+
+## Phase 2 - Lab Generation
+
+Purpose: Develop and structure a complete lab using the rules as guidelines.
+
+**Rules:** `.cursor/rules/apps/development`
+
+**Input:** `.ctf/LIBRARY_PAGE.md` + `.ctf/context/SCENARIO.md` + `.ctf/context/FLAG.md`
+
+**Output:** `build` + `test` (folders containing the lab and the associated tests)
+
+All generated files must follow the PHILOSOPHY constraints.
+
+## Phase 3 - Review and validation
+
+Purpose: automated QA and human review step to ensure safety and quality before publishing.
+
+**Rules:** `.cursor/rules/review/development/`
+
+**Input:** `build/` + `test/` (folders containing the lab and the associated tests)
+
+**Output:** `.ctf/REVIEW.md` (comment made during the review) + if the lab pass the review the file `.ctf/GOOD.md`
+
+
+## Phase 4 - Correction (optionnal)
+
+Purpose: fix the lab and is assosiated tests following the comments writen in the REVIEW.md file from the review and validation phase.
+
+**Rules:** `.cursor/rules/correction/development/`
+
+**Input:** `build/` + `test/` + `.ctf/REVIEW.md`
+
+**Output:** `build/` + `test/` 
+
+## Phase 5 — Metadata generation
+
+Purpose: produce minimal, platform-ready metadata and hints to be used by the Cyber CTF platform and the CI/CD.
+
+**Rules:** `.cursor/rules/deploy/metadata/`
+
+**Input:** `build/` + `test/` + `.ctf/`
+
+**Output:** `.ctf/metadata.json`
