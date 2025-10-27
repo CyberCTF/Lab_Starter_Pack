@@ -1,0 +1,7 @@
+---
+description: Where to place generation artefact ?
+alwaysApply: false
+---
+While generating the labs the generation artefacts such as SCENARIO.md and FLAG.md are place under the folder `.ctf/`
+
+Use this folder to store any files you need while generating the lab that will not be part of the final result.
