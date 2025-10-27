@@ -8,34 +8,39 @@ alwaysApply: true
 
 These rules centralize common pitfalls and impose cross-cutting safeguards. They are prescriptive, without hardcoding, and driven by environment variables.
 
-## ⚠️ CRITICAL ERRORS QUICK REFERENCE
+## CRITICAL ERRORS QUICK REFERENCE
 
 ### Top 5 Docker Errors to AVOID
 
 1. **Wrong Package Manager** (`apt-get` on Oracle Linux)
-   - ❌ Error: `apt-get: command not found`
-   - ✅ Solution: Use `microdnf` for MySQL/Oracle Linux images
-   - 📍 See: [Base Images and Package Managers](#base-images-and-package-managers)
+   - Error: `apt-get: command not found`
+   - Solution: Use `microdnf` for MySQL/Oracle Linux images
+   - See: [Base Images and Package Managers](#base-images-and-package-managers)
 
 2. **Obsolete Package** (`libmysqlclient-dev`)
-   - ❌ Error: `Package 'libmysqlclient-dev' has no installation candidate`
-   - ✅ Solution: Use `libmariadb-dev` on recent Debian
-   - 📍 See: [Common Dockerfile Errors](#common-dockerfile-errors)
+   - Error: `Package 'libmysqlclient-dev' has no installation candidate`
+   - Solution: Use `libmariadb-dev` on recent Debian
+   - See: [Common Dockerfile Errors](#common-dockerfile-errors)
 
 3. **Special Characters in Passwords** (#, @)
-   - ❌ Error: YAML parsing error, `#` interpreted as comment
-   - ✅ Solution: Use quoted syntax: `MYSQL_PASS: "value#with@chars"`
-   - 📍 See: [Docker Compose Environment Variables](#docker-compose-environment-variables)
+   - Error: YAML parsing error, `#` interpreted as comment
+   - Solution: Use quoted syntax: `MYSQL_PASS: "value#with@chars"`
+   - See: [Docker Compose Environment Variables](#docker-compose-environment-variables)
 
 4. **Apache Not Listening on Custom Port**
-   - ❌ Error: Healthcheck fails, connection refused
-   - ✅ Solution: Add `Listen 3206` in ports.conf and VirtualHost config
-   - 📍 See: [Apache and Nginx Port Configuration](#apache-and-nginx-port-configuration)
+   - Error: Healthcheck fails, connection refused
+   - Solution: Add `Listen 3206` in ports.conf and VirtualHost config
+   - See: [Apache and Nginx Port Configuration](#apache-and-nginx-port-configuration)
 
 5. **Database User Not Created**
-   - ❌ Error: `Access denied for user 'app_user'@'localhost'`
-   - ✅ Solution: Always CREATE USER before GRANT privileges
-   - 📍 See: [Database User Creation](#database-user-creation)
+   - Error: `Access denied for user 'app_user'@'localhost'`
+   - Solution: Always CREATE USER before GRANT privileges
+   - See: [Database User Creation](#database-user-creation)
+
+6. **MySQL CREATE FUNCTION Privilege Error**
+   - Error: MySQL syntax error with `CREATE FUNCTION` on database-specific grants
+   - Solution: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-level privileges
+   - See: [Database Privilege Errors](#database-privilege-errors)
 
 ---
 
@@ -63,10 +68,10 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 ### Dockerfile Package Manager Examples
 - **MySQL Images** (`mysql:8.0` = Oracle Linux):
   ```dockerfile
-  # ❌ INCORRECT - Will fail with "apt-get: command not found"
+  # INCORRECT - Will fail with "apt-get: command not found"
   RUN apt-get update && apt-get install -y gcc
   
-  # ✅ CORRECT - Use microdnf for Oracle Linux
+  # CORRECT - Use microdnf for Oracle Linux
   RUN microdnf update && microdnf install -y \
       gcc \
       gcc-c++ \
@@ -75,7 +80,7 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   ```
 - **PHP/Apache Images** (`php:8.1-apache` = Debian):
   ```dockerfile
-  # ✅ CORRECT - Use apt-get for Debian
+  #  CORRECT - Use apt-get for Debian
   RUN apt-get update && apt-get install -y \
       gcc \
       g++ \
@@ -84,7 +89,7 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   ```
 - **Alpine Images**:
   ```dockerfile
-  # ✅ CORRECT - Use apk for Alpine
+  #  CORRECT - Use apk for Alpine
   RUN apk add --no-cache \
       gcc \
       g++ \
@@ -107,8 +112,8 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - **Script Execution**: Ensure init scripts are executable and have correct permissions
 - **Package Name Mismatches**: `g++` (Debian) vs `gcc-c++` (Oracle Linux) - use correct package name for the OS
 - **Package Obsolete**: `libmysqlclient-dev` is obsolete on recent Debian - use `libmariadb-dev` instead
-  - ❌ **WRONG**: `libmysqlclient-dev`
-  - ✅ **CORRECT**: `libmariadb-dev`
+  - WRONG: `libmysqlclient-dev`
+  - CORRECT: `libmariadb-dev`
 
 ## Docker Compose Environment Variables
 
@@ -117,24 +122,24 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - **Never use list syntax** (`- KEY=value`) with special characters
 - Use mapping syntax with quotes instead
 
-#### ❌ INCORRECT - Will Fail
+####  INCORRECT - Will Fail
 ```yaml
 environment:
-  - MYSQL_ADMIN_PASS=FtgY#WCXnZT5@#c:    # ❌ # interpreted as comment
-  - MYSQL_ADMIN_USER=admin1274@cyberctf.fr  # ❌ Special chars not escaped
+  - MYSQL_ADMIN_PASS=FtgY#WCXnZT5@#c:    #  # interpreted as comment
+  - MYSQL_ADMIN_USER=admin1274@cyberctf.fr  #  Special chars not escaped
 ```
 
-#### ✅ CORRECT - Will Work
+####  CORRECT - Will Work
 ```yaml
 environment:
-  MYSQL_ADMIN_PASS: "FtgY#WCXnZT5@#c:"          # ✅ Quoted value
-  MYSQL_ADMIN_USER: "admin1274@cyberctf.fr"     # ✅ Quoted value
-  MYSQL_ROOT_PASSWORD: "MyPassword123"          # ✅ Safe to quote all passwords
+  MYSQL_ADMIN_PASS: "FtgY#WCXnZT5@#c:"          #  Quoted value
+  MYSQL_ADMIN_USER: "admin1274@cyberctf.fr"     #  Quoted value
+  MYSQL_ROOT_PASSWORD: "MyPassword123"          #  Safe to quote all passwords
 ```
 
 ### Environment Variables Best Practices
 ```yaml
-# ✅ CORRECT - Always quote passwords
+#  CORRECT - Always quote passwords
 environment:
   MYSQL_ROOT_PASSWORD: "root_password"
   MYSQL_DATABASE: project_management  # No quotes needed if no special chars
@@ -152,15 +157,15 @@ environment:
 
 #### Apache Configuration for Custom Ports
 
-##### ❌ INCORRECT - Apache Only Listens on Port 80
+#####  INCORRECT - Apache Only Listens on Port 80
 ```dockerfile
 RUN a2enmod rewrite
 EXPOSE 3206
 CMD ["apache2-foreground"]
-# ❌ Apache will only listen on port 80, healthcheck will fail
+#  Apache will only listen on port 80, healthcheck will fail
 ```
 
-##### ✅ CORRECT - Configure Apache to Listen on Custom Port
+#####  CORRECT - Configure Apache to Listen on Custom Port
 ```dockerfile
 # Install required packages
 RUN apt-get update && apt-get install -y \
@@ -178,7 +183,7 @@ RUN docker-php-ext-install mysqli pdo_mysql
 RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# ✅ CRITICAL: Configure Apache to listen on port 3206
+#  CRITICAL: Configure Apache to listen on port 3206
 RUN sed -i 's/Listen 80/Listen 80\nListen 3206/' /etc/apache2/ports.conf
 
 # Create custom VirtualHost for port 3206
@@ -208,25 +213,25 @@ CMD ["apache2-foreground"]
 - **Use `IF NOT EXISTS`** to prevent errors on re-runs
 - **Define users in numbered init scripts** (01-create-database.sql, etc.)
 
-#### ❌ INCORRECT - User Not Created
+####  INCORRECT - User Not Created
 ```sql
--- ❌ User 'app_user' not created, GRANT will fail
+--  User 'app_user' not created, GRANT will fail
 GRANT SELECT, INSERT ON project_management.* TO 'app_user'@'%';
 ```
 
-#### ✅ CORRECT - User Created Then Granted Privileges
+####  CORRECT - User Created Then Granted Privileges
 ```sql
--- ✅ Create database first
+--  Create database first
 CREATE DATABASE IF NOT EXISTS project_management 
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- ✅ Create user BEFORE granting privileges
+--  Create user BEFORE granting privileges
 CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
 
--- ✅ Then grant privileges
+--  Then grant privileges
 GRANT SELECT, INSERT, UPDATE, DELETE ON project_management.* TO 'app_user'@'%';
 
--- ✅ Flush privileges to apply changes
+--  Flush privileges to apply changes
 FLUSH PRIVILEGES;
 ```
 
@@ -286,8 +291,8 @@ FLUSH PRIVILEGES;
 - **Port Mapping**: Use same internal and external ports (3206:3206, 3207:3207, etc.)
 - **Service Configuration**: Configure services to listen on their assigned internal ports (3206, 3207, 3208, etc.)
 - **Port Consistency**: All services must use identical internal and external ports
-  - ❌ Incorrect: `3207:3206` (database external 3207, internal 3206)
-  - ✅ Correct: `3207:3207` (database external 3207, internal 3207)
+  -  Incorrect: `3207:3206` (database external 3207, internal 3206)
+  -  Correct: `3207:3207` (database external 3207, internal 3207)
 - Services must listen on `0.0.0.0` (never only `127.0.0.1` in container).
 - Avoid coupling to `host.docker.internal`. Prefer dedicated networks and environment variables.
 
@@ -308,13 +313,34 @@ FLUSH PRIVILEGES;
 - Init DB: scripts in `/docker-entrypoint-initdb.d` with correct file types/permissions.
 - Explicit charset/collation (e.g., `utf8mb4` / `utf8mb4_unicode_ci`).
 - MySQL privileges: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-specific grants.
-  - ❌ Incorrect: `GRANT CREATE FUNCTION ON database.* TO 'user'@'%';`
-  - ✅ Correct: `GRANT CREATE ROUTINE ON database.* TO 'user'@'%';`
+  - WRONG: `GRANT CREATE FUNCTION ON database.* TO 'user'@'%';`
+  - CORRECT: `GRANT CREATE ROUTINE ON database.* TO 'user'@'%';`
 - **MySQL Privilege Separation**: Never mix database and global privileges in single GRANT statement.
-  - ❌ Incorrect: `GRANT SELECT, FILE ON database.* TO 'user'@'%';`
-  - ✅ Correct: `GRANT SELECT ON database.* TO 'user'@'%'; GRANT FILE ON *.* TO 'user'@'%';`
+  - WRONG: `GRANT SELECT, FILE ON database.* TO 'user'@'%';`
+  - CORRECT: `GRANT SELECT ON database.* TO 'user'@'%'; GRANT FILE ON *.* TO 'user'@'%';`
 - **User Creation**: Always use `IF NOT EXISTS` for user creation to avoid conflicts.
-  - ✅ Correct: `CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';`
+  - CORRECT: `CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';`
+
+### MySQL CREATE FUNCTION Error
+- **Common Error**: MySQL syntax error when using `CREATE FUNCTION` privilege on database-specific grants
+- **Error Message**: `ERROR 1064 (42000): You have an error in your SQL syntax`
+- **Root Cause**: MySQL does not accept `CREATE FUNCTION` on database-specific grants
+- **Solution**: Use `CREATE ROUTINE` instead
+
+#### WRONG
+```sql
+-- Will cause syntax error
+GRANT CREATE FUNCTION ON database_name.* TO 'user'@'%';
+```
+
+#### CORRECT
+```sql
+-- Use CREATE ROUTINE for database-level privileges
+GRANT CREATE ROUTINE ON database_name.* TO 'user'@'%';
+
+-- Or omit the privilege entirely if not needed
+GRANT SELECT, INSERT, UPDATE, DELETE ON database_name.* TO 'user'@'%';
+```
 
 ### MySQL Privilege Examples
 ```sql
@@ -427,9 +453,9 @@ RUN microdnf update && microdnf install -y gcc && microdnf clean all
 
 ---
 
-## 📋 COMPLETE WORKING TEMPLATES
+## COMPLETE WORKING TEMPLATES
 
-### ✅ PHP + Apache + MySQL Template (Fully Working)
+### PHP + Apache + MySQL Template (Fully Working)
 
 #### Dockerfile (web/Dockerfile)
 ```dockerfile
@@ -464,7 +490,7 @@ RUN chmod -R 755 /var/www/html
 RUN a2enmod rewrite
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
-# ✅ CRITICAL: Configure Apache to listen on port 3206
+#  CRITICAL: Configure Apache to listen on port 3206
 RUN sed -i 's/Listen 80/Listen 80\nListen 3206/' /etc/apache2/ports.conf
 
 # Create custom VirtualHost for port 3206
@@ -514,7 +540,7 @@ services:
     ports:
       - "${DB_HOST_PORT:-3207}:3306"
     environment:
-      # ✅ CRITICAL: Use quoted syntax for passwords with special characters
+      #  CRITICAL: Use quoted syntax for passwords with special characters
       MYSQL_ROOT_PASSWORD: "root_password"
       MYSQL_DATABASE: project_management
       MYSQL_USER: app_user
@@ -548,7 +574,7 @@ networks:
 CREATE DATABASE IF NOT EXISTS project_management 
 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- ✅ CRITICAL: Create user BEFORE granting privileges
+--  CRITICAL: Create user BEFORE granting privileges
 CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
 
 -- Grant privileges
@@ -558,7 +584,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON project_management.* TO 'app_user'@'%';
 FLUSH PRIVILEGES;
 ```
 
-### ✅ Key Points Checklist
+###  Key Points Checklist
 - [ ] Used `libmariadb-dev` (not `libmysqlclient-dev`) on Debian
 - [ ] Apache configured to listen on custom port (3206)
 - [ ] VirtualHost created for custom port

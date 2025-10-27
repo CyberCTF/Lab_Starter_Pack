@@ -1,6 +1,6 @@
 ---
 description: Quality Review and Warning Removal
-globs: ["**/.ctf/**", "**/test_results/**", "**/README.md", "**/*.html", "**/*.js"]
+globs: ["**/.ctf/**", "**/test_results/**", "**/*.html", "**/*.js"]
 alwaysApply: true
 ---
 
@@ -43,7 +43,7 @@ Ensure everything works correctly and the lab is fully functional.
 
 ## Warning Removal Requirements
 
-Remove all educational and vulnerability warnings from lab pages and README.md files. The lab should appear as a real-world application without any indication that it's intentionally vulnerable.
+Remove all educational and vulnerability warnings from lab pages. The lab should appear as a real-world application without any indication that it's intentionally vulnerable.
 
 ### Warnings to Remove
 
