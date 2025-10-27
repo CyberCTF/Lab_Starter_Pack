@@ -1,0 +1,9 @@
+---
+alwaysApply: false
+---
+
+The lab production workflow is in 4 phases. 
+1. Context creation
+2. Lab Generation
+3. Review and valiation
+4. Metadata generation
