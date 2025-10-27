@@ -16,7 +16,7 @@ The lab production workflow is in 5 phases :
 
 Purpose: collect and validate the library page (source of truth) and any author-provided overrides before generation.
 
-**Rules:** `.cursor/rules/context` 
+**Rules:** `.cursor/rules/context/` 
 
 **Input:** `.ctf/LIBRARY_PAGE.md`
 
@@ -26,7 +26,7 @@ Purpose: collect and validate the library page (source of truth) and any author-
 
 Purpose: Develop and structure a complete lab using the rules as guidelines.
 
-**Rules:** `.cursor/rules/apps/development`
+**Rules:** `.cursor/rules/apps/development/` + `.cursor/rules/apps/run/`
 
 **Input:** `.ctf/LIBRARY_PAGE.md` + `.ctf/context/SCENARIO.md` + `.ctf/context/FLAG.md`
 
@@ -38,7 +38,7 @@ All generated files must follow the PHILOSOPHY constraints.
 
 Purpose: automated QA and human review step to ensure safety and quality before publishing.
 
-**Rules:** `.cursor/rules/review/development/`
+**Rules:** `.cursor/rules/apps/review/`
 
 **Input:** `build/` + `test/` (folders containing the lab and the associated tests)
 
@@ -49,7 +49,7 @@ Purpose: automated QA and human review step to ensure safety and quality before 
 
 Purpose: fix the lab and is assosiated tests following the comments writen in the REVIEW.md file from the review and validation phase.
 
-**Rules:** `.cursor/rules/correction/development/`
+**Rules:** `.cursor/rules/apps/correction/`
 
 **Input:** `build/` + `test/` + `.ctf/REVIEW.md`
 
