@@ -18,9 +18,24 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - **Solution**: Use `microdnf` for MySQL/Oracle Linux images, `yum` for CentOS/RHEL
 - **Package Name Differences**: `g++` (Debian) vs `gcc-c++` (Oracle Linux)
 
+### Image Base OS Reference Table
+| Docker Image | Base OS | Package Manager | Cleanup Command |
+|--------------|---------|-----------------|-----------------|
+| `mysql:8.0` | Oracle Linux | `microdnf` | `microdnf clean all` |
+| `mariadb:10.x` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `php:8.1-apache` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `node:18-alpine` | Alpine Linux | `apk` | Built-in (no cleanup needed) |
+| `python:3.11-slim` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `postgres:15` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `nginx:alpine` | Alpine Linux | `apk` | Built-in (no cleanup needed) |
+
 ### Dockerfile Package Manager Examples
 - **MySQL Images** (`mysql:8.0` = Oracle Linux):
   ```dockerfile
+  # ❌ INCORRECT - Will fail with "apt-get: command not found"
+  RUN apt-get update && apt-get install -y gcc
+  
+  # ✅ CORRECT - Use microdnf for Oracle Linux
   RUN microdnf update && microdnf install -y \
       gcc \
       gcc-c++ \
@@ -29,18 +44,37 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
   ```
 - **PHP/Apache Images** (`php:8.1-apache` = Debian):
   ```dockerfile
+  # ✅ CORRECT - Use apt-get for Debian
   RUN apt-get update && apt-get install -y \
       gcc \
       g++ \
       make \
       && rm -rf /var/lib/apt/lists/*
   ```
-- **Verification Required**: Always check the base OS of Docker images before writing installation commands
+- **Alpine Images**:
+  ```dockerfile
+  # ✅ CORRECT - Use apk for Alpine
+  RUN apk add --no-cache \
+      gcc \
+      g++ \
+      make
+  ```
+
+### Mandatory Verification Before Writing Dockerfiles
+**ALWAYS** check the base OS before writing installation commands:
+1. **Quick Check**: `docker run --rm image_name cat /etc/os-release`
+2. **Example**: `docker run --rm mysql:8.0 cat /etc/os-release`
+3. **Interpret Result**: Oracle Linux = microdnf, Debian = apt-get, Alpine = apk
+4. **Then Write**: Use the appropriate package manager for that OS
 
 ### Common Dockerfile Errors
-- **File Recreation**: When Dockerfiles are recreated, ensure they use correct package manager
+- **Critical Error - Wrong Package Manager**: Using `apt-get` on Oracle Linux images (e.g., `mysql:8.0`) will fail with "command not found"
+  - **Always check base OS first** using `docker run --rm image_name cat /etc/os-release`
+  - **Never assume** the base image uses `apt-get` without verification
+- **File Recreation**: When Dockerfiles are recreated, ensure they use correct package manager for that specific base image
 - **Permission Errors**: Use `chmod 755` instead of `chmod +x` for script files
 - **Script Execution**: Ensure init scripts are executable and have correct permissions
+- **Package Name Mismatches**: `g++` (Debian) vs `gcc-c++` (Oracle Linux) - use correct package name for the OS
 
 ## Extensions and Runtimes
 - PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
@@ -156,6 +190,54 @@ CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';
 
 ## Phase Timing
 - Track start/end/duration for each phase (Plan, Lab, Review, Metadata) in `.ctf/timing_logs/`. Behavior is enableable/disableable via env.
+
+---
+
+## Workflow: Writing Dockerfiles Safely
+
+### Step-by-Step Verification Process
+
+**Before writing ANY Dockerfile RUN command:**
+
+1. **Identify the base image**: Look at the `FROM` line (e.g., `FROM mysql:8.0`)
+
+2. **Verify the base OS**:
+   ```bash
+   docker run --rm mysql:8.0 cat /etc/os-release
+   ```
+
+3. **Interpret the result**:
+   - If shows `ID=ol` or `Oracle Linux` → Use `microdnf`
+   - If shows `ID=debian` or `ID=ubuntu` → Use `apt-get`
+   - If shows `ID=alpine` → Use `apk`
+
+4. **Use the correct package manager**:
+   - Oracle Linux: `microdnf install -y package && microdnf clean all`
+   - Debian/Ubuntu: `apt-get update && apt-get install -y package && rm -rf /var/lib/apt/lists/*`
+   - Alpine: `apk add --no-cache package`
+
+5. **Verify package names**:
+   - Debian: `g++`
+   - Oracle Linux: `gcc-c++`
+
+### Real-World Example
+
+**Scenario**: Need to install GCC compiler in MySQL 8.0 image
+
+**Step 1**: Check base OS
+```bash
+docker run --rm mysql:8.0 cat /etc/os-release
+# Output shows: ID=ol (Oracle Linux)
+```
+
+**Step 2**: Write correct Dockerfile
+```dockerfile
+# WRONG (will fail):
+RUN apt-get update && apt-get install -y gcc
+
+# CORRECT:
+RUN microdnf update && microdnf install -y gcc && microdnf clean all
+```
 
 ---
 
