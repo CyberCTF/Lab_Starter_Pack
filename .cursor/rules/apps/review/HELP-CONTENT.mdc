@@ -1,0 +1,23 @@
+---
+description: Help Content Guidelines — No Flag Hints or Exploitation Guidance
+globs: ["**/*.html", "**/*.md", "**/README.md"]
+alwaysApply: true
+---
+
+# Help Content Guidelines
+
+The content of the lab should not help the user find the flag or answer the questions. The lab should provide a realistic challenge without giving away the solution.
+
+## Help Content Requirements
+
+### 1. No Direct Assistance
+- **No Flag Hints**: Do not provide hints about where to find the flag
+- **No Exploitation Guidance**: Do not explain how to exploit the vulnerability
+- **No Solution Paths**: Do not outline the steps to solve the lab
+- **No Answer Clues**: Do not provide clues about the expected answers
+
+### 2. Realistic Business Context
+- **Professional Documentation**: Provide only business-relevant information
+- **Functional Descriptions**: Focus on what the application does, not how it works
+- **User Manuals**: Include only standard user documentation
+- **API Documentation**: Provide only necessary API information

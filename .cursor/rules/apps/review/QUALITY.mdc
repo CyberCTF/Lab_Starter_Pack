@@ -1,0 +1,26 @@
+---
+description: Quality Assurance — Content and User Experience Review
+globs: ["**/.ctf/**", "**/*.html", "**/*.js", "**/*.md"]
+alwaysApply: true
+---
+
+# Quality Assurance
+
+## Content Validation
+- [ ] No educational warnings present
+- [ ] No vulnerability indicators
+- [ ] No security hints present
+- [ ] No exploitation guidance
+- [ ] Professional tone maintained
+- [ ] Real-world appearance
+- [ ] No CTF-style language
+
+## User Experience
+- [ ] Lab appears as real application
+- [ ] Professional interface design
+- [ ] Business-appropriate content
+- [ ] No learning indicators
+- [ ] Seamless user experience
+- [ ] Appropriate difficulty level
+- [ ] No hand-holding
+- [ ] Natural learning progression
