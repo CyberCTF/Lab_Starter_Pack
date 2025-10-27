@@ -1,0 +1,51 @@
+---
+description: Dockerfile Workflow — Step-by-Step Verification Process
+globs: ["**/Dockerfile"]
+alwaysApply: true
+---
+
+# Workflow: Writing Dockerfiles Safely
+
+## Step-by-Step Verification Process
+
+**Before writing ANY Dockerfile RUN command:**
+
+1. **Identify the base image**: Look at the `FROM` line (e.g., `FROM mysql:8.0`)
+
+2. **Verify the base OS**:
+   ```bash
+   docker run --rm mysql:8.0 cat /etc/os-release
+   ```
+
+3. **Interpret the result**:
+   - If shows `ID=ol` or `Oracle Linux` → Use `microdnf`
+   - If shows `ID=debian` or `ID=ubuntu` → Use `apt-get`
+   - If shows `ID=alpine` → Use `apk`
+
+4. **Use the correct package manager**:
+   - Oracle Linux: `microdnf install -y package && microdnf clean all`
+   - Debian/Ubuntu: `apt-get update && apt-get install -y package && rm -rf /var/lib/apt/lists/*`
+   - Alpine: `apk add --no-cache package`
+
+5. **Verify package names**:
+   - Debian: `g++`
+   - Oracle Linux: `gcc-c++`
+
+## Real-World Example
+
+**Scenario**: Need to install GCC compiler in MySQL 8.0 image
+
+**Step 1**: Check base OS
+```bash
+docker run --rm mysql:8.0 cat /etc/os-release
+# Output shows: ID=ol (Oracle Linux)
+```
+
+**Step 2**: Write correct Dockerfile
+```dockerfile
+# WRONG (will fail):
+RUN apt-get update && apt-get install -y gcc
+
+# CORRECT:
+RUN microdnf update && microdnf install -y gcc && microdnf clean all
+```

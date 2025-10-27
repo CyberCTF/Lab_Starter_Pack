@@ -1,0 +1,38 @@
+---
+description: Other Configurations — Localization, Logging, Tests, CI/CD
+globs: ["**/.env*", "**/pytest.ini", ".github/workflows/**"]
+alwaysApply: true
+---
+
+# Other Configurations
+
+## Localization and Time
+
+- Define `TZ` explicitly and ensure application/DB use expected charset/collation.
+- Use UTF-8 encoding for all text data.
+
+## Logging
+
+- Structured logs (key=value/JSON) and levels configurable via environment variables.
+- No error display in production (PHP). Errors must be logged.
+
+## Tests and Robustness
+
+- Before each test execution: perform cleanup (`docker-compose down -v`) — driven by environment variables (no hardcoding).
+- Centralized retries/backoff 100% configurable via env (no hardcoded values).
+- No hardcoded URLs/ports in tests. Use `APP_BASE_URL`, `WEB_PORT`, `DB_HOST_PORT`, etc.
+- Tests must wait for readiness via healthchecks and backoff.
+
+## CI/CD
+
+- Validate presence of required environment variables/secrets, with explicit error messages.
+- Consistent caching based on lockfiles; documented invalidation.
+- Multi-platform builds enabled.
+
+## Network Timeouts
+
+- Critical network operations (pull/build/test) must support retries configurable via env.
+
+## Phase Timing
+
+- Track start/end/duration for each phase (Plan, Lab, Review, Metadata) in `.ctf/timing_logs/`. Behavior is enableable/disableable via env.

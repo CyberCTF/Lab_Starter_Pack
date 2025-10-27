@@ -1,3 +1,89 @@
 ---
+description: Package Managers and Package Management — Avoiding Wrong Package Manager Errors
+globs: ["**/Dockerfile"]
 alwaysApply: true
 ---
+
+# Base Images and Package Managers
+
+## Package Manager Matching Rules
+
+- Package manager MUST match the base image:
+  - Debian/Ubuntu: `apt-get`
+  - Alpine: `apk`
+  - RHEL/Oracle: `microdnf`/`dnf`
+- Do not assume `apt-get` by default.
+- **Common Error**: `apt-get: command not found` on Oracle Linux images
+- **Solution**: Use `microdnf` for MySQL/Oracle Linux images, `yum` for CentOS/RHEL
+- **Package Name Differences**: `g++` (Debian) vs `gcc-c++` (Oracle Linux)
+
+## Image Base OS Reference Table
+
+| Docker Image | Base OS | Package Manager | Cleanup Command |
+|--------------|---------|-----------------|-----------------|
+| `mysql:8.0` | Oracle Linux | `microdnf` | `microdnf clean all` |
+| `mariadb:10.x` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `php:8.1-apache` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `node:18-alpine` | Alpine Linux | `apk` | Built-in (no cleanup needed) |
+| `python:3.11-slim` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `postgres:15` | Debian | `apt-get` | `rm -rf /var/lib/apt/lists/*` |
+| `nginx:alpine` | Alpine Linux | `apk` | Built-in (no cleanup needed) |
+
+## Dockerfile Package Manager Examples
+
+### MySQL Images (`mysql:8.0` = Oracle Linux)
+```dockerfile
+# INCORRECT - Will fail with "apt-get: command not found"
+RUN apt-get update && apt-get install -y gcc
+
+# CORRECT - Use microdnf for Oracle Linux
+RUN microdnf update && microdnf install -y \
+    gcc \
+    gcc-c++ \
+    make \
+    && microdnf clean all
+```
+
+### PHP/Apache Images (`php:8.1-apache` = Debian)
+```dockerfile
+#  CORRECT - Use apt-get for Debian
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    && rm -rf /var/lib/apt/lists/*
+```
+
+### Alpine Images
+```dockerfile
+#  CORRECT - Use apk for Alpine
+RUN apk add --no-cache \
+    gcc \
+    g++ \
+    make
+```
+
+## Mandatory Verification Before Writing Dockerfiles
+
+**ALWAYS** check the base OS before writing installation commands:
+
+1. **Quick Check**: `docker run --rm image_name cat /etc/os-release`
+2. **Example**: `docker run --rm mysql:8.0 cat /etc/os-release`
+3. **Interpret Result**: Oracle Linux = microdnf, Debian = apt-get, Alpine = apk
+4. **Then Write**: Use the appropriate package manager for that OS
+
+## Common Dockerfile Errors
+
+### Critical Error - Wrong Package Manager
+- Using `apt-get` on Oracle Linux images (e.g., `mysql:8.0`) will fail with "command not found"
+  - **Always check base OS first** using `docker run --rm image_name cat /etc/os-release`
+  - **Never assume** the base image uses `apt-get` without verification
+
+### Other Common Errors
+- **File Recreation**: When Dockerfiles are recreated, ensure they use correct package manager for that specific base image
+- **Permission Errors**: Use `chmod 755` instead of `chmod +x` for script files
+- **Script Execution**: Ensure init scripts are executable and have correct permissions
+- **Package Name Mismatches**: `g++` (Debian) vs `gcc-c++` (Oracle Linux) - use correct package name for the OS
+- **Package Obsolete**: `libmysqlclient-dev` is obsolete on recent Debian - use `libmariadb-dev` instead
+  - WRONG: `libmysqlclient-dev`
+  - CORRECT: `libmariadb-dev`
