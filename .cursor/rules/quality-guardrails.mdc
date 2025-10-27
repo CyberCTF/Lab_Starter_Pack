@@ -8,6 +8,37 @@ alwaysApply: true
 
 These rules centralize common pitfalls and impose cross-cutting safeguards. They are prescriptive, without hardcoding, and driven by environment variables.
 
+## ⚠️ CRITICAL ERRORS QUICK REFERENCE
+
+### Top 5 Docker Errors to AVOID
+
+1. **Wrong Package Manager** (`apt-get` on Oracle Linux)
+   - ❌ Error: `apt-get: command not found`
+   - ✅ Solution: Use `microdnf` for MySQL/Oracle Linux images
+   - 📍 See: [Base Images and Package Managers](#base-images-and-package-managers)
+
+2. **Obsolete Package** (`libmysqlclient-dev`)
+   - ❌ Error: `Package 'libmysqlclient-dev' has no installation candidate`
+   - ✅ Solution: Use `libmariadb-dev` on recent Debian
+   - 📍 See: [Common Dockerfile Errors](#common-dockerfile-errors)
+
+3. **Special Characters in Passwords** (#, @)
+   - ❌ Error: YAML parsing error, `#` interpreted as comment
+   - ✅ Solution: Use quoted syntax: `MYSQL_PASS: "value#with@chars"`
+   - 📍 See: [Docker Compose Environment Variables](#docker-compose-environment-variables)
+
+4. **Apache Not Listening on Custom Port**
+   - ❌ Error: Healthcheck fails, connection refused
+   - ✅ Solution: Add `Listen 3206` in ports.conf and VirtualHost config
+   - 📍 See: [Apache and Nginx Port Configuration](#apache-and-nginx-port-configuration)
+
+5. **Database User Not Created**
+   - ❌ Error: `Access denied for user 'app_user'@'localhost'`
+   - ✅ Solution: Always CREATE USER before GRANT privileges
+   - 📍 See: [Database User Creation](#database-user-creation)
+
+---
+
 ## Base Images and Package Managers
 - Package manager MUST match the base image:
   - Debian/Ubuntu: `apt-get`
@@ -75,6 +106,136 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 - **Permission Errors**: Use `chmod 755` instead of `chmod +x` for script files
 - **Script Execution**: Ensure init scripts are executable and have correct permissions
 - **Package Name Mismatches**: `g++` (Debian) vs `gcc-c++` (Oracle Linux) - use correct package name for the OS
+- **Package Obsolete**: `libmysqlclient-dev` is obsolete on recent Debian - use `libmariadb-dev` instead
+  - ❌ **WRONG**: `libmysqlclient-dev`
+  - ✅ **CORRECT**: `libmariadb-dev`
+
+## Docker Compose Environment Variables
+
+### Special Characters in Passwords
+- **ALWAYS use quoted syntax** for passwords containing special characters (`#`, `@`, `$`, `%`, `!`, `&`, etc.)
+- **Never use list syntax** (`- KEY=value`) with special characters
+- Use mapping syntax with quotes instead
+
+#### ❌ INCORRECT - Will Fail
+```yaml
+environment:
+  - MYSQL_ADMIN_PASS=FtgY#WCXnZT5@#c:    # ❌ # interpreted as comment
+  - MYSQL_ADMIN_USER=admin1274@cyberctf.fr  # ❌ Special chars not escaped
+```
+
+#### ✅ CORRECT - Will Work
+```yaml
+environment:
+  MYSQL_ADMIN_PASS: "FtgY#WCXnZT5@#c:"          # ✅ Quoted value
+  MYSQL_ADMIN_USER: "admin1274@cyberctf.fr"     # ✅ Quoted value
+  MYSQL_ROOT_PASSWORD: "MyPassword123"          # ✅ Safe to quote all passwords
+```
+
+### Environment Variables Best Practices
+```yaml
+# ✅ CORRECT - Always quote passwords
+environment:
+  MYSQL_ROOT_PASSWORD: "root_password"
+  MYSQL_DATABASE: project_management  # No quotes needed if no special chars
+  MYSQL_USER: app_user               # No quotes needed
+  MYSQL_PASSWORD: "app_password"     # Quoted for consistency
+  DB_PASS: "FtgY#WCXnZT5@#c:"        # MUST quote if special chars
+```
+
+## Apache and Nginx Port Configuration
+
+### Critical Rule: Service Must Listen on Assigned Port
+- **Healthcheck ports must match service listen ports**
+- **Apache**: Must explicitly listen on the configured port (not just 80)
+- **Configuration required**: Add `Listen` directive and VirtualHost configuration
+
+#### Apache Configuration for Custom Ports
+
+##### ❌ INCORRECT - Apache Only Listens on Port 80
+```dockerfile
+RUN a2enmod rewrite
+EXPOSE 3206
+CMD ["apache2-foreground"]
+# ❌ Apache will only listen on port 80, healthcheck will fail
+```
+
+##### ✅ CORRECT - Configure Apache to Listen on Custom Port
+```dockerfile
+# Install required packages
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    libmariadb-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install mysqli pdo_mysql
+
+# Configure Apache
+RUN a2enmod rewrite
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# ✅ CRITICAL: Configure Apache to listen on port 3206
+RUN sed -i 's/Listen 80/Listen 80\nListen 3206/' /etc/apache2/ports.conf
+
+# Create custom VirtualHost for port 3206
+RUN echo "<VirtualHost *:3206>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+
+EXPOSE 3206
+CMD ["apache2-foreground"]
+```
+
+### Port Configuration Checklist
+- [ ] Apache `Listen` directive includes the custom port
+- [ ] VirtualHost configuration binds to the custom port
+- [ ] Docker Compose `ports` mapping matches internal port
+- [ ] Healthcheck uses the correct port number
+- [ ] PHP configuration listens on the correct port
+
+## Database User Creation
+
+### Mandatory: Create Database Users in Init Scripts
+- **ALWAYS create users** before granting privileges
+- **Use `IF NOT EXISTS`** to prevent errors on re-runs
+- **Define users in numbered init scripts** (01-create-database.sql, etc.)
+
+#### ❌ INCORRECT - User Not Created
+```sql
+-- ❌ User 'app_user' not created, GRANT will fail
+GRANT SELECT, INSERT ON project_management.* TO 'app_user'@'%';
+```
+
+#### ✅ CORRECT - User Created Then Granted Privileges
+```sql
+-- ✅ Create database first
+CREATE DATABASE IF NOT EXISTS project_management 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- ✅ Create user BEFORE granting privileges
+CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
+
+-- ✅ Then grant privileges
+GRANT SELECT, INSERT, UPDATE, DELETE ON project_management.* TO 'app_user'@'%';
+
+-- ✅ Flush privileges to apply changes
+FLUSH PRIVILEGES;
+```
+
+### Database Initialization Order
+1. **01-create-database.sql**: Create database
+2. **02-create-users.sql**: Create users (or combine with step 1)
+3. **03-grant-privileges.sql**: Grant privileges
+4. **04-init-data.sql**: Initialize data
+5. **Always use `IF NOT EXISTS`** to prevent errors on re-runs
 
 ## Extensions and Runtimes
 - PHP: explicitly list and install required extensions (e.g., `mysqli`, `pdo_mysql`, `gd`, `zip`). Build fails if missing.
@@ -263,4 +424,149 @@ RUN microdnf update && microdnf install -y gcc && microdnf clean all
   - API: `${API_PORT:-3208}:3208`
 - Healthcheck: define a simple command (ping service/port), adapted interval/timeout/retries, and make consumer services depend on `service_healthy` state.
 - Retry policy: delays and attempts only via env; clearly display attempt counter.
+
+---
+
+## 📋 COMPLETE WORKING TEMPLATES
+
+### ✅ PHP + Apache + MySQL Template (Fully Working)
+
+#### Dockerfile (web/Dockerfile)
+```dockerfile
+FROM php:8.1-apache
+
+# Install required packages (use libmariadb-dev on recent Debian)
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    libmariadb-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN docker-php-ext-install mysqli pdo_mysql
+
+# Install MySQL client for testing
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy application files
+COPY src/ /var/www/html/
+
+# Set proper permissions
+RUN chown -R www-data:www-data /var/www/html
+RUN chmod -R 755 /var/www/html
+
+# Configure Apache
+RUN a2enmod rewrite
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# ✅ CRITICAL: Configure Apache to listen on port 3206
+RUN sed -i 's/Listen 80/Listen 80\nListen 3206/' /etc/apache2/ports.conf
+
+# Create custom VirtualHost for port 3206
+RUN echo "<VirtualHost *:3206>\n\
+    DocumentRoot /var/www/html\n\
+    <Directory /var/www/html>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+
+EXPOSE 3206
+CMD ["apache2-foreground"]
+```
+
+#### docker-compose.dev.yml
+```yaml
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "${WEB_PORT:-3206}:3206"
+    environment:
+      DB_HOST: database
+      DB_PORT: "3306"
+      DB_NAME: project_management
+      DB_USER: app_user
+      DB_PASS: app_password
+      WEB_PORT: "3206"
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./web/src:/var/www/html
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3206/health.php"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  database:
+    image: mysql:8.0
+    ports:
+      - "${DB_HOST_PORT:-3207}:3306"
+    environment:
+      # ✅ CRITICAL: Use quoted syntax for passwords with special characters
+      MYSQL_ROOT_PASSWORD: "root_password"
+      MYSQL_DATABASE: project_management
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: "app_password"
+      MYSQL_ADMIN_USER: "admin1274@cyberctf.fr"
+      MYSQL_ADMIN_PASS: "FtgY#WCXnZT5@#c:"
+      MYSQL_DATABASE_ADMIN: app_repo38
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot_password"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: --secure-file-priv=/tmp --local-infile=1
+
+volumes:
+  mysql_data:
+
+networks:
+  app_network:
+    driver: bridge
+```
+
+#### Database Init Script (database/init/01-create-database.sql)
+```sql
+-- Create database first
+CREATE DATABASE IF NOT EXISTS project_management 
+CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- ✅ CRITICAL: Create user BEFORE granting privileges
+CREATE USER IF NOT EXISTS 'app_user'@'%' IDENTIFIED BY 'app_password';
+
+-- Grant privileges
+GRANT SELECT, INSERT, UPDATE, DELETE ON project_management.* TO 'app_user'@'%';
+
+-- Flush privileges to apply changes
+FLUSH PRIVILEGES;
+```
+
+### ✅ Key Points Checklist
+- [ ] Used `libmariadb-dev` (not `libmysqlclient-dev`) on Debian
+- [ ] Apache configured to listen on custom port (3206)
+- [ ] VirtualHost created for custom port
+- [ ] Environment variables use quoted syntax for passwords
+- [ ] Database users created BEFORE granting privileges
+- [ ] `IF NOT EXISTS` used in all CREATE statements
+- [ ] Healthchecks use correct port numbers
+- [ ] Port consistency: internal port = external port (3206:3206)
+
+---
 
