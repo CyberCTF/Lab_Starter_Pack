@@ -53,7 +53,7 @@ Purpose: fix the lab and is assosiated tests following the comments writen in th
 
 **Input:** `build/` + `test/` + `.ctf/REVIEW.md`
 
-**Output:** `build/` + `test/` 
+**Output:** `build/` + `test/` (corrected)
 
 ## Phase 5 — Metadata generation
 
