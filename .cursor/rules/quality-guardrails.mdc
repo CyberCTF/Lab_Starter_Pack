@@ -10,7 +10,7 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
 
 ## CRITICAL ERRORS QUICK REFERENCE
 
-### Top 5 Docker Errors to AVOID
+### Top 7 Docker Errors to AVOID
 
 1. **Wrong Package Manager** (`apt-get` on Oracle Linux)
    - Error: `apt-get: command not found`
@@ -41,6 +41,11 @@ These rules centralize common pitfalls and impose cross-cutting safeguards. They
    - Error: MySQL syntax error with `CREATE FUNCTION` on database-specific grants
    - Solution: Use `CREATE ROUTINE` instead of `CREATE FUNCTION` for database-level privileges
    - See: [Database Privilege Errors](#database-privilege-errors)
+
+7. **MySQL Privilege Mixing Error**
+   - Error: `ERROR 1221 (HY000): Incorrect usage of DB GRANT and GLOBAL PRIVILEGES`
+   - Solution: Separate database-specific and global privileges into different GRANT statements
+   - See: [MySQL Privilege Separation Error](#mysql-privilege-separation-error)
 
 ---
 
@@ -340,6 +345,30 @@ GRANT CREATE ROUTINE ON database_name.* TO 'user'@'%';
 
 -- Or omit the privilege entirely if not needed
 GRANT SELECT, INSERT, UPDATE, DELETE ON database_name.* TO 'user'@'%';
+```
+
+### MySQL Privilege Separation Error
+
+- **Common Error**: Mixing database-specific and global privileges in a single GRANT statement
+- **Error Message**: `ERROR 1221 (HY000): Incorrect usage of DB GRANT and GLOBAL PRIVILEGES`
+- **Root Cause**: MySQL does not accept mixing database-level and global-level privileges in the same GRANT statement
+- **Solution**: Separate database-specific and global privileges into different GRANT statements
+
+#### WRONG - Mixing Privileges
+```sql
+-- Will cause ERROR 1221: Cannot mix database and global privileges
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE ON database_name.* TO 'user'@'%';
+--                                                    ^^^^ FILE is a global privilege
+```
+
+#### CORRECT - Separated Privileges
+```sql
+-- Database-specific privileges (separate statement)
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP ON database_name.* TO 'user'@'%';
+GRANT CREATE ROUTINE ON database_name.* TO 'user'@'%';
+
+-- Global privileges (separate statement on *.*)
+GRANT FILE ON *.* TO 'user'@'%';
 ```
 
 ### MySQL Privilege Examples
