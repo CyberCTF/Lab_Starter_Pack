@@ -1,5 +1,5 @@
 ---
-description: Test Retry Logic and Error Correction
+description: Pytest retry policy: env-driven delays/limits, live logging, automatic correction between attempts
 globs: ["**/test*.py", "**/tests/**"]
 alwaysApply: true
 ---

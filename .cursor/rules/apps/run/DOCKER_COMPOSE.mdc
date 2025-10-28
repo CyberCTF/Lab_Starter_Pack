@@ -1,5 +1,5 @@
 ---
-description: Docker Compose Configuration — V2, Network, Ports, and Security
+description: Compose V2 rules: no version key, env-driven ports, healthchecks, depends_on with service_healthy, non-root
 globs: ["**/docker-compose*.yml"]
 alwaysApply: true
 ---

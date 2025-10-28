@@ -1,5 +1,5 @@
 ---
-description: Help Content Guidelines — No Flag Hints or Exploitation Guidance
+description: Player-facing content must not include hints to the flag or exploitation path; keep business-only docs
 globs: ["**/*.html", "**/*.md", "**/README.md"]
 alwaysApply: true
 ---

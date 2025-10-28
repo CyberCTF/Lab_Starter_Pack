@@ -1,5 +1,5 @@
 ---
-description: Other Configurations — Localization, Logging, Tests, CI/CD
+description: Non-functional requirements: TZ/UTF-8, structured logging, env-driven retries/cleanup, CI hints
 globs: ["**/.env*", "**/pytest.ini", ".github/workflows/**"]
 alwaysApply: true
 ---

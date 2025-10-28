@@ -1,5 +1,5 @@
 ---
-description: Dockerfile Workflow — Step-by-Step Verification Process
+description: Required Dockerfile workflow: detect base OS, choose correct package manager, then install
 globs: ["**/Dockerfile"]
 alwaysApply: true
 ---

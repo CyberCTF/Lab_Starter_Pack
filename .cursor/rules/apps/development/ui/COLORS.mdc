@@ -1,5 +1,5 @@
 ---
-description: Color Palette — Dark Mode Color Scheme
+description: Dark theme color tokens to ensure consistent shadcn-like styling across components
 globs: ["**/*.tsx", "**/*.jsx", "**/*.css", "**/*.scss"]
 alwaysApply: true
 ---

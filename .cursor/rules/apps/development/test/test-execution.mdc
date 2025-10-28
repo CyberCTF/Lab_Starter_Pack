@@ -1,5 +1,5 @@
 ---
-description: Test Execution and Docker Cleanup
+description: Test execution contract: cleanup via env-controlled docker-compose down -v, modes, and robust handling
 globs: ["**/test*.py", "**/tests/**"]
 alwaysApply: true
 ---

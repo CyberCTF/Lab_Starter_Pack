@@ -1,5 +1,5 @@
 ---
-description: Directory Structure — Complete Project Directory Organization
+description: Canonical lab directory layout: where code, tests, compose, and metadata must live
 globs: ["**/*"]
 alwaysApply: true
 ---

@@ -1,5 +1,5 @@
 ---
-description: UI Overview — Design System Requirements and Visual Guidelines
+description: UI design system: shadcn-like, Tailwind, dark mode, minimalist professional look
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
 alwaysApply: true
 ---

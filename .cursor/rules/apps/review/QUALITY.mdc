@@ -1,5 +1,5 @@
 ---
-description: Quality Assurance — Content and User Experience Review
+description: Review QA checklist: remove warnings, maintain professional tone, ensure realistic UX
 globs: ["**/.ctf/**", "**/*.html", "**/*.js", "**/*.md"]
 alwaysApply: true
 ---

@@ -1,5 +1,5 @@
 ---
-description: Test Requirements and Coverage
+description: Required pytest coverage: containers health, services availability, ports, DB connectivity, app basics
 globs: ["**/test*.py", "**/tests/**"]
 alwaysApply: true
 ---

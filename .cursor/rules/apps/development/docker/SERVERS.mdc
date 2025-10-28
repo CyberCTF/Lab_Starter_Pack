@@ -1,5 +1,5 @@
 ---
-description: Server Configuration — Apache and Nginx Port Configuration
+description: Ensure web server listens on assigned internal port; align Listen/VirtualHost, healthcheck, and compose mapping
 globs: ["**/Dockerfile", "**/*.conf"]
 alwaysApply: true
 ---

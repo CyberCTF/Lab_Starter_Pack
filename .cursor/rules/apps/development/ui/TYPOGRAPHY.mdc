@@ -1,5 +1,5 @@
 ---
-description: Typography — Font Families and Font Sizes
+description: Typography tokens for readable, professional UI (fonts and sizes)
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
 alwaysApply: true
 ---

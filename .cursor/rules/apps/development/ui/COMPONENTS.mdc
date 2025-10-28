@@ -1,5 +1,5 @@
 ---
-description: UI Components — Layout, Form, and Data Display Components
+description: Required UI primitives: layout, forms, tables, and cards to achieve professional shadcn-like UI
 globs: ["**/components/**", "**/*.tsx", "**/*.jsx"]
 alwaysApply: true
 ---

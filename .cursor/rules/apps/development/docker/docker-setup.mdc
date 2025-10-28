@@ -1,5 +1,5 @@
 ---
-description: Docker Configuration and Build Setup
+description: Prescriptive Docker setup for labs: structure, dev/prod compose parity, healthchecks, security, env-driven ports
 globs: ["**/docker-compose*.yml", "**/Dockerfile", "**/build/**", "**/tests/**", "**/.ctf/SCENARIO.md", "**/.ctf/FLAG.md"]
 alwaysApply: true
 ---

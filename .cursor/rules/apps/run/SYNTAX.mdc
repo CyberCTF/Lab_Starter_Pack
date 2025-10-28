@@ -1,5 +1,5 @@
 ---
-description: Syntax Rules — Environment Variables and Special Characters
+description: Compose env syntax guardrails: always quote special-char passwords; prefer mapping syntax over list
 globs: ["**/docker-compose*.yml", "**/.env*"]
 alwaysApply: true
 ---

@@ -1,5 +1,5 @@
 ---
-description: Runtime Extensions — PHP, Python, Node.js Extensions and Dependencies
+description: Runtime requirements per stack: PHP extensions, Python wheels, Node lockfiles; ensure ports/env usage
 globs: ["**/Dockerfile", "**/package.json", "**/requirements.txt", "**/composer.json"]
 alwaysApply: true
 ---

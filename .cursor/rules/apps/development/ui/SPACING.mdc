@@ -1,5 +1,5 @@
 ---
-description: Spacing — Spacing Scale and Layout Spacing
+description: Spacing scale tokens to keep consistent rhythm and spacing across the UI
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
 alwaysApply: true
 ---

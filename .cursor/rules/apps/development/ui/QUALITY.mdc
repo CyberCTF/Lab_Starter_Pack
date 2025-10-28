@@ -1,5 +1,5 @@
 ---
-description: UI Quality Assurance — Design Review, Component Review, and Common Issues
+description: UI QA checklist to enforce shadcn-like consistency, dark mode, accessibility, and UX quality
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss"]
 alwaysApply: true
 ---

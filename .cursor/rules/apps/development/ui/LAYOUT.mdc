@@ -1,5 +1,5 @@
 ---
-description: Page Layout — Structure Requirements and Navigation
+description: Standard page shell and navigation patterns for a minimal, professional dashboard-like UI
 globs: ["**/*.tsx", "**/*.jsx", "**/*.html"]
 alwaysApply: true
 ---

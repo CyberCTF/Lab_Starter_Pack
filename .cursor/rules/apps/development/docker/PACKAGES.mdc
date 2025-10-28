@@ -1,5 +1,5 @@
 ---
-description: Package Managers and Package Management — Avoiding Wrong Package Manager Errors
+description: Match package manager to base OS; avoid apt-get-on-Oracle errors; verify via /etc/os-release; correct tool names
 globs: ["**/Dockerfile"]
 alwaysApply: true
 ---

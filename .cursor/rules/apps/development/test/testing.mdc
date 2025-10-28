@@ -1,5 +1,5 @@
 ---
-description: Docker and Application Testing Framework - Overview
+description: Testing framework overview: root-level tests dir, categories, principles, and related docs
 globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
 alwaysApply: true
 ---

@@ -1,5 +1,5 @@
 ---
-description: Review Phase Specific Rules and Requirements
+description: Review phase contract: single retry cap, timed steps, live logs, pass criteria
 globs: ["**/REVIEW.md", "**/.ctf/**"]
 alwaysApply: true
 ---

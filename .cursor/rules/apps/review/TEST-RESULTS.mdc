@@ -1,5 +1,5 @@
 ---
-description: Test Results Documentation — Lab Validation Results Template
+description: Required test results artefacts under .ctf/test_results with clear pass/fail summaries
 globs: ["**/.ctf/test_results/**", "**/test_results/**"]
 alwaysApply: true
 ---

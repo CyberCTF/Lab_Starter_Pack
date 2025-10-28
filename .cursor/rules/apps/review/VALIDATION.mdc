@@ -1,5 +1,5 @@
 ---
-description: Lab Validation — Test Suite, User Experience, Technical Validation
+description: End-to-end lab validation contract: tests pass, UX coherent, Docker healthy, retry logging present
 globs: ["**/.ctf/**", "**/test_results/**", "**/tests/**", "**/pytest.ini"]
 alwaysApply: true
 ---

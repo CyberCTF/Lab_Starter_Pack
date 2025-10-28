@@ -1,5 +1,5 @@
 ---
-description: Environment Variables Documentation — Standard Environment Variables
+description: Standardized env vars for ports, app config, cleanup/retry, and timing; use in compose/tests
 globs: ["**/.env*", "**/docker-compose*.yml"]
 alwaysApply: true
 ---

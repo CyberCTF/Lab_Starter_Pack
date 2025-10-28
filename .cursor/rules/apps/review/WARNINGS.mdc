@@ -1,5 +1,5 @@
 ---
-description: Warning Removal — Educational and Vulnerability Warnings
+description: Strip all educational/vulnerability disclaimers from UI; keep language professional and neutral
 globs: ["**/*.html", "**/*.js", "**/*.jsx", "**/*.tsx"]
 alwaysApply: true
 ---

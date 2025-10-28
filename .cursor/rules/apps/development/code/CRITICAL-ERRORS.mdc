@@ -1,5 +1,5 @@
 ---
-description: Critical Errors Quick Reference — Top 7 Docker Errors to Avoid
+description: High-signal guardrails: package manager mismatch, obsolete packages, quoting in compose, ports, MySQL grants
 globs: ["**/Dockerfile", "**/docker-compose*.yml", "**/*.sql"]
 alwaysApply: true
 ---

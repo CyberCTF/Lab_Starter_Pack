@@ -1,5 +1,5 @@
 ---
-description: Phase Timing and Logging
+description: Phase timing logs: record start/end/duration for Plan/Lab/Review/Metadata under .ctf/timing_logs
 globs: ["**/.ctf/timing_logs/**", "**/.ctf/**"]
 alwaysApply: true
 ---
