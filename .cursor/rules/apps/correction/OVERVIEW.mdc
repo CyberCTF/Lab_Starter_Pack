@@ -1,0 +1,21 @@
+---
+description: Correction phase — purpose, scope, and alignment with review findings
+globs: ["**/build/**", "**/tests/**", "**/.ctf/REVIEW.md"]
+alwaysApply: false
+---
+
+# Correction Phase Overview
+
+## Purpose
+- Apply fixes based on `.ctf/REVIEW.md` findings to produce a high-quality lab.
+- Keep changes scoped to `build/` and `tests/`; do not alter `.ctf/` except to append outcomes.
+
+## Scope
+- Dockerfiles, compose files, healthchecks
+- Database init scripts and privileges
+- Application code and UI
+- Tests and test configuration
+
+## Coordination
+- Use outputs from Review (`.ctf/REVIEW.md`, `.ctf/review_logs/`) to drive corrections.
+- When complete, run tests and produce final outputs per the correction outputs spec.

@@ -1,5 +1,5 @@
 ---
-description: End-to-end lab validation contract: tests pass, UX coherent, Docker healthy, retry logging present
+description: End-to-end lab validation (assessment-only): tests must pass, UX coherent, Docker healthy; produce findings for correction
 globs: ["**/.ctf/**", "**/test_results/**", "**/tests/**", "**/pytest.ini"]
 alwaysApply: true
 ---
@@ -31,10 +31,7 @@ Ensure everything works correctly and the lab is fully functional.
 - **Database Integration**: Database connections and queries work properly
 - **File System**: All required files and directories are present and accessible
 
-### 4. Test Retry and Correction
-- **Infinite Recursive Retry**: Tests run until they pass (no retry limit)
-- **Retry Delay Configuration**: Configurable via environment variables (no hardcoded values)
-- **Automatic Error Analysis**: Error correction between retry attempts
-- **Success Guarantee**: Tests run until they pass
-- **Retry Status Display**: Clear display of retry count (e.g., "X tries used")
-- **Debug Logging**: All attempts logged for debugging
+### 4. Review Outputs (No Auto-Correction)
+- Document failures and gaps in `.ctf/test_results/` and `.ctf/REVIEW.md`.
+- No automatic fixes or infinite retries in this phase.
+- Provide clear, actionable items for the Correction phase.

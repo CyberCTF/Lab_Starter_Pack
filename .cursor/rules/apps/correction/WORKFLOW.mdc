@@ -1,0 +1,25 @@
+---
+description: Correction workflow — consume REVIEW.md, implement fixes, rerun tests with bounded retries, document outcomes
+globs: ["**/build/**", "**/tests/**", "**/.ctf/REVIEW.md", "**/docker-compose*.yml", "**/Dockerfile", "**/*.sql"]
+alwaysApply: false
+---
+
+# Correction Workflow
+
+## Steps
+1. Ingest findings from `.ctf/REVIEW.md` and categorize (Docker/Compose, DB, App/UI, Tests, Docs).
+2. Implement fixes in `build/` and `tests/` according to development/run rules.
+3. Rerun tests with env-driven retries; log each attempt and status.
+4. Update `.ctf/REVIEW.md` with corrections summary; if all pass, create `.ctf/GOOD.md`.
+
+## Constraints
+- No changes to `.ctf/` inputs except appending results.
+- Respect Compose V2, env-driven ports, and healthchecks.
+- Enforce DB init order and GRANT separation.
+- Maintain UI professionalism (no warnings), follow design system.
+
+## Success Criteria
+- All tests pass reliably.
+- Containers healthy and ports correct.
+- Flag extractable and appropriate.
+- Documentation coherent and professional.
