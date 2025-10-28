@@ -1,5 +1,5 @@
 ---
-description: Phase timing logs: record start/end/duration for Plan/Lab/Review/Metadata under .ctf/timing_logs
+description: Phase timing logs: record start/end/duration for Plan/Lab/Review/Correction/Metadata under .ctf/timing_logs
 globs: ["**/.ctf/timing_logs/**", "**/.ctf/**"]
 alwaysApply: true
 ---
@@ -15,6 +15,7 @@ Log start time, end time, and total duration for each workflow phase
 - Plan Phase (SCENARIO.md + FLAG.md creation)
 - Lab Phase (complete lab directory creation)
 - Review Phase (validation and testing)
+- Correction Phase (apply fixes following REVIEW.md)
 - Metadata Phase (metadata.md/json creation)
 
 ## Logging Format
@@ -30,7 +31,8 @@ Log start time, end time, and total duration for each workflow phase
 [PLAN] Started: 2024-01-15 10:00:00, Completed: 2024-01-15 10:05:30, Duration: 5m 30s
 [LAB] Started: 2024-01-15 10:05:30, Completed: 2024-01-15 10:45:15, Duration: 39m 45s
 [REVIEW] Started: 2024-01-15 10:45:15, Completed: 2024-01-15 10:52:00, Duration: 6m 45s
-[METADATA] Started: 2024-01-15 10:52:00, Completed: 2024-01-15 10:55:10, Duration: 3m 10s
+[CORRECTION] Started: 2024-01-15 10:52:00, Completed: 2024-01-15 11:20:00, Duration: 28m 00s
+[METADATA] Started: 2024-01-15 11:20:00, Completed: 2024-01-15 11:23:10, Duration: 3m 10s
 ```
 
 ## Timing Configuration
