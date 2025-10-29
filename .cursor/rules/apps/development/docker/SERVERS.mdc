@@ -44,6 +44,8 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 RUN sed -i 's/Listen 80/Listen 80\nListen 3206/' /etc/apache2/ports.conf
 
 # Create custom VirtualHost for port 3206
+# CRITICAL: Use escaped newlines (\n\) to prevent Docker parse errors
+# See DOCKERFILE-SYNTAX.mdc for details on why raw <VirtualHost> causes "unknown instruction" errors
 RUN echo "<VirtualHost *:3206>\n\
     DocumentRoot /var/www/html\n\
     <Directory /var/www/html>\n\

@@ -1,0 +1,45 @@
+---
+description: Dockerfile syntax guardrails — prevent parse errors from config snippets, HTML, or XML appearing as instructions
+globs: ["**/Dockerfile", "**/Dockerfile.*"]
+alwaysApply: true
+---
+
+# Dockerfile Syntax Rules
+
+## Critical: Never Include Raw HTML/XML/Config in RUN Commands
+
+### INCORRECT - Will Cause Parse Errors
+```dockerfile
+RUN echo "<VirtualHost *:3206>
+    DocumentRoot /var/www/html
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+# ERROR: Docker parser sees <VirtualHost as an unknown instruction
+```
+
+### CORRECT - Proper Escaping or Heredoc
+```dockerfile
+# Method 1: Use escaped quotes and escaped newlines
+RUN echo "<VirtualHost *:3206>\n\
+    DocumentRoot /var/www/html\n\
+</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
+
+# Method 2: Use printf for multi-line
+RUN printf '<VirtualHost *:3206>\n\
+    DocumentRoot /var/www/html\n\
+</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
+
+# Method 3: Copy from a prepared config file (preferred)
+COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+```
+
+## Rules
+- When writing Apache/Nginx configs in Dockerfile: use escaped newlines (`\n\`) or COPY from a file.
+- Never write raw-heavy syntax like `<VirtualHost`, `<Directory>`, or XML-like tags as unescaped strings in RUN.
+- Use printf for complex multi-line configs; prefer COPY for longer config files.
+- Test Dockerfile syntax with `docker build --dry-run` or similar validation before committing.
+
+## Common Error Patterns
+- `<VirtualHost` without escaping → "unknown instruction: <VIRTUALHOST"
+- `<Directory>` without escaping → parse error
+- Multi-line echo without `\n\` → may still parse incorrectly
+- XML/HTML tags appearing on lines Docker interprets as instructions
