@@ -1,5 +1,62 @@
 ---
+description: Authoring rules for generating realistic scenarios (company, crown jewels, stack, and business risks tied to the specific vulnerability)
 alwaysApply: true
+globs: ["**/.ctf/context/SCENARIO.md", "**/.cursor/rules/context/SCENARIO.mdc"]
 ---
 
-TODO
+# Scenario Authoring Rules (Generation)
+
+## Purpose
+Produce a concise, realistic business scenario that frames the lab’s vulnerability in a plausible context, per PHILOSOPHY.
+
+## Required Sections (in this exact order)
+1) Company
+- Choose ONE name from the approved list (e.g., MarketRetail, FinancePartners, LogisticsExpress, etc.).
+- 1–2 sentences describing what the company does.
+
+2) Crown Jewels
+- 3–5 bullets of business-critical assets relevant to the lab (e.g., customer PII, admin tokens, payment/refund authorizations, internal APIs).
+
+3) Application Typology and Stack
+- Service(s) involved and tech stack (framework/runtime, DB, web server) in 1–3 bullets.
+- Deployment basics (containers/compose, ports via env) in 1–2 bullets.
+
+4) Business Risks (specific to THIS vulnerability)
+- 3–4 bullets mapping exploit outcomes to business impact (fraud, data disclosure, regulatory risk), NOT generic ops risks.
+- Use concrete consequences (e.g., unauthorized refunds with direct loss; exposure of PII with regulatory penalties).
+
+5) Impact Focus
+- 1 short paragraph tying the exploit to tangible outcomes (financial loss, trust erosion), no remediation or solutions.
+
+## Security and Content Constraints
+- Do NOT describe exploitation steps, payloads, or give hints.
+- Do NOT include the flag value or its exact location.
+- People names: only from provided random list (if needed). Avoid real persons.
+- Emails: only `@cyberctf.fr` domain or username without domain.
+- No real-world external domains. No “John Doe”.
+
+## Style
+- Keep total length under ~250 words.
+- Plain, professional tone. Business-first phrasing.
+- Avoid security-jargon overload; focus on business impact of this vulnerability.
+
+## Mini Example (structure only, do NOT copy verbatim)
+Company
+- MarketRetail operates multi-brand e‑commerce with centralized loyalty.
+
+Crown Jewels
+- Customer profiles and loyalty balances
+- Refund authorization tokens
+- Back‑office admin API credentials
+
+Application Typology and Stack
+- PHP 8 (Apache) web, MySQL database; containerized with Compose
+- Env-driven ports (WEB_PORT=3206, DB_HOST_PORT=3207)
+
+Business Risks (tied to this vulnerability)
+- Exposure of admin tokens → unauthorized refunds and order tampering
+- Access to customer PII → regulatory penalties and churn
+- Leakage of internal API keys → downstream service abuse
+
+Impact Focus
+- Successful exploitation could enable fraudulent refunds and data access, producing direct financial loss and reputational damage.

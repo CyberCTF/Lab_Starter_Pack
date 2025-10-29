@@ -1,5 +1,37 @@
 ---
+description: Authoring rules for generating a single realistic flag (actionable business evidence) per PHILOSOPHY
 alwaysApply: true
+globs: ["**/.ctf/context/FLAG.md", "**/.cursor/rules/context/FLAG.mdc"]
 ---
 
-TODO
+# Flag Authoring Rules (Generation)
+
+## Purpose
+Define ONE flag that is realistic, actionable evidence of exploitation (not a contrived token), aligned with business impact.
+
+## Allowed Flag Types (pick ONE)
+- Admin/privileged credential or API token that enables admin actions (refunds, user mgmt)
+- Financial data with misuse potential (masked where appropriate, but verifiable by tests)
+- Personal identification data with clear impact (identity theft risk)
+- Internal service/API key that enables lateral movement or data extraction
+
+## Mandatory Requirements
+- Exactly one flag per lab.
+- Must be data that exists naturally in the system (DB row, config secret, environment value, file content)—not a fabricated `CTF{...}`.
+- Keep the definition concise (≤ 20 lines in `.ctf/context/FLAG.md`).
+- Include: what the data is, why it matters (business impact), and a 1–2 sentence high‑level approach (no step‑by‑step, no payloads).
+
+## Security and Content Constraints
+- Emails, if used, must end with `@cyberctf.fr` or be username‑only.
+- Use only provided random names for persons; avoid real identities.
+- No real external domains, no generic names like “John Doe”.
+- Do not include the actual flag value in any player‑facing UI or docs.
+
+## Examples (templates to adapt; do NOT copy verbatim)
+- Admin API token stored in DB `dev_XXXX.core_secrets` under key `admin_api_token`; enables unauthorized refunds/orders.
+- Back‑office user credential (username + password hash) from `users_admin`; proves privilege escalation path.
+- Internal payment gateway key from `config_secrets`; allows replay/refund abuse.
+
+## Validation
+- Tests must be able to extract and assert the flag via the intended exploit path.
+- The flag must directly enable or prove a meaningful business impact (fraud, disclosure, escalation).

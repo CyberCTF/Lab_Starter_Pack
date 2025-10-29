@@ -78,6 +78,34 @@ FLUSH PRIVILEGES;
 - **User Creation**: Always use `IF NOT EXISTS` for user creation to avoid conflicts.
   - CORRECT: `CREATE USER IF NOT EXISTS 'user'@'%' IDENTIFIED BY 'password';`
 
+## MySQL 5.6 Compatibility Notes
+
+- `CREATE USER IF NOT EXISTS` is NOT supported prior to MySQL 5.7.3.
+- If using MySQL 5.6 or older, prefer creating the user via Compose env (`MYSQL_USER`/`MYSQL_PASSWORD`) and perform only GRANT statements in init scripts.
+- Avoid duplicate user creation errors: remove `CREATE USER` from SQL init files when the user is provisioned by Compose.
+
+### Example (MySQL 5.6)
+```sql
+-- 02-create-users.sql (skip CREATE USER if provided by Compose)
+-- User is created by environment variables: MYSQL_USER / MYSQL_PASSWORD
+-- Only grant database-specific privileges here
+GRANT SELECT, INSERT, UPDATE, DELETE ON database_name.* TO 'app_user'@'%';
+FLUSH PRIVILEGES;
+```
+
+## utf8mb4 and Index Length Limits (MySQL 5.6)
+
+- MySQL 5.6 with `utf8mb4` has a 767-byte index prefix limit.
+- A `UNIQUE` index on `VARCHAR(255)` (4 bytes/char) exceeds the limit: 255 × 4 = 1020 bytes.
+- Use a prefix index of 191 characters to remain under 767 bytes (191 × 4 = 764 bytes).
+
+### Example
+```sql
+-- Instead of: UNIQUE KEY (username)
+-- Use prefix index:
+UNIQUE KEY idx_username (username(191));
+```
+
 ## MySQL CREATE FUNCTION Error
 
 - **Common Error**: MySQL syntax error when using `CREATE FUNCTION` privilege on database-specific grants

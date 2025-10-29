@@ -1,0 +1,35 @@
+---
+description: MySQL 5.6 compatibility — user creation and utf8mb4 index length constraints
+globs: ["**/*.sql", "**/docker-compose*.yml"]
+alwaysApply: true
+---
+
+# MySQL 5.6 Compatibility
+
+## User Creation
+- `CREATE USER IF NOT EXISTS` is unavailable in MySQL 5.6; it requires 5.7.3+.
+- When targeting MySQL 5.6, create the application user via Compose environment variables (`MYSQL_USER`, `MYSQL_PASSWORD`).
+- SQL init scripts should then only GRANT privileges (no CREATE USER) to avoid errors during re-runs.
+
+### Correct (MySQL 5.6 with Compose-managed user)
+```sql
+-- 02-create-users.sql
+-- User created by Compose — only grant privileges here
+GRANT SELECT, INSERT, UPDATE, DELETE ON database_name.* TO 'app_user'@'%';
+FLUSH PRIVILEGES;
+```
+
+## utf8mb4 Index Length
+- With `utf8mb4` (4 bytes/char), a `UNIQUE` index on `VARCHAR(255)` exceeds the 767-byte limit in MySQL 5.6.
+- Use a 191-character prefix for unique indexes to stay within limits.
+
+### Correct
+```sql
+-- 03-init-data.sql (or schema definition)
+-- Replace full-length UNIQUE on VARCHAR(255) with prefix index
+UNIQUE KEY idx_username (username(191));
+```
+
+## Reminder
+- Keep database-specific and global privileges separated.
+- Maintain numbered init scripts and `IF NOT EXISTS` where supported.
