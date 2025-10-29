@@ -1,0 +1,16 @@
+---
+description: Review must validate build/docker-compose.dev.yml with the same rigor as prod compose
+globs: ["**/build/docker-compose.dev.yml", "**/docker-compose.yml"]
+alwaysApply: true
+---
+
+# Review Validation of Dev Compose
+
+## Requirements
+- Validate `build/docker-compose.dev.yml` in addition to root `docker-compose.yml`:
+  - Paths: no duplicate `build/` segments; use `./web`, `./database/init` relative to `build/`.
+  - Ports: identical internal/external (`3206:3206`, `3207:3207`), env-driven.
+  - Healthchecks: web curl on `3206`, MySQL `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"` with `start_period`.
+  - Security: non-root users where applicable.
+- Record any deviations explicitly under Docker findings in `.ctf/REVIEW.md`.
+

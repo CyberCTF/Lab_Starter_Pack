@@ -1,0 +1,29 @@
+---
+description: MySQL container healthcheck and port configuration best-practices to avoid false negatives
+globs: ["**/docker-compose*.yml"]
+alwaysApply: true
+---
+
+# MySQL Healthcheck and Ports
+
+## Port Mapping
+- Map DB ports identically: `${DB_HOST_PORT:-3207}:3207`.
+- Ensure MySQL server listens on the same internal port: `command: ["--port=3207", ...]`.
+
+## Healthcheck Command (MySQL 8)
+- Use:
+```
+healthcheck:
+  test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" || exit 1"]
+  interval: 30s
+  timeout: 10s
+  retries: 5
+  start_period: 30s
+```
+- Avoid `-h 127.0.0.1` inside the container; it can break socket defaults and cause false negatives.
+- Quote the password; never leak it via unquoted env with special characters.
+
+## Initialization Scripts
+- Mount as read-only: `./database/init:/docker-entrypoint-initdb.d:ro`.
+- Scripts must create DB first, then users, then grants (separate DB vs global privileges) with `IF NOT EXISTS`.
+

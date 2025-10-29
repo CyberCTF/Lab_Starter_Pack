@@ -1,0 +1,33 @@
+---
+description: Dev/Prod compose parity and path correctness; validate internal/external ports and relative paths when compose lives under build/
+globs: ["**/docker-compose*.yml", "**/build/**"]
+alwaysApply: true
+---
+
+# Dev/Prod Compose Parity and Path Rules
+
+## Path Correctness (when dev compose is inside build/)
+- If `build/docker-compose.dev.yml` lives inside `build/`, service build contexts MUST be relative to `build/`:
+  - Correct: `context: ./web`, `dockerfile: Dockerfile`
+  - Incorrect: `context: ./build/web` (double `build`)
+- Mounts and volumes must also be relative: `./database/init` not `./build/database/init`.
+
+## Port Consistency (Compose V2)
+- Use env-driven identical internal/external ports:
+  - Web: `${WEB_PORT:-3206}:3206`
+  - DB: `${DB_HOST_PORT:-3207}:3207`
+- Services must actually listen on those internal ports (e.g., MySQL `--port=3207`, Apache `Listen 3206`).
+
+## Dev/Prod Parity
+- Dev (`build/docker-compose.dev.yml`) and prod (`docker-compose.yml`) must define the same services, ports, and healthchecks (only dev features like volumes/hot-reload may differ).
+- Both files must use Compose V2 (no `version:` key).
+
+## Healthchecks
+- Web: HTTP health endpoint on `3206` using `curl -fsS http://localhost:3206/health` (or equivalent).
+- DB (MySQL 8): `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"`
+  - Do not pass `-h 127.0.0.1` inside container (use socket/localhost defaults).
+  - Provide `start_period: 30s` to allow initialization before first check.
+
+## Security and Users
+- Web and DB should run as non-root users (e.g., `user: "33:33"` for Apache/PHP, `user: "999:999"` for MySQL official image) where appropriate.
+

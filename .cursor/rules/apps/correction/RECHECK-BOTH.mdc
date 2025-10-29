@@ -1,0 +1,15 @@
+---
+description: Correction must re-run validations against both prod and dev compose after fixes
+globs: ["**/build/docker-compose.dev.yml", "**/docker-compose.yml", "**/tests/**"]
+alwaysApply: true
+---
+
+# Correction Recheck on Dev and Prod Compose
+
+## Mandatory Behavior
+- After applying fixes per `.ctf/REVIEW.md`, re-run the full validation against BOTH:
+  - Root `docker-compose.yml` (prod)
+  - `build/docker-compose.dev.yml` (dev)
+- Ensure parity: same services, ports, healthchecks; only dev conveniences may differ (volumes, hot reload).
+- Only when both pass and pytest (including flag extraction) passes, append success to `.ctf/REVIEW.md`; otherwise, record failures with precise categories.
+
