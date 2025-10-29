@@ -1,0 +1,19 @@
+---
+description: Review must assess Docker, DB, UI, and pytest including flag extraction; no code edits in this phase
+globs: ["**/.ctf/**", "**/tests/**", "**/docker-compose*.yml", "**/*.sql", "**/build/**"]
+alwaysApply: true
+---
+
+# Review Full-Scope Assessment
+
+## Mandatory Checks
+- Docker: health, ports, depends_on with service_healthy, non-root, compose V2, healthchecks.
+- Database: init order, user-before-GRANT, privilege separation, connection success.
+- UI: design system compliance (shadcn-like, dark mode, professional), no warnings/disclaimers.
+- Tests: run pytest and verify flag extraction path; ensure coverage of core workflows.
+
+## Outputs
+- Record failures with explicit categories: Docker, Database privilege/connection, UI, Tests/Flag.
+- Write `.ctf/REVIEW.md` and detailed logs in `.ctf/review_logs/`.
+- Do not perform any code/config edits in review.
+

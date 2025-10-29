@@ -1,0 +1,32 @@
+---
+description: Correction must consume REVIEW.md and re-validate the entire lab (Docker, DB, UI, pytest/flag) with no ad-hoc scripts
+globs: ["**/build/**", "**/tests/**", "**/.ctf/REVIEW.md", "**/docker-compose*.yml", "**/*.sql", "**/*.html", "**/*.tsx", "**/*.jsx"]
+alwaysApply: true
+---
+
+# Correction Strict Compliance
+
+## Core Contract
+- Consume `.ctf/REVIEW.md` as the single source of truth for what to fix.
+- Apply fixes only within `build/` and `tests/`; do not add orchestration scripts.
+- After fixes, MUST re-run the full lab validation (same scope as review):
+  - Docker: compose V2, service health, correct ports, non-root, healthchecks.
+  - Database: initialization order, user creation before GRANT, privilege separation, connection OK.
+  - UI: shadcn-like constraints, dark mode, no warnings/disclaimers, professional layout.
+  - Tests: run pytest including flag extraction path; all must pass.
+
+## Required Validations (map to common findings)
+- Database connection must succeed (no "Database connection failed").
+- Docker engine/compose compatibility respected (no "Docker version" issues).
+- MySQL privileges correct (no mixed global/db GRANT, no CREATE FUNCTION on DB scope).
+- UI meets quality checklist (no UI rule violations).
+
+## Process Requirements
+- Use env-driven retries and cleanup only via existing tests and compose; zero hardcoded timeouts.
+- Respect previously established configuration (ports, env var names, healthchecks, DB scripts ordering).
+- Document changes by appending a concise summary to `.ctf/REVIEW.md`; produce `.ctf/GOOD.md` only when tests pass.
+
+## Prohibited
+- Introducing new ad-hoc runner scripts or custom orchestrators.
+- Skipping any validation area (Docker, DB, UI, pytest/flag extraction).
+
