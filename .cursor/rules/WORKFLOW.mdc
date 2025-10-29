@@ -9,14 +9,14 @@ The lab production workflow is in 5 phases :
 1. Context creation
 2. Lab Generation
 3. Review (assessment-only)
-4. Correction (optionnal)
+4. Correction (optional)
 5. Metadata generation
 
 ## Phase 1 - Context creation
 
 Purpose: collect and validate the library page (source of truth) and any author-provided overrides before generation.
 
-**Rules:** `.cursor/rules/context/` 
+**Rules:** `.cursor/rules/context/`
 
 **Input:** `.ctf/LIBRARY_PAGE.md`
 
@@ -30,7 +30,7 @@ Purpose: Develop and structure a complete lab using the rules as guidelines.
 
 **Input:** `.ctf/LIBRARY_PAGE.md` + `.ctf/context/SCENARIO.md` + `.ctf/context/FLAG.md`
 
-**Output:** `build` + `test` (folders containing the lab and the associated tests)
+**Output:** `build/` + `tests/` (folders containing the lab and the associated tests), + `.ctf/LAB_CREATION_LOG.md`
 
 All generated files must follow the PHILOSOPHY constraints.
 
@@ -40,9 +40,9 @@ Purpose: automated QA and human review step to assess safety and quality before 
 
 **Rules:** `.cursor/rules/apps/review/`
 
-**Input:** `build/` + `test/` (folders containing the lab and the associated tests)
+**Input:** `build/` + `test/` (folders containing the lab and the associated tests) + `.ctf/LAB_CREATION_LOG.md`
 
-**Output:** `.ctf/REVIEW.md` (findings and recommendations) + logs in `.ctf/review_logs/`
+**Output:** `.ctf/REVIEW.md` (findings and recommendations) or `.ctf/GOOD.md` an empty file if the lab is working and nothing need to be change
 
 ## Phase 4 - Correction (optional)
 
@@ -50,9 +50,9 @@ Purpose: fix the lab and its associated tests following the findings written in 
 
 **Rules:** `.cursor/rules/apps/correction/`
 
-**Input:** `build/` + `test/` + `.ctf/REVIEW.md`
+**Input:** `build/` + `tests/` + `.ctf/REVIEW.md`
 
-**Output:** `build/` + `test/` (corrected), append notes to `.ctf/REVIEW.md`; when ready, produce `.ctf/GOOD.md`
+**Output:** `build/` + `tests/` (corrected), append notes to `.ctf/CORRECTION.md`; when the lab is working, produce a `.ctf/GOOD.md` file
 
 ## Phase 5 — Metadata generation
 
