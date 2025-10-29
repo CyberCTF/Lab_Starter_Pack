@@ -16,7 +16,7 @@ RUN echo "<VirtualHost *:3206>
 # ERROR: Docker parser sees <VirtualHost as an unknown instruction
 ```
 
-### CORRECT - Proper Escaping or Heredoc
+### CORRECT - Proper Escaping, Heredoc, or COPY
 ```dockerfile
 # Method 1: Use escaped quotes and escaped newlines
 RUN echo "<VirtualHost *:3206>\n\
@@ -30,6 +30,18 @@ RUN printf '<VirtualHost *:3206>\n\
 
 # Method 3: Copy from a prepared config file (preferred)
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+# Method 4: Use a heredoc via shell (bash) - reliable and readable
+SHELL ["/bin/bash", "-lc"]
+RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
+<VirtualHost *:3206>
+    DocumentRoot /var/www/html
+    <Directory /var/www/html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+EOF
 ```
 
 ## Rules

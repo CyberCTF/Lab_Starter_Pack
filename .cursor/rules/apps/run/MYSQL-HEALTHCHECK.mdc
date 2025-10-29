@@ -11,7 +11,7 @@ alwaysApply: true
 - Ensure MySQL server listens on the same internal port: `command: ["--port=3207", ...]`.
 
 ## Healthcheck Command (MySQL 8)
-- Use:
+- Preferred (socket/TCP-agnostic):
 ```
 healthcheck:
   test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" || exit 1"]
@@ -20,8 +20,17 @@ healthcheck:
   retries: 5
   start_period: 30s
 ```
-- Avoid `-h 127.0.0.1` inside the container; it can break socket defaults and cause false negatives.
-- Quote the password; never leak it via unquoted env with special characters.
+- Alternative (explicit TCP with custom port):
+```
+healthcheck:
+  test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" -h 127.0.0.1 -P 3207 || exit 1"]
+  interval: 30s
+  timeout: 10s
+  retries: 5
+  start_period: 30s
+```
+- Ensure the server listens on that internal port (e.g., `--port=3207`) when using `-P`.
+- Always quote the password; never leak it via unquoted env with special characters.
 
 ## Initialization Scripts
 - Mount as read-only: `./database/init:/docker-entrypoint-initdb.d:ro`.

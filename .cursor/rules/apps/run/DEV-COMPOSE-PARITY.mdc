@@ -24,8 +24,9 @@ alwaysApply: true
 
 ## Healthchecks
 - Web: HTTP health endpoint on `3206` using `curl -fsS http://localhost:3206/health` (or equivalent).
-- DB (MySQL 8): `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"`
-  - Do not pass `-h 127.0.0.1` inside container (use socket/localhost defaults).
+- DB (MySQL 8): must target the correct internal port and credentials. Either:
+  - Socket/TCP-agnostic: `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD"`
+  - Explicit TCP: `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.1 -P 3207`
   - Provide `start_period: 30s` to allow initialization before first check.
 
 ## Security and Users
