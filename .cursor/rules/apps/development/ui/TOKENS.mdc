@@ -1,0 +1,32 @@
+---
+description: Black-only token set and required CSS primitives for PHP UI
+globs: ["**/*.css", "**/*.php", "**/*.html"]
+alwaysApply: false
+---
+
+# Tokens (black-only)
+
+```css
+:root.theme-dark {
+  --bg: #000000;
+  --fg: #fafafa;
+  --card: #0a0a0a;
+  --muted: #a1a1a1;
+  --border: #1a1a1a;
+  --accent: #ffffff; /* links, primary buttons */
+  --accent-fg: #000000;
+
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+  --space-4: 1rem; --space-6: 1.5rem; --space-8: 2rem;
+
+  --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem; --text-xl: 1.25rem;
+}
+
+/* Required primitives */
+html.theme-dark, body { background: var(--bg); color: var(--fg); }
+.card { background: var(--card); border: 1px solid var(--border); }
+a, .link { color: var(--accent); }
+.btn-primary { background: var(--accent); color: var(--accent-fg); }
+.muted { color: var(--muted); }
+.container { margin: 0 auto; padding: 0 var(--space-4); max-width: 1200px; }
+```

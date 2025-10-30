@@ -1,0 +1,23 @@
+---
+description: Standard web/DB ports and parity (Compose V2)
+globs: ["**/docker-compose*.yml", "**/*.env", "**/build/**"]
+alwaysApply: false
+---
+
+# Standard DB/Web ports (Compose V2)
+
+## Web
+- Expose: "${WEB_PORT:-3206}:3206"
+- Web app MUST read DB port from env `DB_PORT`; default 3207.
+
+## DB (MySQL)
+- Expose: "${DB_HOST_PORT:-3207}:3207"
+- Server MUST listen on 3207:
+  command:
+    - "--port=3207"
+    - "--character-set-server=utf8mb4"
+    - "--collation-server=utf8mb4_unicode_ci"
+
+## Parity
+- Web `DB_PORT` value == DB internal port (3207).
+- No `version:` in compose (Compose V2).

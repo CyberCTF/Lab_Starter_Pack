@@ -1,0 +1,23 @@
+---
+description: Docker Compose web/DB contracts — paths, ports, env, healthchecks
+globs: ["**/docker-compose*.yml", "**/build/**"]
+alwaysApply: false
+---
+
+# Docker Compose Web/DB Contracts
+
+## Web (PHP/Apache example)
+- build:
+    context: ./web
+    dockerfile: Dockerfile
+- ports: ["${WEB_PORT:-3206}:3206"]
+- environment MUST include: `WEB_PORT=3206`, `DB_HOST=database`, `DB_PORT=3207`
+- healthcheck: `curl -f http://localhost:3206/` (or `/health`)
+
+## Database (MySQL 8)
+- image: `mysql:8.0`
+- ports: ["${DB_HOST_PORT:-3207}:3207"]
+- command: ["--port=3207","--character-set-server=utf8mb4","--collation-server=utf8mb4_unicode_ci"]
+- environment: `MYSQL_ROOT_PASSWORD`, `MYSQL_DATABASE`, `TZ`
+- volumes: ["./database/init:/docker-entrypoint-initdb.d:ro"]
+- healthcheck: `mysqladmin ping` (quoted password) on `-P 3207`

@@ -1,4 +1,25 @@
 ---
+description: Dev compose inside build/ — enforce path and port parity with prod
+globs: ["**/build/docker-compose.dev.yml", "**/docker-compose.yml"]
+alwaysApply: false
+---
+
+# Dev Compose inside build/: path and port parity
+
+## Paths (when dev compose lives in build/)
+- build.context MUST be relative to build/: use `./web` not `./build/web`
+- dockerfile MUST be relative to service dir: `Dockerfile`
+- volumes/init scripts: `./database/init:/docker-entrypoint-initdb.d:ro` (read-only)
+
+## Ports (Compose V2)
+- Web: `${WEB_PORT:-3206}:3206` and Apache must listen on 3206
+- DB: `${DB_HOST_PORT:-3207}:3207` and MySQL must listen on 3207 (`--port=3207`)
+- Web env `DB_PORT` MUST equal internal DB port (3207)
+
+## depends_on + health
+- Web depends_on database with `condition: service_healthy`
+- No `version:` key in compose (V2)
+---
 description: Dev/Prod compose parity and path correctness; validate internal/external ports and relative paths when compose lives under build/
 globs: ["**/docker-compose*.yml", "**/build/**"]
 alwaysApply: true

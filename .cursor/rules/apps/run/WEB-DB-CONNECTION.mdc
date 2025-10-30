@@ -1,0 +1,16 @@
+---
+description: Web → DB connection contract for PHP apps (mysqli/PDO)
+globs: ["**/build/web/**", "**/*.php", "**/docker-compose*.yml"]
+alwaysApply: false
+---
+
+# Web → DB connection contract
+
+## PHP mysqli/PDO
+- Always pass port from env var:
+  - PHP: `$dbPort = getenv('DB_PORT') ?: '3207';`
+- mysqli: `new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, (int)$dbPort)`
+- PDO: `new PDO("mysql:host=$host;port=$dbPort;dbname=$db;charset=utf8mb4", ...)`
+
+## Defaults
+- Fallback port MUST be 3207 (not 3306) to match compose.
