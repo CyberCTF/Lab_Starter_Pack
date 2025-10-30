@@ -1,0 +1,47 @@
+---
+description: HTML/CSS best practices — semantic markup, accessibility, responsive design (PHP templates)
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js"]
+alwaysApply: false
+---
+
+# HTML & CSS Best Practices
+
+## Key Principles
+- Write semantic HTML to improve accessibility and SEO.
+- Use external CSS (no inline styles for layout/visuals).
+- Ensure responsive design using media queries and flexible layouts.
+- Prioritize accessibility with ARIA roles/attributes and focus styles.
+
+## HTML
+- Use semantic elements: `<header>`, `<main>`, `<footer>`, `<article>`, `<section>`, `<nav>`, `<aside>`.
+- Use `<button>` for actions (not `<div>`/`<span>`); use `<a href>` for navigation.
+- Always provide `<img alt>` text.
+- Use `<form>` with proper labels and input types; associate labels via `for`/`id`.
+- Avoid deprecated elements (`<font>`, `<center>`).
+
+## CSS
+- Prefer class selectors over IDs for styling; avoid `!important`.
+- Use Flexbox/Grid for layout.
+- Use `rem`/`em` for scalable typography.
+- Use CSS variables for theming consistency.
+- Prefer BEM naming (`.block__element--modifier`).
+
+## Responsive
+- Mobile‑first media queries.
+- Ensure touch targets ≥ 44×44px and adequate spacing.
+- Use responsive images with `srcset`/`sizes`.
+- Include viewport meta for scaling.
+
+## Accessibility
+- Provide keyboard navigation and visible focus states.
+- Maintain sufficient color contrast (WCAG 2.1 AA).
+- Use landmarks (`<nav>`, `<main>`, `<aside>`) and ARIA where needed.
+
+## Performance & Testing
+- Minimize and compress CSS; avoid excessive animations.
+- Lazy‑load non‑critical images/media.
+- Test across browsers/devices; use Lighthouse and W3C validators.
+
+## Documentation
+- Comment non‑obvious CSS and structures.
+- Keep class naming consistent; document breakpoints and design decisions.

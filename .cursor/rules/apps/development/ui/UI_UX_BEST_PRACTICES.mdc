@@ -1,0 +1,46 @@
+---
+description: UI/UX best practices — black theme, accessibility, responsive, performance (PHP UI)
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js"]
+alwaysApply: false
+---
+
+# UI & UX Best Practices (Black Theme)
+
+## Visual Design
+- Establish clear visual hierarchy and consistent style.
+- Use a cohesive black theme (pure black/dark surfaces) with tokens from `COLORS`.
+- Typography for readability and emphasis; maintain WCAG 2.1 AA contrast.
+
+## Interaction Design
+- Intuitive navigation patterns and familiar components.
+- Clear calls‑to‑action and obvious affordances.
+- Responsive design across devices; mobile‑first.
+- Use subtle, purposeful animations only.
+
+## Accessibility
+- Follow WCAG; semantic HTML and ARIA where appropriate.
+- Alternative text for images and non‑text content.
+- Full keyboard navigability; visible focus states.
+
+## Performance Optimization
+- Optimize images/assets; lazy‑load non‑critical content.
+- Keep initial CSS critical for above‑the‑fold minimal.
+- Monitor Core Web Vitals (LCP, FID/INP, CLS) and optimize.
+
+## User Feedback
+- Provide feedback for user actions (loading states, errors, success messages).
+- Clear error messages and recovery paths.
+- Optional analytics to understand pain points.
+
+## Information Architecture
+- Logical content organization; clear labels and categories.
+- Effective search when applicable; sitemap for structure.
+
+## Consistency & System
+- Adhere to a design system; consistent terminology and positioning.
+- Reuse primitives from `COMPONENTS` and styles from tokens `COLORS/TYPOGRAPHY/SPACING`.
+
+## Testing & Iteration
+- Use browser devtools to test responsiveness and accessibility.
+- Validate with users; A/B test critical decisions when feasible.
+- Iterate based on data/feedback.

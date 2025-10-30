@@ -1,73 +1,73 @@
 ---
-description: Required UI primitives: layout, forms, tables, and cards to achieve professional shadcn-like UI
-globs: ["**/components/**", "**/*.tsx", "**/*.jsx"]
+description: Required UI primitives in PHP: layout, forms, tables, and cards for a professional dark UI
+globs: ["**/partials/**", "**/*.php", "**/*.phtml", "**/*.html"]
 alwaysApply: true
 ---
 
 # UI Component Requirements
 
 ## 1. Layout Components
-```tsx
-// Header Component
-<Header>
-  <Navigation />
-  <UserMenu />
-</Header>
+```html
+<!-- Header Partial (header.php) -->
+<header class="header" role="banner">
+  <?php include __DIR__ . '/navigation.php'; ?>
+  <?php include __DIR__ . '/user-menu.php'; ?>
+  </header>
 
-// Sidebar Component
-<Sidebar>
-  <Navigation />
-  <UserProfile />
-</Sidebar>
+<!-- Sidebar Partial (sidebar.php) -->
+<aside class="sidebar" role="complementary">
+  <?php include __DIR__ . '/navigation.php'; ?>
+  <?php include __DIR__ . '/user-profile.php'; ?>
+  </aside>
 
-// Main Content
-<MainContent>
-  <PageHeader />
-  <Content />
-  <Footer />
-</MainContent>
+<!-- Main Content Wrapper (page) -->
+<main class="main" role="main" tabindex="0" aria-label="Main content">
+  <?php include __DIR__ . '/page-header.php'; ?>
+  <?= $content ?? '' ?>
+  <?php include __DIR__ . '/footer.php'; ?>
+  </main>
 ```
 
 ## 2. Form Components
-```tsx
-// Input Fields
-<Input placeholder="Enter your search term" />
-<Textarea placeholder="Enter your message" />
-<Select>
-  <Option value="option1">Option 1</Option>
-</Select>
+```html
+<!-- Input Fields -->
+<input type="text" name="q" placeholder="Enter your search term" aria-label="Search" class="input" />
+<textarea name="message" placeholder="Enter your message" aria-label="Message" class="textarea"></textarea>
+<select name="option" aria-label="Options" class="select">
+  <option value="option1">Option 1</option>
+  </select>
 
-// Buttons
-<Button variant="primary">Submit</Button>
-<Button variant="secondary">Cancel</Button>
-<Button variant="outline">Reset</Button>
+<!-- Buttons -->
+<button type="submit" class="btn btn-primary">Submit</button>
+<button type="button" class="btn btn-secondary">Cancel</button>
+<button type="reset" class="btn btn-outline">Reset</button>
 ```
 
 ## 3. Data Display Components
-```tsx
-// Tables
-<Table>
-  <TableHeader>
-    <TableRow>
-      <TableHead>Name</TableHead>
-      <TableHead>Email</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    <TableRow>
-      <TableCell>John Doe</TableCell>
-      <TableCell>john@example.com</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
+```html
+<!-- Table -->
+<table class="table" role="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>John Doe</td>
+      <td>john@example.com</td>
+    </tr>
+  </tbody>
+  </table>
 
-// Cards
-<Card>
-  <CardHeader>
-    <CardTitle>User Information</CardTitle>
-  </CardHeader>
-  <CardContent>
+<!-- Card -->
+<section class="card" aria-label="User Information">
+  <header class="card-header">
+    <h3 class="card-title">User Information</h3>
+  </header>
+  <div class="card-content">
     <p>User details here</p>
-  </CardContent>
-</Card>
+  </div>
+  </section>
 ```

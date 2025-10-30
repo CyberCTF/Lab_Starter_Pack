@@ -1,6 +1,6 @@
 ---
-description: Dark theme color tokens to ensure consistent shadcn-like styling across components
-globs: ["**/*.tsx", "**/*.jsx", "**/*.css", "**/*.scss"]
+description: Dark theme color tokens for PHP/HTML/CSS UI components
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js"]
 alwaysApply: true
 ---
 

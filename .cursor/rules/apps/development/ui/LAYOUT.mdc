@@ -1,6 +1,6 @@
 ---
-description: Standard page shell and navigation patterns for a minimal, professional dashboard-like UI
-globs: ["**/*.tsx", "**/*.jsx", "**/*.html"]
+description: Standard PHP page shell and navigation for a minimal, professional dark UI
+globs: ["**/*.php", "**/*.phtml", "**/*.html"]
 alwaysApply: true
 ---
 
@@ -13,33 +13,36 @@ alwaysApply: true
 - **Settings**: Application configuration (if applicable)
 
 ## 2. Page Layout
-```tsx
-// Standard Page Layout
-<div className="min-h-screen bg-background">
-  <Header />
-  <div className="flex">
-    <Sidebar />
-    <main className="flex-1 p-6">
-      <PageHeader />
-      <Content />
-    </main>
-  </div>
-  <Footer />
-</div>
+```html
+<!-- Standard Page Layout (PHP) -->
+<!doctype html>
+<html class="theme-dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title><?= htmlspecialchars($title ?? 'App', ENT_QUOTES) ?></title>
+    <link rel="stylesheet" href="/assets/app.css" />
+  </head>
+  <body class="min-h-screen">
+    <?php include __DIR__ . '/partials/header.php'; ?>
+    <div class="layout">
+      <?php include __DIR__ . '/partials/sidebar.php'; ?>
+      <main class="content">
+        <?php include __DIR__ . '/partials/page-header.php'; ?>
+        <?= $content ?? '' ?>
+      </main>
+    </div>
+    <?php include __DIR__ . '/partials/footer.php'; ?>
+  </body>
+  </html>
 ```
 
 ## 3. Navigation Structure
-```tsx
-// Navigation Menu
-<nav className="space-y-2">
-  <NavItem href="/dashboard" icon={Home}>
-    Dashboard
-  </NavItem>
-  <NavItem href="/users" icon={Users}>
-    Users
-  </NavItem>
-  <NavItem href="/settings" icon={Settings}>
-    Settings
-  </NavItem>
-</nav>
+```html
+<!-- Navigation Menu (PHP) -->
+<nav class="nav">
+  <a class="nav-item" href="/dashboard" aria-label="Dashboard" tabindex="0">Dashboard</a>
+  <a class="nav-item" href="/users" aria-label="Users" tabindex="0">Users</a>
+  <a class="nav-item" href="/settings" aria-label="Settings" tabindex="0">Settings</a>
+  </nav>
 ```

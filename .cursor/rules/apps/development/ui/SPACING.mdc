@@ -1,6 +1,6 @@
 ---
-description: Spacing scale tokens to keep consistent rhythm and spacing across the UI
-globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
+description: Spacing scale tokens for consistent rhythm in PHP/HTML UI
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js", "**/partials/**"]
 alwaysApply: true
 ---
 

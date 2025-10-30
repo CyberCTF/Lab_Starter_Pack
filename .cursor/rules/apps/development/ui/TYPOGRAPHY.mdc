@@ -1,6 +1,6 @@
 ---
-description: Typography tokens for readable, professional UI (fonts and sizes)
-globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/components/**"]
+description: Typography tokens for readable, professional PHP/HTML UI (fonts and sizes)
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js", "**/partials/**"]
 alwaysApply: true
 ---
 

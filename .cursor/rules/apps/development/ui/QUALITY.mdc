@@ -1,6 +1,6 @@
 ---
-description: UI QA checklist to enforce shadcn-like consistency, dark mode, accessibility, and UX quality
-globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss"]
+description: UI QA checklist to enforce dark-only PHP UI, accessibility, and UX quality
+globs: ["**/*.php", "**/*.phtml", "**/*.html", "**/*.css", "**/*.js"]
 alwaysApply: true
 ---
 

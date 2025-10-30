@@ -1,1 +1,59 @@
+---
+description: Review Phase — assessment-only checklist and outputs for lab validation
+globs: ["**/tests/**", "**/*.md", "**/.ctf/**", "**/docker-compose*.yml", "**/build/**"]
+alwaysApply: false
+---
+
+# Review Phase (Assessment-Only)
+
+Follow this checklist to validate the lab without making code/config changes. Document all findings; do not fix in this phase.
+
+## Scope
+- Validate Docker (dev/prod parity, health, ports, non-root)
+- Validate Database (init order, grants, connectivity)
+- Validate UI (dark-only PHP UI, professionalism, accessibility)
+- Validate Tests (pytest coverage per requirements)
+
+## Inputs
+- `build/` services and configs (web, database, etc.)
+- `docker-compose.yml` (root) and `build/docker-compose.dev.yml`
+- `tests/` pytest suite
+- `.ctf/` existing artefacts
+
+## Required Checks
+1) Docker
+   - Compose V2: no `version:` key
+   - Dev/prod parity: same services, ports, healthchecks; only dev conveniences differ (volumes/hot reload)
+   - Ports env-driven and identical internal/external (e.g., `3206:3206`)
+   - Healthchecks present (`web` HTTP on 3206; DB `mysqladmin ping` with `start_period`)
+   - Non-root users where applicable
+   - Paths relative and correct when dev compose lives under `build/`
+
+2) Database
+   - Init order: create DB → create users → grants → data
+   - No mixing global and DB privileges; use `CREATE ROUTINE` instead of `CREATE FUNCTION` for DB-level
+   - `IF NOT EXISTS` where supported; connection succeeds
+
+3) UI (PHP Dark-Only)
+   - Root `<html class="theme-dark">`; no light mode or toggles
+   - Uses tokens from `COLORS`, `TYPOGRAPHY`, `SPACING`
+   - Professional, minimalist; WCAG AA contrast; keyboard/accessibility basics
+
+4) Tests
+   - Coverage per `TEST-REQUIREMENTS.mdc`
+   - Retry behavior per `TEST-RETRY.mdc` (env-driven; no hardcoded values)
+   - Cleanup per `TEST-EXECUTION.mdc` (`docker-compose down -v` via env)
+   - Phase timing logs per `PHASE-TIMING.mdc`
+
+## Outputs
+- `.ctf/REVIEW.md` with categorized findings (Docker, Database, UI, Tests)
+- `.ctf/review_logs/` detailed logs if available
+- Do not edit code/config; only record findings
+
+## Pass/Fail Criteria
+- PASS: No critical findings; all checks satisfied → produce `.ctf/GOOD.md` (empty file)
+- FAIL: Document precise issues and remediation hints in `.ctf/REVIEW.md`
+
+## Notes
+- This phase is assessment-only. Corrections occur in the Correction phase and must re-validate both dev/prod compose.
  

@@ -1,0 +1,49 @@
+---
+description: Compose path and port guardrails — prevent ./build duplication, enforce env-driven identical ports
+globs: ["**/docker-compose*.yml", "**/build/**"]
+alwaysApply: false
+---
+
+# Compose Paths and Ports — Guardrails
+
+## Purpose
+Eliminate common path/port mistakes causing build context errors (e.g., `...\\build\\build not found`) and unstable services.
+
+## Path Rules (when dev compose lives under build/)
+- Build context paths MUST be relative to the compose file directory:
+  - Correct: `build.context: ./web` and `build.dockerfile: Dockerfile`
+  - Incorrect: `build.context: ./build/web` (duplicates `build/`)
+- Volume mounts must also be relative to `build/` compose location:
+  - Correct: `./web/src:/var/www/html`, `./database/init:/docker-entrypoint-initdb.d:ro`
+  - Incorrect: `./build/web/src:...`, `./build/database/init:...`
+
+## Port Rules (Compose V2)
+- Use env-driven identical host:container ports:
+  - Web: `${WEB_PORT:-3206}:3206`
+  - DB: `${DB_HOST_PORT:-3207}:3207`
+- The database service MUST listen on the same internal port: `command: ["--port=3207", ...]`
+- The web app MUST point to `DB_PORT=3207` (not `3306`).
+
+## Healthcheck Rules
+- Web: `curl -fsS http://localhost:3206/health || exit 1` (or `/` if no health route)
+- MySQL 8/5.7:
+  - Preferred: `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" || exit 1`
+  - TCP explicit with custom port: `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.1 -P 3207 || exit 1`
+- Standard timings: `interval: 30s`, `timeout: 10s`, `retries: 5`, `start_period: 30s`.
+
+## SQL Init Notes (MySQL 5.6/5.7 specifics)
+- Do not define prefix indexes longer than column length.
+- For `utf8mb4` unique indexes on `VARCHAR(255)` in MySQL 5.6, use 191 prefix only if needed.
+- Ensure order: create DB → create users → grants (no mixed global/DB) → data.
+
+## Anti‑Patterns (Do NOT do)
+- `build/` duplication in any path when compose is already under `build/`.
+- Mismatched DB ports (host 3207 mapping to container 3306).
+- Missing `start_period` leading to false negative healthchecks.
+
+## Quick Checklist
+- [ ] Context paths are `./web`, Dockerfile is `Dockerfile`.
+- [ ] Volumes use `./web/src` and `./database/init` (no extra `build/`).
+- [ ] Ports use `${WEB_PORT:-3206}:3206` and `${DB_HOST_PORT:-3207}:3207`.
+- [ ] MySQL listens on `--port=3207`; web uses `DB_PORT=3207`.
+- [ ] Healthchecks configured with standard timings.
