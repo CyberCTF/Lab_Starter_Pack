@@ -1,0 +1,41 @@
+---
+description: Next.js + Tailwind stack guidance for dark-only React UI
+globs: ["**/app/**/*.{ts,tsx}", "**/pages/**/*.{ts,tsx}", "**/components/**/*.{ts,tsx}", "**/next.config.{js,ts}"]
+alwaysApply: false
+---
+
+# Next.js + Tailwind — Stack Rules
+
+## Scope
+- Applies to all React UI in Next.js (TypeScript). Uses Tailwind exclusively for styling.
+
+## Project Conventions
+- TypeScript only; no `any`/`unknown` unless unavoidable.
+- Functional components; prefer small, composable units; named exports.
+- Event handlers prefixed with `handle` (e.g., `handleSubmit`).
+- Accessibility: semantic elements, `aria-*`, keyboard handlers.
+
+## Next.js (App Router preferred)
+- Use `app/` directory with a root `layout.tsx` that sets `<html className="dark" lang="en">`.
+- Provide a `/health` route returning 200 for healthchecks.
+- Co-locate components under `app/(components)/` or `components/` as fits the project.
+
+## Tailwind Configuration
+- `darkMode: "class"`.
+- Extend colors to map CSS variables: background, foreground, card, popover, primary, secondary, muted, accent, destructive, border, input, ring.
+- Include radix/shadcn content globs and `app`, `components`, `lib` paths.
+
+## Token Usage
+- Use `bg-background` and `text-foreground` for base surfaces.
+- Buttons use `bg-primary text-primary-foreground` or `variant` utilities.
+- Borders use `border-border`; inputs use `bg-background text-foreground border-input`.
+
+## Do/Don't
+- Do: Early returns; descriptive names; mobile-first responsive classes.
+- Do: Keep JSX minimal; extract helpers; avoid duplication.
+- Don’t: Light theme toggles; raw CSS files; inline styles for layout.
+
+## Minimal Files (reference)
+- `tailwind.config.ts` maps CSS variables to theme tokens (see TAILWIND_CONFIG.mdc).
+- `app/layout.tsx` sets dark root and wires global styles.
+- `app/page.tsx` uses layout shell from `ui/LAYOUT.mdc`.

@@ -1,0 +1,58 @@
+---
+description: Tailwind config rules mapping CSS variables and dark mode strategy
+globs: ["**/tailwind.config.{ts,js}", "**/postcss.config.{js,ts}", "**/app/globals.css", "**/styles/**/*.{css,scss}"]
+alwaysApply: false
+---
+
+# Tailwind Configuration Rules
+
+## Required Settings
+- `darkMode: "class"` (dark-only policy; see `ui/DARK_MODE.mdc`).
+- `content`: include `./app/**/*.{ts,tsx}`, `./components/**/*.{ts,tsx}`, `./pages/**/*.{ts,tsx}`, and any `node_modules` for shadcn/radix if used.
+
+## Theme Extensions (CSS Variable Mapping)
+- Map tokens to CSS variables using `hsl(var(--token))`:
+  - `background`, `foreground`, `card`, `card-foreground`, `popover`, `popover-foreground`, `primary`, `primary-foreground`, `secondary`, `secondary-foreground`, `muted`, `muted-foreground`, `accent`, `accent-foreground`, `destructive`, `destructive-foreground`, `border`, `input`, `ring`.
+- Add radii and spacing as needed; prefer using spacing scale from `ui/SPACING.mdc`.
+
+## Example Snippet (Reference Only)
+```ts
+// tailwind.config.ts (excerpt)
+export default {
+  darkMode: "class",
+  content: [
+    "./app/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./pages/**/*.{ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: "hsl(var(--card))",
+        "card-foreground": "hsl(var(--card-foreground))",
+        popover: "hsl(var(--popover))",
+        "popover-foreground": "hsl(var(--popover-foreground))",
+        primary: "hsl(var(--primary))",
+        "primary-foreground": "hsl(var(--primary-foreground))",
+        secondary: "hsl(var(--secondary))",
+        "secondary-foreground": "hsl(var(--secondary-foreground))",
+        muted: "hsl(var(--muted))",
+        "muted-foreground": "hsl(var(--muted-foreground))",
+        accent: "hsl(var(--accent))",
+        "accent-foreground": "hsl(var(--accent-foreground))",
+        destructive: "hsl(var(--destructive))",
+        "destructive-foreground": "hsl(var(--destructive-foreground))",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+      },
+    },
+  },
+} satisfies import("tailwindcss").Config
+```
+
+## Linting and Consistency
+- Prefer semantic utilities (e.g., `bg-background`, `text-foreground`).
+- Avoid arbitrary values unless justified.

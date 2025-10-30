@@ -1,0 +1,31 @@
+---
+description: React + TypeScript code style, a11y, and Tailwind usage standards
+globs: ["**/app/**/*.{ts,tsx}", "**/components/**/*.{ts,tsx}", "**/*.tsx"]
+alwaysApply: false
+---
+
+# React + TypeScript — Code Style Rules
+
+## General
+- Use TypeScript with interfaces over types when possible.
+- Avoid `any`/`unknown`; no non-null assertions.
+- Use functional components and hooks; no classes.
+- Prefer named exports for components and utilities.
+
+## Readability
+- Early returns to reduce nesting.
+- Descriptive names with auxiliaries (e.g., `isLoading`, `hasError`).
+- Extract helpers; keep JSX lean and declarative.
+
+## Events and A11y
+- Prefix event handlers with `handle*` (e.g., `handleClick`).
+- Ensure keyboard access: `tabIndex`, `role`, `aria-*`, `onKeyDown`.
+- Use semantic HTML elements first.
+
+## Styling
+- Tailwind-only for layout and visual styles; no ad-hoc CSS files.
+- Use semantic Tailwind tokens mapped via CSS variables (see UI rules).
+
+## Data/State
+- Lift state thoughtfully; avoid prop drilling via context where necessary.
+- Keep components pure; avoid side effects in render.

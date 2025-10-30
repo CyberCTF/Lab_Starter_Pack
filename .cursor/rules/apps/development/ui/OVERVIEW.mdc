@@ -4,9 +4,9 @@ globs: ["**/*.tsx", "**/*.jsx", "**/*.html", "**/*.css", "**/*.scss", "**/compon
 alwaysApply: true
 ---
 
-# User Interface Requirements
+# User Interface Requirements (Dark-Only)
 
-The UI should be close to what we can find on shadcn/ui with dark mode and minimalist design. No fancy color gradients should be used.
+The UI must follow a shadcn/ui-like system with an always-on dark theme and a minimalist, professional look. No light mode, no fancy gradients.
 
 ## Design System Requirements
 
@@ -17,8 +17,8 @@ The UI should be close to what we can find on shadcn/ui with dark mode and minim
 - **Minimalist Approach**: Clean, simple, and functional design
 
 ### 2. Styling Framework
-- **TailwindCSS**: Use TailwindCSS for styling
-- **Dark Mode**: Implement dark mode as the primary theme
+- **TailwindCSS**: Use TailwindCSS for styling (utility-first only)
+- **Dark Mode (Only)**: Enforce dark-only per `ui/DARK_MODE.mdc` (no light toggle)
 - **Responsive Design**: Ensure mobile and desktop compatibility
 - **Accessibility**: Follow accessibility best practices
 
@@ -27,3 +27,8 @@ The UI should be close to what we can find on shadcn/ui with dark mode and minim
 - **Professional Palette**: Use business-appropriate color schemes
 - **Clean Typography**: Use readable, professional fonts
 - **Minimal Animations**: Subtle, purposeful animations only
+
+### 4. Frontend Stack Requirements
+- **React + Next.js (TypeScript)**: App Router preferred; SSR/SSG as needed
+- **Tailwind**: `darkMode: "class"`; root `html` has `class="dark"`
+- **Shadcn/Radix**: Use where suitable; style via Tailwind and tokens
