@@ -33,6 +33,10 @@ alwaysApply: true
 
 ## Enforce Tailwind Black Theme in all labs
 
+### Scope
+- Apply to all web pages/templates rendered by the lab (PHP, HTML).
+- Update both dev and prod compose health if needed.
+
 ### Requirements
 - UI must use Tailwind CSS with a strict black/gray palette only (no colors).
 - Prefer CDN injection for simplicity; if a build exists, wire Tailwind via PostCSS with the same tokens.
@@ -86,6 +90,33 @@ alwaysApply: true
 - If a build system exists: Tailwind config equivalent to the CDN config and compiled CSS linked from pages.
 
 If you want, I can also give you a one‑shot prompt that says “convert the current index.php to Tailwind black now” for use per project.
+
+### Compose/Health (if needed)
+- Web must listen on internal 3206. Apache/Nginx configured accordingly.
+- Healthcheck prefers a lightweight route (e.g., `/health.php`) not dependent on DB.
+- Compose mapping stays `3206:3206`; healthcheck example: `curl -f http://localhost:3206/health.php`.
+
+### Changes To Make (Ordered)
+1) Inject Tailwind CDN + config in the page layout(s) and any standalone pages.
+2) Add required body classes and remove all colored inline CSS.
+3) Refactor components (buttons, inputs, cards) to the specified Tailwind classes.
+4) If missing, create `/build/web/src/health.php` returning 200 and minimal HTML with the black theme baseline.
+5) Ensure server config listens on 3206 and compose healthchecks point to the health endpoint.
+
+### Acceptance Criteria (Blocking)
+- The DOM of every page contains the Tailwind CDN script and `<body>` has `bg-black text-white`.
+- No `linear-gradient` anywhere in the project.
+- No color hex outside `#000000`/`#FFFFFF` or gray scale set (gray-50..950) in HTML/CSS.
+- Buttons/inputs/cards use the specified classes.
+- Web container becomes healthy with curl healthcheck.
+
+### Self-Validation (Must Run)
+- Fail the task if any of these regexes match:
+  - `style="[^"]*(linear-gradient)[^"]*"`
+  - `style="[^"]*#(?!000000|ffffff)[0-9a-fA-F]{6}[^"]*"` (case-insensitive; allow only black/white if inline exists)
+- Fail if Tailwind CDN script is missing.
+- Fail if `<body>` lacks `bg-black` and `text-white`.
+- For PHP/HTML files, search any class or style that implies non-monochrome colors; replace with black/white/gray utilities.
 
 ## Tailwind Black Theme Template
 
