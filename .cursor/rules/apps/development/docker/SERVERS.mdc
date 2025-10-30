@@ -65,3 +65,18 @@ CMD ["apache2-foreground"]
 - [ ] Docker Compose `ports` mapping matches internal port
 - [ ] Healthcheck uses the correct port number
 - [ ] PHP configuration listens on the correct port
+
+## Apache .htaccess Requirement
+
+For Apache-based labs, ensure a `.htaccess` file exists at the web root and matches the lab's routing needs. At minimum, include a safe fallback to `index.php` for non-existent files and directories:
+
+```apache
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+```
+
+Notes
+- Adapt additional rewrite rules to the specific vulnerability only when required by the scenario.
+- Keep rules minimal and compatible with the black-only UI (no impact on Tailwind CDN loading).
