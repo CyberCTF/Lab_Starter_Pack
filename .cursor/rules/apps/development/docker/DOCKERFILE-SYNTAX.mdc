@@ -3,54 +3,47 @@ description: Dockerfile syntax guardrails — prevent parse errors from config s
 globs: ["**/Dockerfile", "**/Dockerfile.*"]
 alwaysApply: true
 ---
-
+ 
 # Dockerfile Syntax Rules
-
+ 
 ## Critical: Never Include Raw HTML/XML/Config in RUN Commands
-
+ 
 ### INCORRECT - Will Cause Parse Errors
+ 
 ```dockerfile
 RUN echo "<VirtualHost *:3206>
     DocumentRoot /var/www/html
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 # ERROR: Docker parser sees <VirtualHost as an unknown instruction
 ```
-
-### CORRECT - Proper Escaping, Heredoc, or COPY
+ 
+### CORRECT - Use COPY (preferred) or explicit escaping
+ 
 ```dockerfile
 # Method 1: Use escaped quotes and escaped newlines
 RUN echo "<VirtualHost *:3206>\n\
     DocumentRoot /var/www/html\n\
 </VirtualHost>" > /etc/apache2/sites-available/000-default.conf
-
+ 
 # Method 2: Use printf for multi-line
 RUN printf '<VirtualHost *:3206>\n\
     DocumentRoot /var/www/html\n\
 </VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
-
+ 
 # Method 3: Copy from a prepared config file (preferred)
 COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
-
-# Method 4: Use a heredoc via shell (bash) - reliable and readable
-SHELL ["/bin/bash", "-lc"]
-RUN cat > /etc/apache2/sites-available/000-default.conf << 'EOF'
-<VirtualHost *:3206>
-    DocumentRoot /var/www/html
-    <Directory /var/www/html>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
-EOF
 ```
-
+ 
 ## Rules
-- When writing Apache/Nginx configs in Dockerfile: use escaped newlines (`\n\`) or COPY from a file.
+ 
+- **Project requirement**: For multi-line server configs (Apache/Nginx), create the file under `build/<service>/config/` (or similar) and `COPY` it into the image. This avoids Cursor markers being injected into `RUN` lines.
+- When a short inline snippet is unavoidable, escape every newline (`\n\`) and quote the payload so Docker sees a single instruction.
 - Never write raw-heavy syntax like `<VirtualHost`, `<Directory>`, or XML-like tags as unescaped strings in RUN.
-- Use printf for complex multi-line configs; prefer COPY for longer config files.
+- Avoid heredoc patterns (`RUN cat <<'EOF'`) in this repository; Cursor’s generation markers can break parsing and trigger `unknown instruction` errors.
 - Test Dockerfile syntax with `docker build --dry-run` or similar validation before committing.
-
+ 
 ## Common Error Patterns
+ 
 - `<VirtualHost` without escaping → "unknown instruction: <VIRTUALHOST"
 - `<Directory>` without escaping → parse error
 - Multi-line echo without `\n\` → may still parse incorrectly
