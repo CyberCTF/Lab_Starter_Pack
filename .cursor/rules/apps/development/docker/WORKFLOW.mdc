@@ -1,7 +1,7 @@
 ---
 description: Required Dockerfile workflow: detect base OS, choose correct package manager, then install
-globs: ["**/Dockerfile"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/Dockerfile.*"]
+alwaysApply: false
 ---
 
 # Workflow: Writing Dockerfiles Safely

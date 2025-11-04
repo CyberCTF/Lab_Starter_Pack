@@ -1,0 +1,124 @@
+---
+description: JavaScript and TypeScript code quality guardrails — syntax, linting, and error checking
+globs: ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+alwaysApply: false
+---
+
+# JavaScript/TypeScript Code Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all JavaScript and TypeScript files (`.js`, `.jsx`, `.ts`, `.tsx`) in the project are correctly coded, syntactically valid, and free of errors. You are NOT to consider your overall task complete until this verification stage confirms that all JavaScript/TypeScript code is error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory JavaScript/TypeScript Code Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All JavaScript/TypeScript Files
+
+1. Use file system tools to find all files with `.js`, `.jsx`, `.ts`, or `.tsx` extensions in the project workspace.
+2. Create a comprehensive list of all JavaScript/TypeScript files that need verification.
+
+### Step 2: Syntax Validation
+
+For each JavaScript/TypeScript file identified:
+
+1. **Check JavaScript/TypeScript Syntax:**
+
+   - For JavaScript files: Use `node --check <file>` or `node -c <file>` to verify syntax (parse check).
+   - For TypeScript files: Use `tsc --noEmit <file>` to verify syntax and type checking.
+   - Alternatively, use `eslint <file>` or configure eslint with appropriate parser options for syntax validation.
+   - This will check for parse errors, syntax errors, and basic JavaScript/TypeScript validity.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Linting and Code Quality Checks
+
+For each JavaScript/TypeScript file:
+
+1. **Run Linters (if available):**
+
+   - Try running `eslint`, `tslint` (deprecated but may exist), `prettier --check`, `tsc --noEmit` (for TypeScript), or `biome` on the files if these tools are available in the environment.
+   - If linters are not available, perform manual code review for:
+     - Undefined variables
+     - Unused imports/exports
+     - Missing imports
+     - Syntax inconsistencies
+     - Missing semicolons (if project style requires them)
+     - Incorrect bracket/parentheses matching
+     - Unused variables or functions
+
+2. **Check for Common Errors:**
+   - Undefined variables or properties
+   - Missing required imports (import, require, import type)
+   - Circular dependency issues
+   - Type inconsistencies (for TypeScript files)
+   - Missing semicolons (if project style requires them)
+   - Missing parentheses, brackets, or quotes
+   - SQL injection vulnerabilities (if database queries are present)
+   - XSS vulnerabilities (if output is not properly escaped)
+   - Uninitialized variables (especially in strict mode)
+   - Hoisting issues
+
+### Step 4: Runtime Error Detection
+
+1. **Import/Require Verification:**
+
+   - For each JavaScript/TypeScript file, verify that all `import`, `require`, `import type`, and `export` statements reference files that exist and are accessible.
+   - Check that all imported/required files exist and are properly referenced (relative or absolute paths).
+   - Verify that module resolution works correctly (CommonJS, ES modules, or TypeScript module resolution).
+   - Verify that package dependencies are properly declared in `package.json` (if using npm/yarn/pnpm).
+
+2. **Basic Execution Check (where applicable):**
+   - For scripts that can be executed safely, perform a dry-run or minimal execution check using `node --check` or `tsc --noEmit`.
+   - Verify that the code can at least be parsed and initialized without fatal errors.
+   - Check for undefined constants, functions, classes, or modules that would cause runtime errors.
+   - Verify that all used globals are available (e.g., `window`, `document`, `process`, `Buffer` depending on the environment).
+
+### Step 5: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-4 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All JavaScript/TypeScript files have been identified and verified.
+2. ✅ No syntax errors exist in any JavaScript/TypeScript file.
+3. ✅ No linting errors or warnings exist (or all critical issues have been resolved).
+4. ✅ All imports/requires are resolvable and valid.
+5. ✅ No undefined variables or names are detected.
+6. ✅ All code passes basic static analysis checks.
+7. ✅ All TypeScript files pass type checking (if TypeScript is used).
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total JavaScript/TypeScript files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All JavaScript/TypeScript code is error-free and correctly coded
+
+## Overriding Default Behavior
+
+This entire "JavaScript/TypeScript Code Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all JavaScript/TypeScript code verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.

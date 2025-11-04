@@ -1,7 +1,7 @@
 ---
 description: Runtime requirements per stack: PHP extensions, Python wheels, Node lockfiles; ensure ports/env usage
-globs: ["**/Dockerfile", "**/package.json", "**/requirements.txt", "**/composer.json"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/composer.json", "build/**/requirements.txt"]
+alwaysApply: false
 ---
 
 # Extensions and Runtimes

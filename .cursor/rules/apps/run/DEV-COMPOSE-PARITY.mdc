@@ -21,8 +21,8 @@ alwaysApply: false
 - No `version:` key in compose (V2)
 ---
 description: Dev/Prod compose parity and path correctness; validate internal/external ports and relative paths when compose lives under build/
-globs: ["**/docker-compose*.yml", "**/build/**"]
-alwaysApply: true
+globs: ["docker-compose.yml", "build/docker-compose.dev.yml"]
+alwaysApply: false
 ---
 
 # Dev/Prod Compose Parity and Path Rules

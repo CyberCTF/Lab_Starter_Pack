@@ -1,7 +1,7 @@
 ---
 description: GitHub Actions and Docker Hub Publishing
-globs: ["**/.github/workflows/**", "**/publish.yml", "**/ci.yml", "**/deploy.yml"]
-alwaysApply: true
+globs: [".github/workflows/**/*.yml", "build/.github/workflows/**/*.yml"]
+alwaysApply: false
 ---
 
 # GitHub Actions and Docker Hub Publishing

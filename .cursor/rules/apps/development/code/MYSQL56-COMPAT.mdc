@@ -1,7 +1,7 @@
 ---
 description: MySQL 5.6 compatibility — user creation and utf8mb4 index length constraints
-globs: ["**/*.sql", "**/docker-compose*.yml"]
-alwaysApply: true
+globs: ["build/**/database/init/**/*.sql"]
+alwaysApply: false
 ---
 
 # MySQL 5.6 Compatibility

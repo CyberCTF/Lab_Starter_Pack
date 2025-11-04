@@ -1,9 +1,8 @@
 ---
 description: Player-facing content must not include hints to the flag or exploitation path; keep business-only docs
-globs: ["**/*.html", "**/*.md", "**/README.md"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
-
 # Help Content Guidelines
 
 The content of the lab should not help the user find the flag or answer the questions. The lab should provide a realistic challenge without giving away the solution.

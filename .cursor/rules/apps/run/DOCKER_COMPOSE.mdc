@@ -1,7 +1,7 @@
 ---
 description: Compose V2 rules: no version key, env-driven ports, healthchecks, depends_on with service_healthy, non-root
-globs: ["**/docker-compose*.yml"]
-alwaysApply: true
+globs: ["docker-compose.yml", "build/docker-compose.dev.yml", "build/**/docker-compose*.yml"]
+alwaysApply: false
 ---
 
 # Docker Compose Configuration

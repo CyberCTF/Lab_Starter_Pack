@@ -1,5 +1,7 @@
 ---
-alwaysApply: true
+description: Rules overview and workflow reference (informational)
+globs: []
+alwaysApply: false
 ---
 
 # Rules Overview

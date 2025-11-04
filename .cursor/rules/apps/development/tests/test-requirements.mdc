@@ -1,7 +1,7 @@
 ---
 description: Required pytest coverage: containers health, services availability, ports, DB connectivity, app basics
-globs: ["**/test*.py", "**/tests/**"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Test Requirements and Coverage

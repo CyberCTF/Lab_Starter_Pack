@@ -1,7 +1,7 @@
 ---
 description: Shell script hygiene: LF endings, executable perms (755), avoid ^M issues; ensure scripts runnable
-globs: ["**/*.sh", "**/*.bash"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/scripts/**/*.sh"]
+alwaysApply: false
 ---
 
 # Scripts and System Compliance

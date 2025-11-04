@@ -1,9 +1,8 @@
 ---
 description: Review QA checklist: remove warnings, maintain professional tone, ensure realistic UX
-globs: ["**/.ctf/**", "**/*.html", "**/*.js", "**/*.md"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
-
 # Quality Assurance
 
 ## Content Validation

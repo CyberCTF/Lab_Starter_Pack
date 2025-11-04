@@ -1,7 +1,7 @@
 ---
 description: End-to-end lab validation (assessment-only): tests must pass, UX coherent, Docker healthy; produce findings for correction
-globs: ["**/.ctf/**", "**/test_results/**", "**/tests/**", "**/pytest.ini"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
 
 # Lab Functionality Validation

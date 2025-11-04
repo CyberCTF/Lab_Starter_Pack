@@ -1,7 +1,7 @@
 ---
 description: Pytest retry policy: env-driven delays/limits, live logging, automatic correction between attempts
-globs: ["**/test*.py", "**/tests/**"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Test Retry Logic and Error Correction

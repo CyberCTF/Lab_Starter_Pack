@@ -1,7 +1,7 @@
 ---
 description: Implement the entire lab inside /build with realistic app + single vulnerability; follow structure below
-globs: ["**/build/**"]
-alwaysApply: true
+globs: ["build/**"]
+alwaysApply: false
 ---
  
 # Lab Development and Directory Structure for Build Folder

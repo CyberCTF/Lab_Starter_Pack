@@ -1,7 +1,7 @@
 ---
 description: CyberCTF Metadata and Question Structure
-globs: ["**/.ctf/metadata.*", "**/metadata.json", "**/metadata.md"]
-alwaysApply: true
+globs: [".ctf/metadata.*"]
+alwaysApply: false
 ---
 
 # CyberCTF Metadata and Question Structure

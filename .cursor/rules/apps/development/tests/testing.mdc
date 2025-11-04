@@ -1,7 +1,7 @@
 ---
 description: Testing framework overview: root-level tests dir, categories, principles, and related docs
-globs: ["**/test*.py", "**/tests/**", "**/pytest.ini", "**/conftest.py"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Docker and Application Testing Framework
