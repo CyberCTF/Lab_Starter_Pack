@@ -94,17 +94,19 @@ build/
 
 ### Development Workflow
 
+**IMPORTANT**: All 5 steps below are MANDATORY and must be completed. The lab generation is NOT complete until all steps are finished, including the creation of `.ctf/WALKTHROUGH.md`.
+
 1. **Analyze Template**: Understand the existing structure and technology stack
 2. **Create Services**: Build each service component in its respective directory
 3. **Configure Integration**: Set up docker-compose for service orchestration
 4. **Implement Vulnerability**: Add realistic security flaws within the application logic
-5. **Create Walkthrough**: Document exploitation path for maintainers/instructors (NOT player-facing)
+5. **MANDATORY - Create Walkthrough**: You MUST create `.ctf/WALKTHROUGH.md` documenting the complete exploitation path for maintainers/instructors (NOT player-facing). This file is REQUIRED and lab generation is incomplete without it.
 
 ## Maintainer Walkthrough Documentation
 
 ### Purpose
 
-Create a walkthrough file for maintainers, instructors, and testing purposes. This file is **NOT player-facing** and should be placed in the `.ctf/` directory alongside other generation artifacts.
+**MANDATORY**: You MUST create a walkthrough file for maintainers, instructors, and testing purposes. This file is **NOT player-facing** and must be placed in the `.ctf/` directory alongside other generation artifacts. **Lab generation is incomplete without this file.**
 
 ### Location
 
@@ -197,8 +199,18 @@ The walkthrough should include:
 
 ### Important Constraints
 
+- **MANDATORY FILE**: The `.ctf/WALKTHROUGH.md` file MUST be created during lab generation. Do not skip this step.
 - **NOT Player-Facing**: This walkthrough must NOT be referenced in player-facing documentation (README.md, UI, etc.)
 - **Maintainer Use Only**: Intended for lab creators, reviewers, and instructors
 - **Detailed Enough**: Should enable a maintainer to reproduce the exploitation without guessing
 - **Matches FLAG.md**: The extraction method must align with the flag definition in `.ctf/FLAG.md`
 - **No Spoilers in Player Docs**: Ensure README.md and other player-facing content do not reference this walkthrough
+
+### Completion Checklist
+
+Before considering lab generation complete, verify:
+
+- [ ] `.ctf/WALKTHROUGH.md` has been created
+- [ ] Walkthrough includes all required sections (Vulnerability Overview, Exploitation Steps, Flag Extraction, Testing Notes, Security Context)
+- [ ] Extraction method matches the flag definition in `.ctf/FLAG.md`
+- [ ] Walkthrough is NOT referenced in any player-facing documentation
