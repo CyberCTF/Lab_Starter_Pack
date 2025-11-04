@@ -1,9 +1,8 @@
 ---
 description: Strip all educational/vulnerability disclaimers from UI; keep language professional and neutral
-globs: ["**/*.html", "**/*.js", "**/*.jsx", "**/*.tsx"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
-
 # Warning Removal Requirements
 
 Remove all educational and vulnerability warnings from lab pages. The lab should appear as a real-world application without any indication that it's intentionally vulnerable.

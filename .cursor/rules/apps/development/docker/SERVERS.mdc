@@ -1,7 +1,7 @@
 ---
 description: Ensure web server listens on assigned internal port; align Listen/VirtualHost, healthcheck, and compose mapping
-globs: ["**/Dockerfile", "**/*.conf"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/config/**/*.conf", "build/**/sites-available/*.conf"]
+alwaysApply: false
 ---
 
 # Apache and Nginx Port Configuration

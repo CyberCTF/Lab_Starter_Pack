@@ -1,7 +1,7 @@
 ---
 description: Review must validate build/docker-compose.dev.yml with the same rigor as prod compose
-globs: ["**/build/docker-compose.dev.yml", "**/docker-compose.yml"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
 
 # Review Validation of Dev Compose

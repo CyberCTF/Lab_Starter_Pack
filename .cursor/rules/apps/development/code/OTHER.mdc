@@ -1,7 +1,7 @@
 ---
 description: Non-functional requirements: TZ/UTF-8, structured logging, env-driven retries/cleanup, CI hints
-globs: ["**/.env*", "**/pytest.ini", ".github/workflows/**"]
-alwaysApply: true
+globs: ["build/**/src/**"]
+alwaysApply: false
 ---
 
 # Other Configurations

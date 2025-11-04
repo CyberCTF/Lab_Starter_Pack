@@ -1,7 +1,7 @@
 ---
 description: Authoring rules for generating a single realistic flag (actionable business evidence) per PHILOSOPHY
-alwaysApply: true
-globs: ["**/.ctf/context/FLAG.md", "**/.cursor/rules/context/FLAG.mdc"]
+globs: [".ctf/context/*.md"]
+alwaysApply: false
 ---
 
 # Flag Authoring Rules (Generation)

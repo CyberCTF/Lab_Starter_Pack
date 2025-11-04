@@ -1,7 +1,7 @@
 ---
 description: Strict black-only UI for PHP + native HTML/CSS/JS; enforce WCAG AA contrast
-globs: ["**/*.php", "**/*.html", "**/*.css", "**/*.js"]
-alwaysApply: true
+globs: ["build/**/src/**/*.php", "build/**/src/**/*.html"]
+alwaysApply: false
 ---
 
 # UI Black-Only Guidelines

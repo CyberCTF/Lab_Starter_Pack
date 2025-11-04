@@ -1,7 +1,7 @@
 ---
 description: Correction must consume REVIEW.md and re-validate the entire lab (Docker, DB, UI, pytest/flag) with no ad-hoc scripts
-globs: ["**/build/**", "**/tests/**", "**/.ctf/REVIEW.md", "**/docker-compose*.yml", "**/*.sql", "**/*.html", "**/*.tsx", "**/*.jsx"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
 
 # Correction Strict Compliance

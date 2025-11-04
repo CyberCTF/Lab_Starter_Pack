@@ -1,7 +1,7 @@
 ---
 description: Test execution contract: cleanup via env-controlled docker-compose down -v, modes, and robust handling
-globs: ["**/test*.py", "**/tests/**"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Test Execution and Docker Cleanup

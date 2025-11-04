@@ -1,7 +1,7 @@
 ---
 description: Phase timing logs: record start/end/duration for Plan/Lab/Review/Correction/Metadata under .ctf/timing_logs
-globs: ["**/.ctf/timing_logs/**", "**/.ctf/**"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Phase Timing and Logging

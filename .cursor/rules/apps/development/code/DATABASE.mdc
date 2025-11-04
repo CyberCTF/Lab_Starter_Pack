@@ -1,7 +1,7 @@
 ---
 description: Enforce DB init order and correct MySQL privileges: create user before GRANT, separate global vs DB grants
-globs: ["**/*.sql", "**/docker-compose*.yml"]
-alwaysApply: true
+globs: ["build/**/database/init/**/*.sql"]
+alwaysApply: false
 ---
 
 # Database User Creation

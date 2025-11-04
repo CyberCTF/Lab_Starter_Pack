@@ -1,7 +1,7 @@
 ---
 description: Review must assess Docker, DB, UI, and pytest including flag extraction; no code edits in this phase
-globs: ["**/.ctf/**", "**/tests/**", "**/docker-compose*.yml", "**/*.sql", "**/build/**"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
 
 # Review Full-Scope Assessment

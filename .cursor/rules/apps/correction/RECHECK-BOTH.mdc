@@ -1,7 +1,7 @@
 ---
 description: Correction must re-run validations against both prod and dev compose after fixes
-globs: ["**/build/docker-compose.dev.yml", "**/docker-compose.yml", "**/tests/**"]
-alwaysApply: true
+globs: [".ctf/**/*.md", ".ctf/**/*.json"]
+alwaysApply: false
 ---
 
 # Correction Recheck on Dev and Prod Compose

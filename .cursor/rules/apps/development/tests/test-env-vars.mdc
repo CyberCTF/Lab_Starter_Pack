@@ -1,7 +1,7 @@
 ---
 description: Test Environment Variables Configuration
-globs: ["**/.env*", "**/conftest.py"]
-alwaysApply: true
+globs: ["tests/**/*.py", "pytest.ini", "pyproject.toml", "requirements.txt"]
+alwaysApply: false
 ---
 
 # Test Environment Variables

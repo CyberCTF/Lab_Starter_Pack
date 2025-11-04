@@ -1,7 +1,7 @@
 ---
 description: Canonical lab directory layout: where code, tests, compose, and metadata must live
-globs: ["**/*"]
-alwaysApply: true
+globs: ["build/**"]
+alwaysApply: false
 ---
 
 # Directory Structure

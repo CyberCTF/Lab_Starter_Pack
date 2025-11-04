@@ -1,7 +1,7 @@
 ---
 description: Authoring rules for generating realistic scenarios (company, crown jewels, stack, and business risks tied to the specific vulnerability)
-alwaysApply: true
-globs: ["**/.ctf/context/SCENARIO.md", "**/.cursor/rules/context/SCENARIO.mdc"]
+globs: [".ctf/context/*.md"]
+alwaysApply: false
 ---
  
 # Scenario Authoring Rules (Generation)

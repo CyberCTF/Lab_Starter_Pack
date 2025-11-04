@@ -1,7 +1,7 @@
 ---
 description: Compose env syntax guardrails: always quote special-char passwords; prefer mapping syntax over list
-globs: ["**/docker-compose*.yml", "**/.env*"]
-alwaysApply: true
+globs: ["docker-compose.yml", "build/docker-compose.dev.yml"]
+alwaysApply: false
 ---
 
 # Docker Compose Environment Variables

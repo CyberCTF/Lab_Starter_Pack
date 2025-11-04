@@ -1,7 +1,7 @@
 ---
 description: Dockerfile syntax guardrails — prevent parse errors from config snippets, HTML, or XML appearing as instructions
-globs: ["**/Dockerfile", "**/Dockerfile.*"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/Dockerfile.*"]
+alwaysApply: false
 ---
  
 # Dockerfile Syntax Rules

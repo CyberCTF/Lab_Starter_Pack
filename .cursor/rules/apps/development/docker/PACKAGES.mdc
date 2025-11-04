@@ -1,7 +1,7 @@
 ---
 description: Match package manager to base OS; avoid apt-get-on-Oracle errors; verify via /etc/os-release; correct tool names
-globs: ["**/Dockerfile"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "build/**/Dockerfile.*"]
+alwaysApply: false
 ---
 
 # Base Images and Package Managers

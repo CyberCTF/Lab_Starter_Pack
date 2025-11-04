@@ -1,7 +1,7 @@
 ---
 description: High-signal guardrails: package manager mismatch, obsolete packages, quoting in compose, ports, MySQL grants
-globs: ["**/Dockerfile", "**/docker-compose*.yml", "**/*.sql"]
-alwaysApply: true
+globs: ["build/**/Dockerfile", "docker-compose.yml", "build/docker-compose.dev.yml", "build/**/database/init/**/*.sql"]
+alwaysApply: false
 ---
 
 # Critical Errors Quick Reference
