@@ -1,0 +1,49 @@
+---
+description: Prevent missing-table runtime errors by ensuring schema existence at app start and reliable init scripts
+
+globs: ["**/build/web/**", "**/build/database/init/**/*.sql", "**/docker-compose*.yml"]
+
+alwaysApply: false
+---
+
+#DB Schema Self-Heal and Init Reliability
+
+##Goal
+
+Avoid runtime errors like: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'client_repos.repositories' doesn't exist.
+
+##Requirements
+
+Init SQL MUST create all required tables in the target database (client_repos) using numbered files (01-, 02-, 03-, 04-...).
+
+Web apps SHOULD defensively ensure critical tables exist on startup (idempotent CREATE TABLE IF NOT EXISTS ...).
+
+Compose MUST mount init scripts to /docker-entrypoint-initdb.d and expose the correct port (3207) for MySQL.
+
+App containers MUST wait for DB health before starting queries; DB healthcheck can be a simple mysqladmin ping.
+
+##Implementation
+
+In web startup/DB bootstrap, execute minimal idempotent DDL for critical tables after obtaining a connection.
+
+Example (PDO): CREATE TABLE IF NOT EXISTS repositories (...) matching the init script schema.
+
+Keep the canonical schema in init SQL (e.g., 04-init-data.sql), and ensure the web bootstrap only mirrors essential structure.
+
+##Compose and Init
+
+Mount: ./build/database/init:/docker-entrypoint-initdb.d:ro
+
+DB port: 3207 (not 3306). Ensure PHP uses DB_PORT env var.
+
+Use MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD for base provisioning, plus explicit SQL for tables and data.
+
+##Validation
+
+Running the app from a fresh or reused DB volume must not produce 42S02 errors.
+
+Tables exist after first request even if init scripts were skipped due to an existing data directory.
+
+##Notes
+
+This rule is additive hardening; it does not replace proper init SQL. Always keep schema in versioned SQL and mirror only what is necessary at runtime.
