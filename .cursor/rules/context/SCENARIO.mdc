@@ -1,66 +1,45 @@
 ---
-description: Authoring rules for generating realistic scenarios (company, crown jewels, stack, and business risks tied to the specific vulnerability)
-globs: [".ctf/context/*.md"]
-alwaysApply: false
+description: Authoring rules for transforming the cyberlibrary vulnerability note into a realistic company scenario
+alwaysApply: true
+globs: ["**/.ctf/context/SCENARIO.md", "**/.cursor/rules/context/SCENARIO.mdc"]
 ---
- 
+
 # Scenario Authoring Rules (Generation)
- 
-## Purpose
-Generate a **concise and realistic business scenario** that places the lab’s vulnerability in a plausible operational context, per PHILOSOPHY.  
-Focus on *why it matters to the company*, not how it’s exploited.
- 
+
+## Core Principles
+- Every scenario MUST originate from the library page located in `.ctf/LIBRARY_PAGE.md`, which mirrors an article from https://www.cyberlibrary.fr/.
+- Treat the library page as the technical source of truth: extract the featured vulnerability, affected component, and exploit consequences.
+- Reverse the path from the technical flaw to the business stakes: identify who would own the affected system, what service relies on it, and the business process that would break if the flaw were abused.
+
 ## Required Sections (in this exact order)
-1) Company
-- Choose ONE name from the approved list (e.g., MarketRetail, FinancePartners, LogisticsExpress, etc.).
-- 2–4 sentences describing:
-  - What the company does (sector, activity).
-  - Its digital surface or customer-facing services.
-  - Any relevant **business dependency** (e.g., SaaS, mobile app, partner integrations).
- 
-2) Crown Jewels
-- 3–5 bullets of business-critical assets relevant to the lab (e.g., customer PII, admin tokens, payment/refund authorizations, internal APIs).
- 
-3) Application Typology and Stack
-- Service(s) involved and tech stack (framework/runtime, DB, web server) in 1–3 bullets.
-- Deployment basics (containers/compose, ports via env) in 1–2 bullets.
- 
-4) Business Risks (specific to THIS vulnerability)
-- 3–4 bullets mapping exploit outcomes to business impact (fraud, data disclosure, regulatory risk), NOT generic ops risks.
-- Use concrete consequences (e.g., unauthorized refunds with direct loss; exposure of PII with regulatory penalties).
- 
-5) Impact Focus
-- 1 short paragraph tying the exploit to tangible outcomes (financial loss, trust erosion), no remediation or solutions.
- 
-## Security and Content Constraints
-- Do NOT describe exploitation steps, payloads, or give hints.
-- Do NOT include the flag value or its exact location.
-- People names: only from provided random list (if needed). Avoid real persons.
-- Emails: only `@cyberctf.fr` domain or username without domain.
-- No real-world external domains. No “John Doe”.
- 
-## Style
-- Keep total length under ~250 words.
-- Plain, professional tone. Business-first phrasing.
-- Avoid security-jargon overload; focus on business impact of this vulnerability.
- 
-## Mini Example (structure only, do NOT copy verbatim)
-Company
-- MarketRetail operates multi-brand e‑commerce with centralized loyalty.
- 
-Crown Jewels
-- Customer profiles and loyalty balances
-- Refund authorization tokens
-- Back‑office admin API credentials
- 
-Application Typology and Stack
-- PHP 8 (Apache) web, MySQL database; containerized with Compose
-- Env-driven ports (WEB_PORT=3206, DB_HOST_PORT=3207)
- 
-Business Risks (tied to this vulnerability)
-- Exposure of admin tokens → unauthorized refunds and order tampering
-- Access to customer PII → regulatory penalties and churn
-- Leakage of internal API keys → downstream service abuse
- 
-Impact Focus
-- Successful exploitation could enable fraudulent refunds and data access, producing direct financial loss and reputational damage.
+1. **Library Insight**
+   - 2–3 sentences summarizing the key vulnerability facts from the library page (component, weakness, typical impact).
+   - Cite only information that is explicitly stated or logically implied by the library page.
+
+2. **Business Persona**
+   - Name ONE fictional organization that could realistically operate the vulnerable service.
+   - 2–4 sentences describing the sector, the digital product in scope, and why this system matters for revenue, compliance, or trust.
+
+3. **Technical Surface**
+   - 3–5 bullets detailing the relevant stack and deployment cues (framework/runtime, hosting style, data stores, integrations) that make the vulnerability plausible in this company.
+   - Include at least one note on how legitimate users interact with the affected component (e.g., customer portal upload, partner API, mobile sync).
+
+4. **Business Risk Chain**
+   - 3–4 bullets mapping the exploit to concrete business outcomes (financial fraud, service shutdown, regulatory breach, reputation loss).
+   - Each bullet should follow the structure `Exploit step → immediate technical effect → business consequence`.
+
+5. **Impact Snapshot**
+   - 1 concise paragraph (2–3 sentences) describing the "day-after" story: who notices, which KPI or obligation fails, and why executives care.
+
+## Content & Style Guardrails
+- Length limit: ≤ 275 words total.
+- No exploit instructions, payloads, or remediation guidance.
+- Do not reveal any flag value or exact location.
+- Use professional, narrative tone with business vocabulary over hacker slang.
+- People names (if needed) must come from the random names list; emails end with `@cyberctf.fr`; avoid real-world company names and domains.
+- Keep the scenario self-contained; do not reference other labs or fictional universes.
+
+## Acceptance Checklist
+- Vulnerability, business risk, and company profile are all mutually consistent and grounded in the library page.
+- The described risk clearly motivates why finding the upcoming flag matters to stakeholders.
+- Output follows section order and formatting exactly as listed above.

@@ -1,37 +1,41 @@
 ---
-description: Authoring rules for generating a single realistic flag (actionable business evidence) per PHILOSOPHY
-globs: [".ctf/context/*.md"]
-alwaysApply: false
+description: Authoring rules for defining a realistic, exploitation-derived flag with business meaning
+alwaysApply: true
+globs: ["**/.ctf/context/FLAG.md", "**/.cursor/rules/context/FLAG.mdc"]
 ---
 
 # Flag Authoring Rules (Generation)
 
-## Purpose
-Define ONE flag that is realistic, actionable evidence of exploitation (not a contrived token), aligned with business impact.
+## Core Principles
+- The flag is not a CTF token; it is **the exact piece of evidence** a pentester would capture to convince stakeholders of the impact described in the scenario.
+- The evidence must be discoverable **only by exploiting the vulnerability** highlighted in the library page and scenario.
+- The final flag string must be trivial to assert in automated tests (plain text or single JSON value), yet clearly meaningful to business stakeholders.
 
-## Allowed Flag Types (pick ONE)
-- Admin/privileged credential or API token that enables admin actions (refunds, user mgmt)
-- Financial data with misuse potential (masked where appropriate, but verifiable by tests)
-- Personal identification data with clear impact (identity theft risk)
-- Internal service/API key that enables lateral movement or data extraction
+## Definition Requirements
+1. **Artifact Description**
+   - Identify the data item that will serve as the flag (e.g., SQL row, invoice PDF snippet, support chat transcript).
+   - Explain where it lives in the lab (table/file/service) and which access level should normally protect it.
 
-## Mandatory Requirements
+2. **Business Relevance**
+   - 2–3 sentences explaining why this artifact proves the business risk (financial loss, regulatory breach, contractual violation, etc.).
+   - Make the business consequence explicit enough for a report excerpt.
+
+3. **Acquisition Summary**
+   - 1–2 sentences giving the high-level exploit path from vulnerability to evidence (no payloads, no exact field names beyond what tests need).
+   - Mention the role or permission level that should never reach this data without the exploit.
+
+4. **Flag Format**
+   - Specify the exact textual format the lab will output for validation (e.g., `invoice_total:12345.67`, raw token string, serialized JSON snippet).
+   - Ensure the format is stable, unique, and short enough to paste into validation systems.
+
+## Guardrails
 - Exactly one flag per lab.
-- Must be data that exists naturally in the system (DB row, config secret, environment value, file content)—not a fabricated `CTF{...}`.
-- Keep the definition concise (≤ 20 lines in `.ctf/context/FLAG.md`).
-- Include: what the data is, why it matters (business impact), and a 1–2 sentence high‑level approach (no step‑by‑step, no payloads).
+- Flag must exist in the lab assets from the start; no dynamic secrets or randomness.
+- Use only fictional names/domains compliant with PHILOSOPHY (e.g., `@cyberctf.fr`).
+- Do not expose the flag value in any non-exploit path or documentation.
+- Keep the entire flag definition under 18 lines to stay concise.
 
-## Security and Content Constraints
-- Emails, if used, must end with `@cyberctf.fr` or be username‑only.
-- Use only provided random names for persons; avoid real identities.
-- No real external domains, no generic names like “John Doe”.
-- Do not include the actual flag value in any player‑facing UI or docs.
-
-## Examples (templates to adapt; do NOT copy verbatim)
-- Admin API token stored in DB `dev_XXXX.core_secrets` under key `admin_api_token`; enables unauthorized refunds/orders.
-- Back‑office user credential (username + password hash) from `users_admin`; proves privilege escalation path.
-- Internal payment gateway key from `config_secrets`; allows replay/refund abuse.
-
-## Validation
-- Tests must be able to extract and assert the flag via the intended exploit path.
-- The flag must directly enable or prove a meaningful business impact (fraud, disclosure, escalation).
+## Acceptance Checklist
+- The proposed artifact matches the vulnerability’s impact path and would satisfy a real executive or auditor as proof.
+- Automated tests can deterministically read the flag once the exploit path is followed.
+- The described acquisition avoids step-by-step instructions yet makes the linkage between exploit and business risk unmistakable.
