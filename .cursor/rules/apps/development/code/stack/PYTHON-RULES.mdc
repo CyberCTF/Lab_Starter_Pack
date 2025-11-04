@@ -1,0 +1,111 @@
+---
+description: Python code quality guardrails — syntax, linting, and error checking
+globs: ["**/*.py"]
+alwaysApply: false
+---
+
+# Python Code Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all Python files (`.py`) in the project are correctly coded, syntactically valid, and free of errors. You are NOT to consider your overall task complete until this verification stage confirms that all Python code is error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory Python Code Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All Python Files
+
+1. Use file system tools to find all files with `.py` extension in the project workspace.
+2. Create a comprehensive list of all Python files that need verification.
+
+### Step 2: Syntax Validation
+
+For each Python file identified:
+
+1. **Check Python Syntax:**
+
+   - Use `python3 -m py_compile <file>` or `python -m py_compile <file>` to verify syntax.
+   - Alternatively, use `python3 -m ast <file>` to validate the abstract syntax tree.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Linting and Code Quality Checks
+
+For each Python file:
+
+1. **Run Linters (if available):**
+
+   - Try running `pylint`, `flake8`, `pyflakes`, or `ruff` on the files if these tools are available in the environment.
+   - If linters are not available, perform manual code review for:
+     - Undefined variables
+     - Unused imports
+     - Missing imports
+     - Syntax inconsistencies
+     - Indentation errors
+
+2. **Check for Common Errors:**
+   - Undefined names/variables
+   - Missing required imports
+   - Circular import issues
+   - Type inconsistencies (if type hints are present)
+   - Incorrect indentation
+   - Missing parentheses, brackets, or quotes
+
+### Step 4: Runtime Error Detection
+
+1. **Import Verification:**
+
+   - For each Python file, attempt to import it (if it's a module) or at least verify that all imports are resolvable.
+   - Check that all imported modules/packages exist and are accessible.
+
+2. **Basic Execution Check (where applicable):**
+   - For scripts that can be executed safely, perform a dry-run or minimal execution check.
+   - Verify that the code can at least be parsed and initialized without fatal errors.
+
+### Step 5: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-4 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All Python files have been identified and verified.
+2. ✅ No syntax errors exist in any Python file.
+3. ✅ No linting errors or warnings exist (or all critical issues have been resolved).
+4. ✅ All imports are resolvable and valid.
+5. ✅ No undefined variables or names are detected.
+6. ✅ All code passes basic static analysis checks.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total Python files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All Python code is error-free and correctly coded
+
+## Overriding Default Behavior
+
+This entire "Python Code Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all Python code verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.
