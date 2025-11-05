@@ -43,7 +43,7 @@ alwaysApply: true
 
 - flag_format
   - Description: Allowed formats for the flag; one of the following examples:
-  - Examples: `(numéro +3360000000, flag{static_flag}, static, admin password, manager password , example@example.com )`
+  - Examples: `(number +3360000000, flag{static_flag}, static, admin password, manager password , example@example.com )`
 
 - points
   - Integer score for the lab.
@@ -75,6 +75,37 @@ alwaysApply: true
 - `slug` is kebab-case and unique per repository.
 - `difficulty` is 1, 2, or 3 only.
 - `points` is a positive integer.
-- `flag` matches one of the formats declared in `flag_format`.
+- `flag` is a real, non-empty value discoverable via the lab exploit path and matches one of the formats declared in `flag_format`.
+
+## Strict Schema (Required — no extra fields)
+- `.ctf/metadata.json` MUST contain ONLY these keys:
+  - `project_name`, `slug`, `title`, `description`, `category`, `difficulty`, `flag`, `flag_format`, `points`, `question`
+- Reject if any of the following keys appear: `id`, `estimated_time`, `services`, `expose_ports`, `flag_type`, `entry_url`, `health_url`, `questions`, any additional unspecified keys.
+
+## Authoring Template (Fill EXACTLY)
+Copy, fill, and commit as `.ctf/metadata.json`:
+
+```json
+{
+  "project_name": "<git-friendly-name>",
+  "slug": "<kebab-case-unique-slug>",
+  "title": "<human-readable-title>",
+  "description": "<one-paragraph-objective>",
+  "category": "web",
+  "difficulty": <1|2|3>,
+  "flag": "<real-flag-extracted-from-lab>",
+  "flag_format": "(number +3360000000, flag{static_flag}, static, admin password, manager password , example@example.com )",
+  "points": <integer>,
+  "question": "<single challenge question>"
+}
+```
+
+## Validation Failures (Block Merge)
+- `flag` is empty or placeholder (e.g., "", "TBD", "to-fill").
+- Any disallowed key present (e.g., `id`, `services`, `questions`).
+- Missing any required key from the Strict Schema list.
+- `slug` not kebab-case.
+- `difficulty` not in {1,2,3}.
+- `points` not a positive integer.
 
 
