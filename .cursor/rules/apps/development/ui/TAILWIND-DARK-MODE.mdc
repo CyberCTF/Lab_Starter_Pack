@@ -1,0 +1,46 @@
+---
+description: Enforce Tailwind dark mode by default; require darkMode 'class' and <html class="dark">
+globs: ["build/**/web/src/**/*.php", "build/**/web/src/**/*.html", "build/**/tailwind.config.js"]
+alwaysApply: true
+---
+
+# Tailwind Dark Mode Enforcement
+
+## Purpose
+- Ensure the template renders in dark mode by default across all labs.
+- Fixes: TEST → Tailwind template not in dark mode (while app and vuln function correctly).
+
+## Requirements
+- Tailwind config must enable dark mode via class:
+
+```javascript
+// tailwind.config.js
+module.exports = {
+  darkMode: "class",
+  content: ["./**/*.php", "./**/*.html", "./**/*.js"],
+  theme: { extend: {} },
+  plugins: []
+};
+```
+
+- Base HTML must enable dark by default:
+
+```html
+<!doctype html>
+<html class="dark" lang="en">
+```
+
+- Use dark classes in the body as a baseline:
+
+```html
+<body class="min-h-screen bg-black text-white">
+```
+
+## Validation
+- Check that `darkMode: "class"` is present in `tailwind.config.js` (or inline CDN config).
+- Ensure the root `<html>` tag includes `class="dark"` so dark styles are active by default.
+- Visual check: background is black and text is white across pages.
+
+## Reference
+- Library page for the related lab: [MySQL Error Based - Extractvalue Function](https://github.com/Cyber-Courses/Cyber-Library/blob/review/injection/offensive/software/applications/server_applications/web/injection/sql_injection/mysql/mysql_error_based/mysql_error_based_-_extractvalue_function.mdx)
+

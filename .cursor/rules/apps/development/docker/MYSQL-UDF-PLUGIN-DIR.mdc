@@ -1,0 +1,30 @@
+---
+description: For MySQL 8 official images, ensure /usr/lib/mysql/plugin exists and is owned by mysql before UDF steps
+globs: ["build/**/Dockerfile", "build/**/mysql/**"]
+alwaysApply: false
+---
+
+# MySQL 8 UDF Plugin Directory
+
+## Purpose
+- Prevent Docker build errors when labs use UDF-based payloads by ensuring the MySQL plugin directory exists with correct ownership.
+- Fixes: TEST → ERROR BUILD DOCKER “/usr/lib/mysql/plugin/ directory doesn't exist in MySQL 8.0 image”. The lab can still work if created at runtime, but builds must be deterministic.
+
+## Required Dockerfile Steps (before any UDF CREATE FUNCTION or plugin writes)
+
+```dockerfile
+# Ensure plugin directory exists for MySQL 8
+RUN mkdir -p /usr/lib/mysql/plugin \
+    && chown -R mysql:mysql /usr/lib/mysql/plugin \
+    && chmod 755 /usr/lib/mysql/plugin
+```
+
+### Notes
+- Path `/usr/lib/mysql/plugin` is the standard for Oracle MySQL 8 images. If using MariaDB or distro variants, confirm the path (`/usr/lib/mysql/plugin` vs `/usr/lib64/mysql/plugin`).
+- This step should run in the image that actually hosts `mysqld` (not the web container).
+- Combine with proper MySQL privileges in the lab (e.g., FILE and CREATE FUNCTION when scenario requires) and constrain scope to the lab use only.
+
+## Reference
+- Library page for the command‑execution lab: [COMMAND - UDF Library](https://github.com/Cyber-Courses/Cyber-Library/blob/review/injection/offensive/software/applications/server_applications/web/injection/sql_injection/mysql/mysql_command_execution/command_-_udf_library.mdx)
+- For Dockerfile authoring guardrails and escaped heredocs, see `DOCKERFILE-SYNTAX.mdc` added earlier [[memory:10495739]].
+
