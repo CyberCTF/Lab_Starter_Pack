@@ -1,0 +1,74 @@
+---
+description: Require a complete multi-page website skeleton (layout, nav, auth, dashboard, admin, listings, details, search, legal, errors)
+globs: ["build/**/web/src/**/*.php", "build/**/web/src/**/*.html", "build/**/web/src/**/*.js"]
+alwaysApply: true
+---
+
+# Website Essentials — Multi‑Page Requirement
+
+## Purpose
+- Prevent labs from shipping with only 1–2 pages; require a realistic website surface.
+- Standardize a minimal, complete set of pages/components for navigation, UX, and testing.
+
+## Mandatory Structure (Minimum)
+Create these files (or framework equivalents) under `build/<lab>/web/src`:
+
+- Layout & Partials
+  - `layout.php` (HTML head, Tailwind CDN, `<body class="min-h-screen bg-black text-white">`)
+  - `partials/nav.php` (main navigation, links to primary pages)
+  - `partials/footer.php`
+
+- Core Pages
+  - `index.php` (Home)
+  - `login.php`, `register.php`, `logout.php`
+  - `dashboard.php` (post-login landing)
+  - `profile.php` (basic user info page)
+
+- Domain Pages
+  - `items.php` (listing)
+  - `item.php` (detail; accepts `id`)
+  - `search.php` (query form + results)
+
+- Support & Legal
+  - `contact.php`
+  - `about.php`
+  - `privacy.php`, `terms.php`
+
+- Admin (even if minimally implemented)
+  - `admin/index.php`
+  - `admin/users.php` (list)
+
+- Health & Errors
+  - `health.php` (no DB dependency; returns 200)
+  - `errors/404.php`, `errors/500.php`
+
+- SEO/Robots (static at web root if applicable)
+  - `sitemap.xml`, `robots.txt`
+
+## Routing Requirements
+- `.htaccess` present with index fallback (see HTACCESS-ROUTING rule).
+- All nav links resolve to real pages above.
+- 404 routes render `errors/404.php`.
+
+## UI Requirements
+- Use Tailwind black theme baseline (see UI-BLACK and TAILWIND-DARK-MODE rules).
+- Header includes brand/title; footer shows simple metadata.
+- Pages share the layout and partials (no duplicated `<head>` fragments).
+
+## Data/Behavior Guidelines
+- Public pages: `index.php`, `about.php`, `contact.php`, `items.php`, `item.php`, `search.php`.
+- Auth‑required: `dashboard.php`, `profile.php`, `admin/*`.
+- Keep DB errors out of the UI; follow `PHP-MYSQLI-SAFE-RESULTS` for queries.
+- Health endpoint must not use DB to avoid flapping.
+
+## Acceptance Criteria (Blocking)
+- Navigation contains links to Home, Items, Search, About, Contact, Login/Register (or Logout when authenticated), Dashboard.
+- Each linked page exists and returns 200 (or correct error page for bogus routes).
+- Layout/partials are used across pages; Tailwind dark classes are applied by default.
+- 404 routes to `errors/404.php`; 500 uses `errors/500.php` when triggered.
+- `health.php` returns 200 quickly without DB.
+
+## Notes
+- Framework variants (router/controllers/templates) are acceptable if all routes/pages above exist and are reachable via navbar/footer.
+- Keep content minimal but realistic. Admin pages may stub features but must render and link correctly.
+

@@ -1,228 +1,80 @@
 ---
-description: CyberCTF Metadata and Question Structure
-globs: [".ctf/metadata.*"]
-alwaysApply: false
+description: Define lab metadata fields and required values for CI/CD export; enforce examples and accepted formats
+globs: [".ctf/metadata.json", ".ctf/LIBRARY_PAGE.md", ".ctf/context/SCENARIO.md", ".ctf/context/FLAG.md"]
+alwaysApply: true
 ---
 
-# CyberCTF Metadata and Question Structure
+# METADATA
 
-## Metadata Requirements
+## Purpose
+- Standardize lab metadata for deployment and platform consumption.
+- Enforce required fields, formats, and provide examples for each part.
 
-**Input:** Lab directory + `/.ctf`  
-**Artefact:** `/.ctf/metadata.md` or `.json`
+## Required Fields
 
-Create a comprehensive metadata file containing all information required for the CyberCTF website.
+- Project name
+  - Description: Short identifier for Git/registry publishing (not a literal value).
+  - Example: `cyberlabs-swaggerapi-prototype-pollution`
 
-### Metadata Structure
+- slug
+  - Description: URL-safe unique identifier for the lab.
+  - Value: `swaggerapi-prototype-pollution`
+  - Example: `sql-injection-basic`, `swaggerapi-prototype-pollution`
 
-#### 1. Basic Information
+- title
+  - Description: Human-readable lab title.
+  - Example: `SwaggerApi prototype pollution`
+
+- description
+  - Description: Short paragraph describing the lab’s exploit objective.
+  - Example: `The primary objective involves exploiting this architectural weakness to circumvent authentication mechanisms and gain unauthorized access to privileged administrative resources. The ultimate goal is to retrieve the manager account credentials through advanced prototype manipulation techniques.`
+
+- category
+  - Allowed: `web`
+  - Example: `web`
+
+- difficulty
+  - Allowed numeric scale: Easy = 1, Medium = 2, Hard = 3
+  - Example: `2`
+
+- flag
+  - Description: Concrete flag value used for validation (string).
+  - Example: `flag{static_flag}`
+
+- flag_format
+  - Description: Allowed formats for the flag; one of the following examples:
+  - Examples: `(numéro +3360000000, flag{static_flag}, static, admin password, manager password , example@example.com )`
+
+- points
+  - Integer score for the lab.
+  - Value: `100`
+
+- question
+  - Description: Player-facing challenge question.
+  - Example: `What is the password of the account manager?`
+
+## Example JSON (.ctf/metadata.json)
+
 ```json
 {
-  "title": "SQL Injection in Customer Management System",
-  "description": "A realistic customer management system vulnerable to SQL injection attacks. Learn to identify and exploit SQL injection vulnerabilities in web applications.",
+  "project_name": "cyberlabs-swaggerapi-prototype-pollution",
+  "slug": "swaggerapi-prototype-pollution",
+  "title": "SwaggerApi prototype pollution",
+  "description": "The primary objective involves exploiting this architectural weakness to circumvent authentication mechanisms and gain unauthorized access to privileged administrative resources. The ultimate goal is to retrieve the manager account credentials through advanced prototype manipulation techniques.",
+  "category": "web",
   "difficulty": 2,
-  "estimated_time": "45 minutes",
-  "prerequisites": [
-    "Basic understanding of SQL",
-    "Knowledge of web application security",
-    "Familiarity with browser developer tools"
-  ],
-  "skills_learned": [
-    "SQL injection identification",
-    "Payload construction",
-    "Database enumeration",
-    "Data extraction techniques",
-    "Web application testing methodology"
-  ],
-  "flag": "admin:5d41402abc4b2a76b9719d911017c592"
+  "flag": "flag{static_flag}",
+  "flag_format": "(numéro +3360000000, flag{static_flag}, static, admin password, manager password , example@example.com )",
+  "points": 100,
+  "question": "What is the password of the account manager?"
 }
 ```
 
-#### 2. Questions Structure
-```json
-{
-  "questions": [
-    {
-      "question": "What is the admin user's password hash?",
-      "hint": "Try using SQL injection in the search functionality",
-      "solution": "5d41402abc4b2a76b9719d911017c592"
-    },
-    {
-      "question": "How many users are in the database?",
-      "hint": "Use UNION SELECT to count records",
-      "solution": "15"
-    }
-  ]
-}
-```
+## Acceptance Criteria
+- All fields above are present in `.ctf/metadata.json` and match allowed formats.
+- `slug` is kebab-case and unique per repository.
+- `difficulty` is 1, 2, or 3 only.
+- `points` is a positive integer.
+- `flag` matches one of the formats declared in `flag_format`.
 
-### Difficulty Levels
 
-#### 1. Easy (1)
-- **Description**: Basic vulnerability exploitation
-- **Requirements**: Minimal technical knowledge
-- **Examples**: Simple SQL injection, basic XSS
-- **Time**: 15-30 minutes
-
-#### 2. Medium (2)
-- **Description**: Moderate complexity exploitation
-- **Requirements**: Some technical knowledge
-- **Examples**: Advanced SQL injection, stored XSS
-- **Time**: 30-60 minutes
-
-#### 3. Hard (3)
-- **Description**: Complex exploitation techniques
-- **Requirements**: Good technical knowledge
-- **Examples**: Blind SQL injection, advanced XSS
-- **Time**: 60-120 minutes
-
-#### 4. Expert (4)
-- **Description**: Advanced exploitation techniques
-- **Requirements**: Expert technical knowledge
-- **Examples**: Time-based blind SQL injection, DOM-based XSS
-- **Time**: 120+ minutes
-
-### Question Guidelines
-
-#### 1. Question Requirements
-- **At least one question** to find the flag
-- **Guiding questions** if the lab is too easy
-- **Clear and specific** questions
-- **Realistic scenarios** that match the lab context
-
-#### 2. Question Structure
-```json
-{
-  "question": "What is the admin user's password hash?",
-  "hint": "Try using SQL injection in the search functionality",
-  "solution": "5d41402abc4b2a76b9719d911017c592"
-}
-```
-
-#### 3. Hint Guidelines
-- **Helpful but not obvious**: Provide guidance without giving away the answer
-- **Technical direction**: Point users toward the right approach
-- **Progressive hints**: Start with general hints, get more specific
-- **Realistic context**: Hints should match real-world scenarios
-
-### Skills Learned Categories
-
-#### 1. Vulnerability Types
-- SQL injection
-- Cross-site scripting (XSS)
-- Cross-site request forgery (CSRF)
-- File upload vulnerabilities
-- XML external entity (XXE)
-- Server-side request forgery (SSRF)
-
-#### 2. Exploitation Techniques
-- Payload construction
-- Bypass techniques
-- Enumeration methods
-- Data extraction
-- Privilege escalation
-
-#### 3. Tools and Methods
-- Browser developer tools
-- SQL injection tools
-- Web application scanners
-- Manual testing techniques
-- Report writing
-
-### Prerequisites Categories
-
-#### 1. Technical Knowledge
-- Basic understanding of SQL
-- Knowledge of web application security
-- Familiarity with HTTP protocols
-- Understanding of database concepts
-
-#### 2. Tools and Skills
-- Browser developer tools
-- Basic command line usage
-- Text editor proficiency
-- Network analysis tools
-
-#### 3. Experience Level
-- Beginner: No prior experience required
-- Intermediate: Some security knowledge
-- Advanced: Good technical background
-- Expert: Extensive security experience
-
-### Metadata File Formats
-
-#### 1. JSON Format
-```json
-{
-  "title": "Lab Title",
-  "description": "Lab description",
-  "difficulty": 2,
-  "estimated_time": "45 minutes",
-  "prerequisites": ["prerequisite1", "prerequisite2"],
-  "skills_learned": ["skill1", "skill2"],
-  "flag": "flag_value",
-  "questions": [
-    {
-      "question": "Question text",
-      "hint": "Hint text",
-      "solution": "Solution text"
-    }
-  ]
-}
-```
-
-#### 2. Markdown Format
-```markdown
-# Lab Title
-
-## Description
-Lab description
-
-## Difficulty
-2 (Medium)
-
-## Estimated Time
-45 minutes
-
-## Prerequisites
-- Prerequisite 1
-- Prerequisite 2
-
-## Skills Learned
-- Skill 1
-- Skill 2
-
-## Flag
-flag_value
-
-## Questions
-
-### Question 1
-**Question:** Question text
-**Hint:** Hint text
-**Solution:** Solution text
-```
-
-### Quality Assurance
-
-#### 1. Content Validation
-- [ ] Title is descriptive and accurate
-- [ ] Description explains the lab clearly
-- [ ] Difficulty level is appropriate
-- [ ] Time estimate is realistic
-- [ ] Prerequisites are relevant
-- [ ] Skills learned are comprehensive
-
-#### 2. Question Validation
-- [ ] At least one question to find the flag
-- [ ] Questions are clear and specific
-- [ ] Hints are helpful but not obvious
-- [ ] Solutions are correct and complete
-- [ ] Questions match the lab difficulty
-
-#### 3. Technical Validation
-- [ ] Flag format is correct
-- [ ] JSON structure is valid
-- [ ] All required fields are present
-- [ ] No missing or incomplete information
-- [ ] File format is consistent
