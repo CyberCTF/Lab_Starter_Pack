@@ -1,0 +1,75 @@
+---
+description: PHP + mysqli — Guard result usage; prevent fetch_assoc on boolean; centralize safe patterns and lint
+globs: ["build/**/web/src/**/*.php"]
+alwaysApply: true
+---
+
+# PHP + mysqli: Safe Result Handling (Prevent fetch_assoc on boolean)
+
+## Purpose
+- Eliminate runtime fatals like: `Call to a member function fetch_assoc() on bool`.
+- Standardize safe handling of `mysqli::query()`/prepared statements across all PHP pages.
+
+## Mandatory Rules
+1) Only call `fetch_assoc()` on a valid `mysqli_result`.
+   - Always check the query return value before reading rows: `if ($result !== false) { ... }`.
+
+2) Set safe defaults when a query fails (e.g., counters default to 0) and do not crash the page.
+
+3) For non-SELECT statements (INSERT/UPDATE/DELETE), never call `fetch_*`; use `affected_rows`.
+
+4) Free results you iterate over: call `$result->free()` after loops/reads.
+
+5) Keep DB errors out of the UI. Log server-side (`error_log`) if needed; render a neutral message.
+
+6) Centralize connection creation (e.g., `getDBConnection()`), set `utf8mb4`, and close connections.
+
+## Required Patterns (Good)
+
+```php
+$result = $conn->query($sql);
+
+$count = 0;
+if ($result !== false) {
+    $row = $result->fetch_assoc();
+    if ($row && isset($row['total'])) {
+        $count = (int)$row["total"];
+    }
+    $result->free();
+}
+```
+
+```php
+$ok = $conn->query("UPDATE users SET name='X' WHERE id=1");
+if ($ok === false) {
+    error_log("SQL error (" . $conn->errno . "): " . $conn->error);
+    // Render neutral UI message; do not crash
+} else {
+    $updated = $conn->affected_rows;
+}
+```
+
+## Anti-Patterns (Bad)
+- `while ($row = $result->fetch_assoc()) { ... }` without verifying `$result !== false`.
+- Calling `fetch_assoc()` on queries that return `true/false` (INSERT/UPDATE/DELETE).
+- Rendering raw SQL/DB error details directly to the user.
+
+## Lint/Scan Guidance (Blockers)
+Reject a change if any of these patterns appear without a surrounding check:
+
+- Regex: `\$result\s*=\s*\$conn->query\([^;]+\);\s*\n\s*\$row\s*=\s*\$result->fetch_assoc\(`
+- Regex: `while\s*\(\s*\$row\s*=\s*\$result->fetch_assoc\(\)\s*\)` not preceded in the same scope by `if\s*\(\s*\$result\s*!==\s*false\s*\)`
+
+Also flag any use of `fetch_assoc()` following `INSERT|UPDATE|DELETE` statements.
+
+## Acceptance Criteria
+- Every `fetch_assoc()` call is dominated by a guard `if ($result !== false) { ... }`.
+- For SELECT counts, pages show `0` when queries fail instead of crashing.
+- Non-SELECT queries use `affected_rows` and never call `fetch_*`.
+- Result objects are freed (`$result->free()`) after use in loops or single-row reads.
+- No DB error details are rendered to end users; at most, server-side logging is performed.
+
+## Notes
+- Prefer prepared statements for user-controlled input; the above rules still apply when using `$stmt->get_result()`.
+- Health endpoints should not depend on the database to avoid container health flapping.
+
