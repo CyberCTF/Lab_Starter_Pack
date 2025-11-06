@@ -20,9 +20,10 @@ Create these files (or framework equivalents) under `build/<lab>/web/src`:
 
 - Core Pages
   - `index.php` (Home)
-  - `login.php`, `register.php`, `logout.php`
-  - `dashboard.php` (post-login landing)
-  - `profile.php` (basic user info page)
+  - Auth pages are CONDITIONAL per lab (see "Auth Presence — Per‑Lab Dynamic")
+    - If the vulnerability involves auth/session logic: include `login.php`, `register.php`, `logout.php`
+    - If auth is in scope: include `dashboard.php` (post-login landing) and `profile.php` (basic user info)
+    - If auth is NOT needed for the lab: omit all auth pages entirely
 
 - Domain Pages
   - `items.php` (listing)
@@ -54,6 +55,7 @@ Create these files (or framework equivalents) under `build/<lab>/web/src`:
 - Use Tailwind black theme baseline (see UI-BLACK and TAILWIND-DARK-MODE rules).
 - Header includes brand/title; footer shows simple metadata.
 - Pages share the layout and partials (no duplicated `<head>` fragments).
+ - Home page must look realistic and clean (hero/intro + 1–2 content sections, no lorem-only stubs).
 
 ## Data/Behavior Guidelines
 - Public pages: `index.php`, `about.php`, `contact.php`, `items.php`, `item.php`, `search.php`.
@@ -61,8 +63,16 @@ Create these files (or framework equivalents) under `build/<lab>/web/src`:
 - Keep DB errors out of the UI; follow `PHP-MYSQLI-SAFE-RESULTS` for queries.
 - Health endpoint must not use DB to avoid flapping.
 
+### Auth Presence — Per‑Lab Dynamic
+- Only include auth when the lab scenario/vulnerability requires it (e.g., auth bypass, weak login, session bugs).
+- When auth is included, registration MUST be minimal and temporary:
+  - Registration form accepts only `username` and `password` (no email or extra fields).
+  - Credentials are stored locally for the lab only (e.g., flat file/JSON or in‑memory/session), sufficient for demo; no external services.
+  - Keep the flow simple: register → login → access `dashboard.php` and `profile.php`.
+- When auth is NOT needed (e.g., pure MySQL injection lab on public endpoints), omit `login.php`, `register.php`, `logout.php`, `dashboard.php`, and `profile.php`.
+
 ## Acceptance Criteria (Blocking)
-- Navigation contains links to Home, Items, Search, About, Contact, Login/Register (or Logout when authenticated), Dashboard.
+- Navigation contains links to Home, Items, Search, About, Contact. If auth is included for the lab, show Login/Register (or Logout when authenticated) and Dashboard; if auth is not included, these links must be absent.
 - Each linked page exists and returns 200 (or correct error page for bogus routes).
 - Layout/partials are used across pages; Tailwind dark classes are applied by default.
 - 404 routes to `errors/404.php`; 500 uses `errors/500.php` when triggered.
@@ -71,4 +81,5 @@ Create these files (or framework equivalents) under `build/<lab>/web/src`:
 ## Notes
 - Framework variants (router/controllers/templates) are acceptable if all routes/pages above exist and are reachable via navbar/footer.
 - Keep content minimal but realistic. Admin pages may stub features but must render and link correctly.
+ - Profile page is only required when auth is included by the lab design.
 
