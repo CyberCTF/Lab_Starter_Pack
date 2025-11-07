@@ -1,0 +1,179 @@
+---
+description: CRITICAL - Points-based enforcement system - Zero tolerance for rule violations
+alwaysApply: true
+priority: 1000
+---
+
+# ⚠️ CRITICAL: STRICT POINTS-BASED ENFORCEMENT SYSTEM ⚠️
+
+## MANDATORY COMPLIANCE FRAMEWORK
+
+You are operating under a **STRICT POINTS-BASED ENFORCEMENT SYSTEM**. Your performance is measured in points, and **ANY violation of ANY rule results in SEVERE point deductions**. Your goal is to maintain **100% compliance** and **ZERO point loss**.
+
+## INITIAL SCORE
+
+**Starting Points: 1000**
+
+You begin every task with **1000 points**. Your objective is to **complete the task with 1000 points remaining**. Any point loss indicates a failure to comply with the rules.
+
+## POINT DEDUCTION SYSTEM
+
+### CRITICAL VIOLATIONS (-500 points each)
+
+These violations result in **MASSIVE point deductions** and indicate severe non-compliance:
+
+1. **Ignoring or skipping mandatory verification phases** (-500 points)
+   - Failing to run required syntax checks
+   - Skipping linting/validation steps
+   - Not completing mandatory verification loops
+   - Declaring task complete before all checks pass
+
+2. **Violating file structure or directory rules** (-500 points)
+   - Creating files in wrong locations
+   - Modifying files outside allowed scope
+   - Ignoring directory constraints
+   - Breaking established file organization
+
+3. **Skipping required validation steps** (-500 points)
+   - Not running tests when required
+   - Skipping Docker validation
+   - Ignoring database connection checks
+   - Missing UI quality checks
+
+4. **Creating prohibited artifacts** (-500 points)
+   - Adding ad-hoc scripts when prohibited
+   - Creating files that violate philosophy rules
+   - Introducing magic strings or contrived flags
+   - Adding spoilers in player-facing content
+
+### MAJOR VIOLATIONS (-200 points each)
+
+These violations indicate significant rule non-compliance:
+
+1. **Syntax or code quality errors** (-200 points)
+   - Leaving syntax errors in code
+   - Not fixing linting errors
+   - Ignoring type errors
+   - Missing required imports
+
+2. **Incomplete task execution** (-200 points)
+   - Not addressing all parts of user request
+   - Leaving TODO comments without resolution
+   - Skipping required steps in workflows
+   - Not completing iterative fixes
+
+3. **Ignoring context or scenario rules** (-200 points)
+   - Not following PHILOSOPHY constraints
+   - Violating realism requirements
+   - Ignoring difficulty calibration
+   - Breaking testability requirements
+
+4. **Configuration errors** (-200 points)
+   - Wrong ports or environment variables
+   - Incorrect Docker compose syntax
+   - Database connection failures
+   - Missing healthchecks
+
+### MODERATE VIOLATIONS (-100 points each)
+
+These violations indicate moderate rule non-compliance:
+
+1. **Code style violations** (-100 points)
+   - Not following language-specific rules
+   - Ignoring formatting requirements
+   - Missing required comments
+   - Poor code organization
+
+2. **Documentation gaps** (-100 points)
+   - Missing required documentation
+   - Incomplete change logs
+   - Not updating review files
+   - Missing metadata
+
+3. **Workflow violations** (-100 points)
+   - Not following phase requirements
+   - Skipping review steps
+   - Incorrect output file generation
+   - Missing validation reports
+
+### MINOR VIOLATIONS (-50 points each)
+
+These violations indicate minor rule non-compliance:
+
+1. **Output formatting issues** (-50 points)
+   - Incorrect file formats
+   - Missing required headers
+   - Poor error messages
+   - Incomplete reports
+
+2. **Timing issues** (-50 points)
+   - Not waiting for proper initialization
+   - Rushing through steps
+   - Missing retry logic
+   - Premature completion
+
+## COMPLIANCE VERIFICATION CHECKLIST
+
+Before declaring ANY task complete, you MUST verify:
+
+- [ ] All syntax checks passed (0 errors)
+- [ ] All linting checks passed (0 errors)
+- [ ] All tests executed and passed
+- [ ] All required files created/updated correctly
+- [ ] All directory rules followed
+- [ ] All workflow phases completed
+- [ ] All validation steps executed
+- [ ] All documentation updated
+- [ ] All configuration correct
+- [ ] Zero point deductions incurred
+
+## SELF-AUDIT REQUIREMENT
+
+**BEFORE completing any task, you MUST:**
+
+1. Review every action taken against ALL applicable rules
+2. Verify zero violations occurred
+3. Confirm all mandatory steps completed
+4. Check that all outputs meet requirements
+5. Ensure no shortcuts or skipped steps
+6. Validate that point score remains at 1000
+
+## POINT LOSS CONSEQUENCES
+
+**If you lose ANY points:**
+- The task is **NOT complete**
+- You **MUST** identify the violation
+- You **MUST** fix the violation immediately
+- You **MUST** re-verify compliance
+- You **MUST** continue until points are restored to 1000
+
+## SUCCESS CRITERIA
+
+**Task completion is ONLY valid when:**
+- ✅ All user requirements met
+- ✅ All rules followed
+- ✅ All validations passed
+- ✅ All checks completed
+- ✅ **Points remain at 1000 (ZERO deductions)**
+
+## ENFORCEMENT MECHANISM
+
+This system is **ALWAYS ACTIVE** and applies to **EVERY action** you take. Every code change, every file operation, every validation step, and every completion decision is evaluated against this points system.
+
+**You are expected to:**
+- Self-monitor your compliance continuously
+- Catch violations before they occur
+- Fix issues immediately when detected
+- Never accept point loss as acceptable
+- Maintain perfect compliance (1000 points) at all times
+
+## REMINDER
+
+**ZERO POINT LOSS = SUCCESS**
+**ANY POINT LOSS = FAILURE**
+
+Your primary objective is not just to complete tasks, but to complete them with **PERFECT COMPLIANCE** and **ZERO POINT DEDUCTIONS**.
+
+---
+
+**This enforcement system overrides any default behavior that might lead to rule violations. Compliance is non-negotiable.**
