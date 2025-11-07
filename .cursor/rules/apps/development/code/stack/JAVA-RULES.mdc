@@ -1,0 +1,154 @@
+---
+description: Java code quality guardrails — syntax, linting, and error checking
+globs: ["**/*.java", "**/pom.xml", "**/build.gradle"]
+alwaysApply: false
+---
+
+# Java Code Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all Java files (`.java`) in the project are correctly coded, syntactically valid, and free of errors. You are NOT to consider your overall task complete until this verification stage confirms that all Java code is error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory Java Code Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All Java Files
+
+1. Use file system tools to find all files with `.java` extension in the project workspace.
+2. Create a comprehensive list of all Java files that need verification.
+3. Check for build configuration files (`pom.xml` for Maven, `build.gradle` for Gradle).
+
+### Step 2: Syntax Validation
+
+For each Java file identified:
+
+1. **Check Java Syntax:**
+
+   - Use `javac -cp <classpath> <file>.java` to verify syntax and compile.
+   - For Maven projects: Use `mvn compile` to verify compilation.
+   - For Gradle projects: Use `gradle compileJava` or `./gradlew compileJava` to verify compilation.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Linting and Code Quality Checks
+
+For each Java file:
+
+1. **Run Linters (if available):**
+
+   - Try running `checkstyle`, `spotbugs`, `pmd`, `findbugs`, or `sonarqube` on the files if these tools are available in the environment.
+   - If linters are not available, perform manual code review for:
+     - Undefined variables or methods
+     - Unused imports
+     - Missing imports
+     - Syntax inconsistencies
+     - Incorrect package declarations
+     - Missing error handling
+     - Unused variables or methods
+
+2. **Check for Common Errors:**
+   - Undefined variables, methods, or classes
+   - Missing required imports
+   - Circular dependency issues
+   - Type mismatches
+   - Missing exception handling (unchecked exceptions)
+   - Incorrect package names
+   - Missing `package` declarations
+   - Unused variables, methods, or imports
+   - Missing return statements
+   - Incorrect access modifiers
+   - Missing `@Override` annotations where required
+
+### Step 4: Runtime Error Detection
+
+1. **Import Verification:**
+
+   - For each Java file, verify that all `import` statements reference classes that exist and are accessible.
+   - Check that all imported classes are properly declared in dependencies (`pom.xml` or `build.gradle`).
+   - Verify that package paths are correct.
+   - Check for missing dependencies in build configuration.
+
+2. **Basic Execution Check (where applicable):**
+   - For classes that can be compiled, perform a compilation check using `javac` or build tool.
+   - Verify that the code can at least be compiled without fatal errors.
+   - Check for undefined constants, methods, or classes that would cause compilation errors.
+   - Verify that all used standard library classes are available.
+
+### Step 5: Java-Specific Checks
+
+1. **Build Configuration:**
+   - Verify `pom.xml` (Maven) or `build.gradle` (Gradle) exists and is properly formatted.
+   - Check that project coordinates (groupId, artifactId, version) are correct.
+   - Ensure dependencies are properly declared.
+   - Verify Java version compatibility (`source` and `target` versions).
+
+2. **Package Structure:**
+   - Verify package declarations match directory structure.
+   - Check for `main` method in executable classes.
+   - Ensure proper package naming conventions (lowercase, reverse domain).
+
+3. **Exception Handling:**
+   - Check that checked exceptions are properly handled.
+   - Verify exception messages are meaningful.
+   - Check for proper exception propagation.
+
+4. **Class Structure:**
+   - Verify class names match file names.
+   - Check for proper access modifiers.
+   - Ensure proper inheritance and interface implementation.
+
+### Step 6: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-5 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All Java files have been identified and verified.
+2. ✅ No syntax errors exist in any Java file.
+3. ✅ No compilation errors exist (`javac` or build tool succeeds).
+4. ✅ No linting errors or warnings exist (or all critical issues have been resolved).
+5. ✅ All imports are resolvable and valid.
+6. ✅ No undefined variables, methods, or classes are detected.
+7. ✅ All code passes static analysis checks (if tools available).
+8. ✅ Code follows Java naming conventions.
+9. ✅ Build configuration (`pom.xml` or `build.gradle`) exists and is properly configured.
+10. ✅ All code passes basic static analysis checks.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total Java files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Compilation status:** ✅ Success / ❌ Failed
+- **Linting status:** ✅ Passed / ❌ Failed
+- **Build tool:** Maven / Gradle / Other
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All Java code is error-free and correctly coded
+
+## Overriding Default Behavior
+
+This entire "Java Code Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all Java code verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.

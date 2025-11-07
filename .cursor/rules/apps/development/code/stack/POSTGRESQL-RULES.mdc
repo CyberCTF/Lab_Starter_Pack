@@ -1,0 +1,182 @@
+---
+description: PostgreSQL database initialization and configuration quality guardrails — syntax, security, and best practices
+globs: ["**/database/init/**/*.sql", "**/postgres-init/**/*.sql", "**/initdb.d/**/*.sql"]
+alwaysApply: false
+---
+
+# PostgreSQL Database Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all PostgreSQL initialization scripts (`.sql`) in the project are correctly coded, syntactically valid, and follow security best practices. You are NOT to consider your overall task complete until this verification stage confirms that all PostgreSQL scripts are error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory PostgreSQL Script Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All PostgreSQL Scripts
+
+1. Use file system tools to find all files with `.sql` extension in PostgreSQL initialization directories:
+   - `database/init/`
+   - `postgres-init/`
+   - `initdb.d/`
+   - Or other custom initialization directories
+2. Create a comprehensive list of all PostgreSQL scripts that need verification.
+
+### Step 2: Syntax Validation
+
+For each PostgreSQL script identified:
+
+1. **Check PostgreSQL Syntax:**
+
+   - Use `psql --file=<file>` with dry-run mode if available.
+   - Use `pg_dump` or `psql` to validate syntax.
+   - Check for PostgreSQL-specific syntax errors.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Database Initialization Order
+
+1. **Verify Script Execution Order:**
+
+   - Check that scripts use numbered prefixes (01-, 02-, 03-) for correct execution order.
+   - Verify execution order: database creation → user creation → privilege grants → schema creation → data initialization.
+   - Ensure that dependencies are created before they are used.
+
+2. **Common Order Errors:**
+   - Granting privileges before creating users
+   - Creating tables before creating database
+   - Inserting data before creating tables
+   - Missing numbered prefixes causing incorrect order
+
+### Step 4: User and Privilege Management
+
+1. **User Creation Verification:**
+
+   - Verify that all database users are created before granting privileges.
+   - Check that `CREATE USER` or `CREATE ROLE` statements are present.
+   - Verify that users are created with proper authentication methods.
+   - Check for proper use of `IF NOT EXISTS` to prevent errors on re-runs.
+
+2. **Privilege Grant Verification:**
+
+   - Verify that privileges are granted after user creation.
+   - Check that privileges are appropriate for the use case.
+   - Verify that `GRANT` statements reference existing users and objects.
+   - Check that `REVOKE` statements are used where appropriate.
+
+### Step 5: Schema and Table Creation
+
+1. **Schema Creation Checks:**
+
+   - Verify that schemas are created before tables.
+   - Check that `CREATE SCHEMA IF NOT EXISTS` is used.
+   - Verify that schema names follow naming conventions.
+
+2. **Table Creation Checks:**
+
+   - Verify that tables are created with proper constraints.
+   - Check that primary keys are defined.
+   - Verify that foreign keys reference existing tables.
+   - Check that indexes are properly created.
+   - Verify that data types are appropriate.
+
+### Step 6: Security Best Practices
+
+1. **Security Checks:**
+
+   - Verify that passwords are not hardcoded (use environment variables).
+   - Check that sensitive data is not exposed in scripts.
+   - Verify that proper access controls are in place.
+   - Check that `REVOKE` statements are used to remove unnecessary privileges.
+   - Verify that connection security is properly configured.
+
+2. **Common Security Errors:**
+   - Hardcoded passwords in scripts
+   - Excessive privileges granted
+   - Missing access controls
+   - Exposed sensitive data
+
+### Step 7: PostgreSQL-Specific Features
+
+1. **PostgreSQL-Specific Checks:**
+
+   - Verify that PostgreSQL-specific features are used correctly (e.g., `SERIAL`, `BIGSERIAL`, `TEXT`, `JSONB`).
+   - Check that extensions are properly enabled if used.
+   - Verify that sequences are properly created if used.
+   - Check that triggers and functions are properly defined.
+
+2. **Common PostgreSQL Errors:**
+   - Incorrect use of PostgreSQL-specific data types
+   - Missing extension declarations
+   - Incorrect sequence usage
+   - Improper trigger or function definitions
+
+### Step 8: Docker Integration Checks
+
+1. **Docker-Specific Configuration:**
+
+   - Verify that initialization scripts are in the correct directory (`/docker-entrypoint-initdb.d/`).
+   - Check that scripts are properly mounted as read-only.
+   - Verify that PostgreSQL is configured to listen on the correct port.
+   - Check that environment variables are properly used for credentials.
+
+2. **Common Docker Errors:**
+   - Scripts not in correct initialization directory
+   - Scripts not mounted as read-only
+   - PostgreSQL not listening on assigned port
+   - Missing environment variable configuration
+
+### Step 9: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-8 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All PostgreSQL scripts have been identified and verified.
+2. ✅ No syntax errors exist in any PostgreSQL script.
+3. ✅ Script execution order is correct (numbered prefixes).
+4. ✅ All users are created before privileges are granted.
+5. ✅ All schemas and tables are created in correct order.
+6. ✅ Security best practices are followed.
+7. ✅ PostgreSQL-specific features are used correctly.
+8. ✅ Docker integration is properly configured.
+9. ✅ All scripts can be executed without errors.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total PostgreSQL scripts checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Syntax validation status:** ✅ Passed / ❌ Failed
+- **Initialization order status:** ✅ Correct / ❌ Incorrect
+- **Security checks status:** ✅ Passed / ❌ Failed
+- **Docker integration status:** ✅ Correct / ❌ Incorrect
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All PostgreSQL scripts are error-free and correctly configured
+
+## Overriding Default Behavior
+
+This entire "PostgreSQL Script Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all PostgreSQL script verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.

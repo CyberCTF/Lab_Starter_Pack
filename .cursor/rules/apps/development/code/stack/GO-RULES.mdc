@@ -1,0 +1,145 @@
+---
+description: Go (Golang) code quality guardrails — syntax, linting, and error checking
+globs: ["**/*.go"]
+alwaysApply: false
+---
+
+# Go (Golang) Code Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all Go files (`.go`) in the project are correctly coded, syntactically valid, and free of errors. You are NOT to consider your overall task complete until this verification stage confirms that all Go code is error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory Go Code Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All Go Files
+
+1. Use file system tools to find all files with `.go` extension in the project workspace.
+2. Create a comprehensive list of all Go files that need verification.
+3. Check for `go.mod` file (required for Go modules).
+
+### Step 2: Syntax Validation
+
+For each Go file identified:
+
+1. **Check Go Syntax:**
+
+   - Use `go build ./...` to verify syntax and compile all packages.
+   - Use `go vet ./...` to run static analysis checks.
+   - Use `gofmt -l .` to check for formatting issues.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Linting and Code Quality Checks
+
+For each Go file:
+
+1. **Run Linters (if available):**
+
+   - Try running `golangci-lint`, `staticcheck`, `gosec`, or `go vet` on the files if these tools are available in the environment.
+   - If linters are not available, perform manual code review for:
+     - Undefined variables or functions
+     - Unused imports
+     - Missing imports
+     - Syntax inconsistencies
+     - Incorrect package declarations
+     - Missing error handling
+
+2. **Check for Common Errors:**
+   - Undefined variables or functions
+   - Missing required imports
+   - Circular import issues
+   - Type mismatches
+   - Missing error handling (unchecked errors)
+   - Incorrect package names
+   - Missing `go.mod` or incorrect module path
+   - Unused variables or imports
+   - Missing return statements
+
+### Step 4: Runtime Error Detection
+
+1. **Import Verification:**
+
+   - For each Go file, verify that all `import` statements reference packages that exist and are accessible.
+   - Check that all imported packages are properly declared in `go.mod` (if using modules).
+   - Verify that package paths are correct (relative or absolute).
+   - Check for missing dependencies in `go.mod`.
+
+2. **Basic Execution Check (where applicable):**
+   - For packages that can be built, perform a build check using `go build`.
+   - Verify that the code can at least be compiled without fatal errors.
+   - Check for undefined constants, functions, or types that would cause compilation errors.
+   - Verify that all used standard library packages are available.
+
+### Step 5: Go-Specific Checks
+
+1. **Module Configuration:**
+   - Verify `go.mod` exists and is properly formatted.
+   - Check that module path is correct.
+   - Ensure `go.sum` is present if dependencies are used.
+   - Verify Go version compatibility.
+
+2. **Package Structure:**
+   - Verify package declarations match directory structure.
+   - Check for `main` package in executable files.
+   - Ensure proper package naming conventions.
+
+3. **Error Handling:**
+   - Check that errors are properly handled (not ignored with `_`).
+   - Verify error messages are meaningful.
+   - Check for proper error propagation.
+
+### Step 6: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-5 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All Go files have been identified and verified.
+2. ✅ No syntax errors exist in any Go file.
+3. ✅ No compilation errors exist (`go build` succeeds).
+4. ✅ No linting errors or warnings exist (or all critical issues have been resolved).
+5. ✅ All imports are resolvable and valid.
+6. ✅ No undefined variables, functions, or types are detected.
+7. ✅ All code passes `go vet` checks.
+8. ✅ Code is properly formatted (`gofmt` compliant).
+9. ✅ `go.mod` exists and is properly configured (if using modules).
+10. ✅ All code passes basic static analysis checks.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total Go files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Compilation status:** ✅ Success / ❌ Failed
+- **Linting status:** ✅ Passed / ❌ Failed
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All Go code is error-free and correctly coded
+
+## Overriding Default Behavior
+
+This entire "Go Code Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all Go code verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.

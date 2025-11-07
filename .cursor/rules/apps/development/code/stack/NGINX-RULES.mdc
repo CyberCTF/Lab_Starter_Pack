@@ -1,0 +1,155 @@
+---
+description: Nginx configuration quality guardrails — syntax validation, security, and best practices
+globs: ["**/nginx.conf", "**/*.nginx", "**/sites-available/*", "**/sites-enabled/*"]
+alwaysApply: false
+---
+
+# Nginx Configuration Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all Nginx configuration files are correctly configured, syntactically valid, and follow security best practices. You are NOT to consider your overall task complete until this verification stage confirms that all Nginx configurations are error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory Nginx Configuration Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All Nginx Configuration Files
+
+1. Use file system tools to find all Nginx configuration files:
+   - `nginx.conf` (main configuration)
+   - Files in `sites-available/` directory
+   - Files in `sites-enabled/` directory
+   - Custom `.nginx` or `.conf` files
+2. Create a comprehensive list of all Nginx configuration files that need verification.
+
+### Step 2: Syntax Validation
+
+For each Nginx configuration file identified:
+
+1. **Check Nginx Syntax:**
+
+   - Use `nginx -t` or `nginx -T` to verify syntax and test configuration.
+   - Use `nginx -c <config-file> -t` to test specific configuration file.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Configuration Quality Checks
+
+For each Nginx configuration file:
+
+1. **Check for Common Configuration Errors:**
+
+   - Missing or incorrect `server` blocks
+   - Incorrect `listen` directives (port configuration)
+   - Missing `server_name` directives
+   - Incorrect `root` or `document_root` paths
+   - Missing or incorrect `location` blocks
+   - Incorrect proxy settings (if using reverse proxy)
+   - Missing error handling directives
+   - Incorrect SSL/TLS configuration (if HTTPS is used)
+
+2. **Security Checks:**
+   - Verify that server tokens are hidden (`server_tokens off;`)
+   - Check for proper access controls
+   - Verify that sensitive files are not exposed
+   - Check for proper SSL/TLS configuration (if HTTPS is used)
+   - Verify that unnecessary modules are not enabled
+   - Check for proper rate limiting configuration
+
+### Step 4: Port Configuration Verification
+
+1. **Verify Port Configuration:**
+
+   - Check that `listen` directives match the assigned port (not just 80).
+   - Verify that port configuration matches Docker Compose port mapping.
+   - Ensure that healthcheck uses the correct port.
+   - Check that custom ports are properly configured.
+
+2. **Common Port Errors:**
+   - Nginx only listening on port 80 when custom port is required
+   - Missing `listen` directive for custom port
+   - Port mismatch between configuration and Docker Compose
+
+### Step 5: Location Block Verification
+
+1. **Check Location Blocks:**
+
+   - Verify that `location` blocks are properly configured.
+   - Check that `try_files` directives are correct.
+   - Verify that rewrite rules are properly configured.
+   - Check that proxy settings are correct (if using reverse proxy).
+
+2. **Common Location Block Errors:**
+   - Missing `try_files` directive
+   - Incorrect rewrite rules
+   - Missing proxy headers (if using reverse proxy)
+   - Incorrect root path configuration
+
+### Step 6: Docker Integration Checks
+
+1. **Docker-Specific Configuration:**
+
+   - Verify that configuration files are properly copied into the container.
+   - Check that configuration files are in the correct location (`/etc/nginx/`).
+   - Verify that Nginx is configured to listen on the correct port.
+   - Check that healthcheck configuration matches Nginx port.
+
+2. **Common Docker Errors:**
+   - Configuration files not copied into container
+   - Configuration files in wrong location
+   - Nginx not listening on assigned port
+   - Healthcheck using wrong port
+
+### Step 7: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-6 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All Nginx configuration files have been identified and verified.
+2. ✅ No syntax errors exist in any Nginx configuration file.
+3. ✅ `nginx -t` passes successfully.
+4. ✅ All `listen` directives are correctly configured.
+5. ✅ Port configuration matches Docker Compose requirements.
+6. ✅ All `location` blocks are properly configured.
+7. ✅ Security best practices are followed.
+8. ✅ Healthcheck configuration is correct.
+9. ✅ All configuration files are properly integrated with Docker.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total Nginx configuration files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Syntax test status:** ✅ Passed / ❌ Failed
+- **Port configuration status:** ✅ Correct / ❌ Incorrect
+- **Security checks status:** ✅ Passed / ❌ Failed
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All Nginx configurations are error-free and correctly configured
+
+## Overriding Default Behavior
+
+This entire "Nginx Configuration Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all Nginx configuration verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.

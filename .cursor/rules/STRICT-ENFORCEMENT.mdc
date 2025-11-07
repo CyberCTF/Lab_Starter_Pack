@@ -149,6 +149,143 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Missing `ServerName` configuration
    - **CORRECT**: Enable required modules and configure ServerName
 
+### NGINX-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Nginx errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Nginx Port Listening Configuration** (-500 points)
+   - Nginx only listening on port 80 when custom port required
+   - Missing `listen` directive for custom port
+   - Port mismatch between configuration and Docker Compose
+   - Healthcheck failing because Nginx not listening on assigned port
+   - **CORRECT**: Add `listen` directive for custom port and verify port matches Docker Compose
+
+2. **Nginx Configuration Syntax Errors** (-500 points)
+   - Invalid Nginx configuration syntax
+   - Missing `server` blocks
+   - Incorrect `location` block configuration
+   - Missing `try_files` directives
+   - **CORRECT**: Use `nginx -t` to validate syntax, ensure all required directives are present
+
+3. **Nginx Security Configuration** (-500 points)
+   - Missing security headers
+   - Exposed sensitive files
+   - Missing access controls
+   - **CORRECT**: Implement proper security headers and access controls
+
+### GO-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Go errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Go Module Configuration** (-500 points)
+   - Missing `go.mod` file
+   - Incorrect module path in `go.mod`
+   - Missing dependencies in `go.mod`
+   - **CORRECT**: Ensure `go.mod` exists with correct module path and all dependencies declared
+
+2. **Go Compilation Errors** (-500 points)
+   - Code does not compile (`go build` fails)
+   - Undefined variables or functions
+   - Missing imports
+   - Type mismatches
+   - **CORRECT**: All code must compile successfully, fix all compilation errors
+
+3. **Go Package Structure** (-500 points)
+   - Package declarations don't match directory structure
+   - Missing `main` package in executable files
+   - Incorrect package naming
+   - **CORRECT**: Ensure package names match directory structure and follow Go conventions
+
+### JAVA-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Java errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Build Configuration Errors** (-500 points)
+   - Missing `pom.xml` (Maven) or `build.gradle` (Gradle)
+   - Incorrect project coordinates
+   - Missing dependencies in build configuration
+   - **CORRECT**: Ensure build configuration exists with correct project settings and dependencies
+
+2. **Java Compilation Errors** (-500 points)
+   - Code does not compile (`javac` or build tool fails)
+   - Undefined classes, methods, or variables
+   - Missing imports
+   - Type mismatches
+   - **CORRECT**: All code must compile successfully, fix all compilation errors
+
+3. **Java Package Structure** (-500 points)
+   - Package declarations don't match directory structure
+   - Missing `package` declarations
+   - Incorrect package naming (not following reverse domain convention)
+   - **CORRECT**: Ensure package structure matches directory organization and follows Java conventions
+
+### NODEJS-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Node.js errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **package.json Configuration Errors** (-500 points)
+   - Missing `package.json` file
+   - Invalid JSON syntax in `package.json`
+   - Missing required fields (`name`, `version`)
+   - Missing dependencies in `package.json`
+   - **CORRECT**: Ensure `package.json` exists with valid JSON and all dependencies declared
+
+2. **Node.js Module Resolution Errors** (-500 points)
+   - Missing dependencies (modules not in `package.json`)
+   - Incorrect `require()` or `import` paths
+   - Circular dependencies
+   - **CORRECT**: All dependencies must be declared in `package.json`, verify all module paths are correct
+
+3. **Express Configuration Errors** (-500 points)
+   - Missing error handling in routes
+   - Incorrect middleware configuration
+   - Missing security middleware
+   - **CORRECT**: Implement proper error handling and security middleware in Express applications
+
+### POSTGRESQL-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These PostgreSQL errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **PostgreSQL Initialization Order** (-500 points)
+   - Scripts executed in wrong order (grants before users, data before tables)
+   - Missing numbered prefixes (01-, 02-, 03-) for init scripts
+   - **CORRECT**: Use numbered prefixes: 01-create-database.sql, 02-create-users.sql, 03-grant-privileges.sql, 04-init-data.sql
+
+2. **PostgreSQL User and Privilege Errors** (-500 points)
+   - Granting privileges to users that don't exist
+   - Missing `CREATE USER` or `CREATE ROLE` statements before `GRANT`
+   - Missing `IF NOT EXISTS` causing duplicate errors
+   - **CORRECT**: Always create users BEFORE granting privileges, use `IF NOT EXISTS`
+
+3. **PostgreSQL Security Errors** (-500 points)
+   - Hardcoded passwords in scripts
+   - Excessive privileges granted
+   - Missing access controls
+   - **CORRECT**: Use environment variables for passwords, grant minimal required privileges
+
+### REDIS-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Redis errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Redis Security Configuration** (-500 points)
+   - No password authentication (`requirepass` missing)
+   - Binding to all interfaces (0.0.0.0) without protection
+   - Protected mode disabled
+   - Dangerous commands not disabled or renamed
+   - **CORRECT**: Enable authentication, bind to specific IP, disable dangerous commands
+
+2. **Redis Port Configuration** (-500 points)
+   - Redis only listening on port 6379 when custom port required
+   - Missing `port` directive for custom port
+   - Port mismatch between configuration and Docker Compose
+   - **CORRECT**: Configure custom port and ensure it matches Docker Compose requirements
+
+3. **Redis Persistence Configuration** (-500 points)
+   - Missing persistence configuration when data persistence is required
+   - Incorrect `save` directives
+   - Missing AOF configuration when needed
+   - **CORRECT**: Configure appropriate persistence (RDB or AOF) based on requirements
+
 ### MAJOR VIOLATIONS (-200 points each)
 
 These violations indicate significant rule non-compliance:
@@ -263,6 +400,61 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] `ServerName` configured in Apache
 - [ ] Healthcheck can reach Apache on assigned port
 
+### NGINX VERIFICATION CHECKLIST
+
+- [ ] Nginx `listen` directive includes custom port (not just 80)
+- [ ] `server` blocks properly configured
+- [ ] `location` blocks properly configured with `try_files`
+- [ ] Nginx configuration syntax valid (`nginx -t` passes)
+- [ ] Security headers configured
+- [ ] Healthcheck can reach Nginx on assigned port
+
+### GO VERIFICATION CHECKLIST
+
+- [ ] `go.mod` file exists with correct module path
+- [ ] All Go files compile successfully (`go build` passes)
+- [ ] `go vet` passes without errors
+- [ ] Code is properly formatted (`gofmt` compliant)
+- [ ] Package declarations match directory structure
+- [ ] All dependencies declared in `go.mod`
+- [ ] No undefined variables, functions, or types
+
+### JAVA VERIFICATION CHECKLIST
+
+- [ ] `pom.xml` (Maven) or `build.gradle` (Gradle) exists
+- [ ] All Java files compile successfully
+- [ ] Package declarations match directory structure
+- [ ] All dependencies declared in build configuration
+- [ ] No undefined classes, methods, or variables
+- [ ] Proper exception handling implemented
+
+### NODEJS VERIFICATION CHECKLIST
+
+- [ ] `package.json` exists and is valid JSON
+- [ ] All dependencies declared in `package.json`
+- [ ] All `require()` or `import` statements resolve correctly
+- [ ] No circular dependencies
+- [ ] Express routes have proper error handling (if Express is used)
+- [ ] Security middleware configured (if Express is used)
+
+### POSTGRESQL VERIFICATION CHECKLIST
+
+- [ ] Init scripts use numbered prefixes (01-, 02-, 03-)
+- [ ] All users created BEFORE granting privileges
+- [ ] `IF NOT EXISTS` used in user creation
+- [ ] No hardcoded passwords in scripts
+- [ ] Proper privilege separation
+- [ ] Scripts in correct initialization directory
+
+### REDIS VERIFICATION CHECKLIST
+
+- [ ] Password authentication enabled (`requirepass` configured)
+- [ ] Redis bound to specific IP (not 0.0.0.0 without protection)
+- [ ] Custom port configured if required
+- [ ] Dangerous commands disabled or renamed
+- [ ] Persistence configured if needed
+- [ ] Healthcheck uses correct port
+
 ## SELF-AUDIT REQUIREMENT
 
 **BEFORE completing any task, you MUST:**
@@ -332,6 +524,42 @@ Your primary objective is not just to complete tasks, but to complete them with 
 - ❌ **NEVER** put raw config tags in Dockerfile RUN → Escape or use COPY
 - ❌ **NEVER** forget `.htaccess` file → Include rewrite rules
 - ❌ **NEVER** skip `a2enmod rewrite` → Enable required modules
+
+### NGINX ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget to configure Nginx for custom port → Add listen directive
+- ❌ **NEVER** skip `nginx -t` syntax validation → Always test configuration
+- ❌ **NEVER** forget `try_files` in location blocks → Include proper fallback
+- ❌ **NEVER** skip security headers → Implement proper security
+
+### GO ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget `go.mod` file → Always include with correct module path
+- ❌ **NEVER** skip compilation check → Always run `go build`
+- ❌ **NEVER** mismatch package names → Package must match directory structure
+- ❌ **NEVER** forget dependencies → Declare all in `go.mod`
+
+### JAVA ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget build configuration → Include `pom.xml` or `build.gradle`
+- ❌ **NEVER** skip compilation check → Always compile before completion
+- ❌ **NEVER** mismatch package structure → Package must match directory
+- ❌ **NEVER** forget dependencies → Declare all in build configuration
+
+### NODEJS ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget `package.json` → Always include with valid JSON
+- ❌ **NEVER** use undeclared dependencies → All must be in `package.json`
+- ❌ **NEVER** skip error handling in Express routes → Always handle errors
+- ❌ **NEVER** forget security middleware → Include helmet, cors, etc.
+
+### POSTGRESQL ERRORS TO NEVER MAKE:
+- ❌ **NEVER** grant privileges before creating users → Create users FIRST
+- ❌ **NEVER** skip numbered prefixes → Use 01-, 02-, 03- for init scripts
+- ❌ **NEVER** hardcode passwords → Use environment variables
+- ❌ **NEVER** forget `IF NOT EXISTS` → Prevent duplicate errors
+
+### REDIS ERRORS TO NEVER MAKE:
+- ❌ **NEVER** skip password authentication → Always set `requirepass`
+- ❌ **NEVER** bind to 0.0.0.0 without protection → Bind to specific IP
+- ❌ **NEVER** forget to disable dangerous commands → Rename or disable FLUSHDB, etc.
+- ❌ **NEVER** forget custom port configuration → Match Docker Compose port
 
 **Each of these errors results in -500 points. You MUST verify all of these before completing any task.**
 

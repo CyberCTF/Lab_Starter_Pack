@@ -1,0 +1,181 @@
+---
+description: Redis configuration quality guardrails — syntax validation, security, and best practices
+globs: ["**/redis.conf", "**/redis*.conf", "**/*redis*.yml"]
+alwaysApply: false
+---
+
+# Redis Configuration Quality Verification Protocol
+
+## Core Principle
+
+Your primary task processing includes a **mandatory final verification stage** that ensures all Redis configuration files are correctly configured, syntactically valid, and follow security best practices. You are NOT to consider your overall task complete until this verification stage confirms that all Redis configurations are error-free.
+
+## Phase 1: Primary Task Execution
+
+1. Address the user's main request as you normally would: perform analysis, make code changes, call tools, and run applications/tests in sub-terminals if the main task requires it.
+2. Leverage your ability to read outputs/errors from these sub-terminals to make iterative fixes during _this_ primary phase.
+
+## Phase 2: Mandatory Redis Configuration Verification
+
+**This phase is executed automatically after Phase 1 and is a strict, non-negotiable requirement.**
+
+### Step 1: Identify All Redis Configuration Files
+
+1. Use file system tools to find all Redis configuration files:
+   - `redis.conf` (main configuration)
+   - Custom `.conf` files for Redis
+   - Docker Compose configurations with Redis service
+   - Application configuration files that connect to Redis
+2. Create a comprehensive list of all Redis configuration files that need verification.
+
+### Step 2: Syntax Validation
+
+For each Redis configuration file identified:
+
+1. **Check Redis Configuration Syntax:**
+
+   - Use `redis-server --test-memory <config-file>` to verify configuration.
+   - Use `redis-cli CONFIG GET *` to verify configuration is loaded correctly.
+   - Check for Redis-specific syntax errors.
+   - If syntax errors are found, you MUST fix them before proceeding.
+
+2. **Report any syntax errors found:**
+   - Document the file path and the specific error message.
+   - Fix syntax errors immediately.
+
+### Step 3: Security Configuration Checks
+
+1. **Security Settings Verification:**
+
+   - Verify that authentication is enabled (`requirepass` or `masterauth`).
+   - Check that Redis is not bound to all interfaces (`bind 127.0.0.1` or specific IP).
+   - Verify that protected mode is enabled if no password is set.
+   - Check that dangerous commands are disabled or renamed (e.g., `FLUSHDB`, `FLUSHALL`, `CONFIG`, `SHUTDOWN`).
+   - Verify that TLS/SSL is configured if used in production.
+
+2. **Common Security Errors:**
+   - No password authentication
+   - Binding to all interfaces (0.0.0.0) without protection
+   - Protected mode disabled
+   - Dangerous commands not disabled or renamed
+   - Missing TLS/SSL configuration
+
+### Step 4: Port Configuration Verification
+
+1. **Verify Port Configuration:**
+
+   - Check that `port` directive matches the assigned port (not just 6379).
+   - Verify that port configuration matches Docker Compose port mapping.
+   - Ensure that healthcheck uses the correct port.
+   - Check that custom ports are properly configured.
+
+2. **Common Port Errors:**
+   - Redis only listening on port 6379 when custom port is required
+   - Missing `port` directive for custom port
+   - Port mismatch between configuration and Docker Compose
+
+### Step 5: Persistence Configuration
+
+1. **Persistence Settings Verification:**
+
+   - Verify that persistence is properly configured (RDB snapshots or AOF).
+   - Check that `save` directives are appropriate for the use case.
+   - Verify that AOF (Append Only File) is configured if needed.
+   - Check that persistence directories are properly configured.
+
+2. **Common Persistence Errors:**
+   - Missing persistence configuration
+   - Incorrect `save` directives
+   - Missing AOF configuration
+   - Incorrect persistence directory paths
+
+### Step 6: Memory Configuration
+
+1. **Memory Management Verification:**
+
+   - Verify that `maxmemory` is set appropriately.
+   - Check that `maxmemory-policy` is configured (e.g., `allkeys-lru`, `volatile-lru`).
+   - Verify that memory limits are appropriate for the use case.
+
+2. **Common Memory Errors:**
+   - Missing `maxmemory` setting
+   - Incorrect `maxmemory-policy`
+   - Memory limits too high or too low
+
+### Step 7: Docker Integration Checks
+
+1. **Docker-Specific Configuration:**
+
+   - Verify that Redis configuration files are properly copied into the container.
+   - Check that configuration files are in the correct location (`/usr/local/etc/redis/` or custom).
+   - Verify that Redis is configured to listen on the correct port.
+   - Check that healthcheck configuration matches Redis port.
+   - Verify that environment variables are properly used for credentials.
+
+2. **Common Docker Errors:**
+   - Configuration files not copied into container
+   - Configuration files in wrong location
+   - Redis not listening on assigned port
+   - Healthcheck using wrong port
+   - Missing environment variable configuration
+
+### Step 8: Application Connection Checks
+
+1. **Application Integration Verification:**
+
+   - Verify that applications use correct connection parameters (host, port, password).
+   - Check that connection pooling is properly configured.
+   - Verify that error handling is implemented for Redis connections.
+   - Check that connection timeouts are properly configured.
+
+2. **Common Application Errors:**
+   - Incorrect connection parameters
+   - Missing password in connection string
+   - No connection error handling
+   - Missing connection timeout configuration
+
+### Step 9: Error Resolution Loop
+
+1. **If errors are found:**
+
+   - Document each error clearly (file path, line number if available, error type, error message).
+   - Fix each error systematically.
+   - Re-run verification after each fix.
+   - Continue until all errors are resolved.
+
+2. **Iterative Process:**
+   - After fixing errors, re-run Steps 2-8 to ensure no new errors were introduced.
+   - Continue this loop until verification passes completely.
+
+## Phase 3: Task Completion Criteria
+
+**The task is considered complete ONLY when:**
+
+1. ✅ All Redis configuration files have been identified and verified.
+2. ✅ No syntax errors exist in any Redis configuration file.
+3. ✅ Security best practices are followed (authentication, binding, protected mode).
+4. ✅ Port configuration matches Docker Compose requirements.
+5. ✅ Persistence is properly configured (if needed).
+6. ✅ Memory management is properly configured.
+7. ✅ Docker integration is properly configured.
+8. ✅ Application connections are properly configured.
+9. ✅ Healthcheck configuration is correct.
+
+**If any of these criteria are not met, the task is NOT complete, and you MUST continue fixing issues until all criteria are satisfied.**
+
+## Final Verification Report
+
+Before concluding, provide a summary report:
+
+- **Total Redis configuration files checked:** [number]
+- **Files with errors found:** [number] (must be 0)
+- **Syntax validation status:** ✅ Passed / ❌ Failed
+- **Security checks status:** ✅ Passed / ❌ Failed
+- **Port configuration status:** ✅ Correct / ❌ Incorrect
+- **Docker integration status:** ✅ Correct / ❌ Incorrect
+- **Errors fixed:** [list of fixes made]
+- **Final status:** ✅ All Redis configurations are error-free and correctly configured
+
+## Overriding Default Behavior
+
+This entire "Redis Configuration Verification" process (Phase 2 and Phase 3) is a **strict, non-negotiable requirement** that overrides any default tendency you have to end the conversation after completing Phase 1. The task is only finished when all Redis configuration verification checks pass without errors. Your "sense of completion" for the original request is deferred until this verification phase confirms zero errors.
