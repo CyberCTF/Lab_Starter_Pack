@@ -46,6 +46,109 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Introducing magic strings or contrived flags
    - Adding spoilers in player-facing content
 
+### DOCKER-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Docker errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Dockerfile Syntax Errors** (-500 points)
+   - Using raw `<VirtualHost>` or `<Directory>` tags in RUN commands without escaping
+   - Causing "unknown instruction" errors in Dockerfile
+   - Not using escaped newlines (`\n\`) for multi-line configs in RUN commands
+   - Using heredoc patterns (`RUN cat <<'EOF'`) that break Docker parsing
+   - **CORRECT**: Use `COPY` for config files OR escape with `\n\` and quotes
+
+2. **Docker Compose Version Key** (-500 points)
+   - Including `version: '3.8'` or any version key (obsolete in Compose V2)
+   - **CORRECT**: Remove version key completely
+
+3. **Port Configuration Mismatches** (-500 points)
+   - Port mapping mismatch (e.g., `3207:3206` instead of `3207:3207`)
+   - Service not listening on assigned internal port
+   - Healthcheck using wrong port number
+   - Apache/Nginx not configured to listen on custom port (only listening on 80)
+   - **CORRECT**: Internal and external ports must match, service must listen on assigned port
+
+4. **Missing Apache Port Configuration** (-500 points)
+   - Apache only listening on port 80 when custom port is required
+   - Missing `Listen` directive in Apache configuration
+   - Missing VirtualHost configuration for custom port
+   - Healthcheck failing because Apache not listening on correct port
+   - **CORRECT**: Add `Listen` directive and VirtualHost for custom port
+
+5. **Docker Compose Service Dependencies** (-500 points)
+   - Missing `depends_on` with `condition: service_healthy`
+   - Services starting before dependencies are ready
+   - **CORRECT**: Use `depends_on` with healthcheck conditions
+
+### DATABASE-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These database errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **User Creation Before GRANT** (-500 points)
+   - Granting privileges to users that don't exist
+   - Missing `CREATE USER` statements before `GRANT` statements
+   - **CORRECT**: Always create users BEFORE granting privileges, use `IF NOT EXISTS`
+
+2. **MySQL Privilege Separation Errors** (-500 points)
+   - Mixing database-specific and global privileges in single GRANT statement
+   - Error: "Incorrect usage of DB GRANT and GLOBAL PRIVILEGES"
+   - Using `CREATE FUNCTION` on database-specific grants (syntax error)
+   - **CORRECT**: Separate database privileges (`ON database.*`) from global privileges (`ON *.*`), use `CREATE ROUTINE` instead of `CREATE FUNCTION`
+
+3. **Database Initialization Order** (-500 points)
+   - Scripts executed in wrong order (grants before user creation, data before tables)
+   - Missing numbered prefixes (01-, 02-, 03-) for init scripts
+   - **CORRECT**: Use numbered prefixes: 01-create-database.sql, 02-create-users.sql, 03-grant-privileges.sql, 04-init-data.sql
+
+4. **Database Connection Failures** (-500 points)
+   - "Database connection failed" errors in applications
+   - Wrong connection parameters (host, port, credentials)
+   - Missing `IF NOT EXISTS` causing duplicate user errors
+   - **CORRECT**: Test connections, use proper credentials, include `IF NOT EXISTS` in user creation
+
+5. **MySQL Port Configuration** (-500 points)
+   - PHP/application using default port 3306 instead of custom port (3207)
+   - Missing port parameter in connection strings
+   - Database not listening on assigned port
+   - **CORRECT**: Always use `DB_PORT` environment variable, default to 3207 (not 3306)
+
+6. **MySQL Healthcheck Errors** (-500 points)
+   - Healthcheck not using correct port (`-P 3207`)
+   - Unquoted password in healthcheck causing parse errors
+   - Healthcheck using wrong host or connection method
+   - **CORRECT**: Use `-P 3207` with quoted password: `mysqladmin ping -uroot -p"$MYSQL_ROOT_PASSWORD" -h 127.0.0.1 -P 3207`
+
+7. **MySQL 5.6 Compatibility Errors** (-500 points)
+   - Using `CREATE USER IF NOT EXISTS` on MySQL 5.6 (not supported before 5.7.3)
+   - Index length exceeding 767 bytes with utf8mb4 on VARCHAR(255)
+   - **CORRECT**: For MySQL 5.6, use Compose env vars for user creation, use prefix indexes (191) for VARCHAR(255) with utf8mb4
+
+### APACHE-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These Apache errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Apache Port Listening Configuration** (-500 points)
+   - Apache only listening on port 80 when custom port required
+   - Missing `Listen` directive for custom port in `ports.conf`
+   - Missing VirtualHost configuration for custom port
+   - Healthcheck failing because Apache not listening on assigned port
+   - **CORRECT**: Add `Listen 3206` (or custom port) to ports.conf AND configure VirtualHost for that port
+
+2. **Apache Configuration Syntax in Dockerfile** (-500 points)
+   - Raw `<VirtualHost>` tags in RUN commands causing Docker parse errors
+   - Multi-line echo without proper escaping
+   - **CORRECT**: Use `COPY` for config files OR escape with `\n\` and quotes, use `printf` for multi-line
+
+3. **Missing .htaccess Configuration** (-500 points)
+   - Missing `.htaccess` file at web root
+   - Missing rewrite rules for routing
+   - **CORRECT**: Include `.htaccess` with RewriteEngine and proper routing rules
+
+4. **Apache Module Configuration** (-500 points)
+   - Missing `a2enmod rewrite` when rewrite rules are needed
+   - Missing `ServerName` configuration
+   - **CORRECT**: Enable required modules and configure ServerName
+
 ### MAJOR VIOLATIONS (-200 points each)
 
 These violations indicate significant rule non-compliance:
@@ -127,6 +230,39 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] All configuration correct
 - [ ] Zero point deductions incurred
 
+### DOCKER VERIFICATION CHECKLIST
+
+- [ ] Dockerfile syntax valid (no "unknown instruction" errors)
+- [ ] No raw `<VirtualHost>` or `<Directory>` tags in RUN commands (properly escaped or using COPY)
+- [ ] Docker Compose has NO `version:` key
+- [ ] Port mappings match (internal:external, e.g., 3207:3207)
+- [ ] Services configured to listen on assigned internal ports
+- [ ] Healthchecks use correct port numbers
+- [ ] `depends_on` includes `condition: service_healthy` where needed
+- [ ] Apache/Nginx configured to listen on custom port (not just 80)
+
+### DATABASE VERIFICATION CHECKLIST
+
+- [ ] All database users created BEFORE granting privileges
+- [ ] `CREATE USER IF NOT EXISTS` used (or Compose env vars for MySQL 5.6)
+- [ ] Database and global privileges separated into different GRANT statements
+- [ ] `CREATE ROUTINE` used instead of `CREATE FUNCTION` for database grants
+- [ ] Init scripts use numbered prefixes (01-, 02-, 03-) for correct order
+- [ ] Database connection tested and working
+- [ ] PHP/application uses `DB_PORT` environment variable (defaults to 3207, not 3306)
+- [ ] MySQL healthcheck uses correct port (`-P 3207`) with quoted password
+- [ ] MySQL 5.6 compatibility checked (no `CREATE USER IF NOT EXISTS` if using 5.6)
+
+### APACHE VERIFICATION CHECKLIST
+
+- [ ] Apache `Listen` directive includes custom port (not just 80)
+- [ ] VirtualHost configured for custom port
+- [ ] Apache configuration in Dockerfile properly escaped (no raw tags)
+- [ ] `.htaccess` file exists at web root with proper rewrite rules
+- [ ] Required Apache modules enabled (`a2enmod rewrite`)
+- [ ] `ServerName` configured in Apache
+- [ ] Healthcheck can reach Apache on assigned port
+
 ## SELF-AUDIT REQUIREMENT
 
 **BEFORE completing any task, you MUST:**
@@ -173,6 +309,31 @@ This system is **ALWAYS ACTIVE** and applies to **EVERY action** you take. Every
 **ANY POINT LOSS = FAILURE**
 
 Your primary objective is not just to complete tasks, but to complete them with **PERFECT COMPLIANCE** and **ZERO POINT DEDUCTIONS**.
+
+## ⚠️ CRITICAL REMINDERS - MOST COMMON ERRORS ⚠️
+
+**These errors occur frequently and MUST be avoided at all costs:**
+
+### DOCKER ERRORS TO NEVER MAKE:
+- ❌ **NEVER** use raw `<VirtualHost>` in RUN commands → Use COPY or escape with `\n\`
+- ❌ **NEVER** include `version:` in docker-compose.yml → Remove it completely
+- ❌ **NEVER** mismatch port mappings → Use same internal:external (3207:3207)
+- ❌ **NEVER** let Apache only listen on port 80 → Add `Listen` directive and VirtualHost
+
+### DATABASE ERRORS TO NEVER MAKE:
+- ❌ **NEVER** grant privileges before creating users → Create users FIRST
+- ❌ **NEVER** mix database and global privileges → Separate GRANT statements
+- ❌ **NEVER** use `CREATE FUNCTION` on database grants → Use `CREATE ROUTINE`
+- ❌ **NEVER** use port 3306 → Always use 3207 (or custom port from env)
+- ❌ **NEVER** skip numbered prefixes in init scripts → Use 01-, 02-, 03-
+
+### APACHE ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget to configure Apache for custom port → Add Listen + VirtualHost
+- ❌ **NEVER** put raw config tags in Dockerfile RUN → Escape or use COPY
+- ❌ **NEVER** forget `.htaccess` file → Include rewrite rules
+- ❌ **NEVER** skip `a2enmod rewrite` → Enable required modules
+
+**Each of these errors results in -500 points. You MUST verify all of these before completing any task.**
 
 ---
 
