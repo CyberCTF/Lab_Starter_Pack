@@ -80,6 +80,12 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Services starting before dependencies are ready
    - **CORRECT**: Use `depends_on` with healthcheck conditions
 
+6. **Docker Compose Image Naming Convention** (-500 points)
+   - Missing `image:` directive in services with `build:` context
+   - Using incorrect image naming format (not following `{slug}_{service-name}` pattern)
+   - Using different naming conventions (e.g., `lab-web`, `web-service`, `myapp_web`)
+   - **CORRECT**: Always specify `image: {slug}_{service-name}` for all services (e.g., `union-injection-basics_web`, `union-injection-basics_database`)
+
 ### DATABASE-SPECIFIC CRITICAL ERRORS (-500 points each)
 
 **These database errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
@@ -286,6 +292,50 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Missing AOF configuration when needed
    - **CORRECT**: Configure appropriate persistence (RDB or AOF) based on requirements
 
+### UI BLACK TAILWIND-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These UI Black Tailwind errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Missing Tailwind CDN or Configuration** (-500 points)
+   - Tailwind CDN script missing from HTML head
+   - Missing Tailwind configuration (CDN config or `tailwind.config.js`)
+   - Tailwind not properly loaded or initialized
+   - **CORRECT**: Include Tailwind CDN script with black/gray-only color configuration in all HTML/PHP pages
+
+2. **Non-Monochrome Colors in UI** (-500 points)
+   - Using chromatic colors (red, blue, green, etc.) instead of black/white/gray only
+   - Inline styles with non-monochrome colors (`style="color: #ff0000"`, `background: blue`, etc.)
+   - CSS gradients (`linear-gradient`, `radial-gradient`) with colors
+   - Color hex codes other than black (#000000), white (#FFFFFF), or grayscale (#111-#fff)
+   - **CORRECT**: Use ONLY black, white, and grayscale (gray-50 to gray-950). No chromatic colors anywhere.
+
+3. **Missing Black Background and White Text** (-500 points)
+   - `<body>` tag missing `bg-black text-white` classes
+   - Background not black (#000000)
+   - Primary text not white (#FFFFFF)
+   - Missing `class="dark"` on `<html>` tag when using Tailwind dark mode
+   - **CORRECT**: All pages must have `<html class="dark">` and `<body class="min-h-screen bg-black text-white">`
+
+4. **Incorrect Tailwind Dark Mode Configuration** (-500 points)
+   - Missing `darkMode: "class"` in Tailwind config
+   - Tailwind config includes chromatic colors in theme
+   - Using color utilities that are not black/white/gray (e.g., `bg-blue-500`, `text-red-600`)
+   - **CORRECT**: Tailwind config must have `darkMode: "class"` and only black/white/gray colors defined
+
+5. **Non-Monochrome Components** (-500 points)
+   - Buttons, inputs, cards using colored styles instead of black/white/gray
+   - Focus rings using colors instead of white/gray
+   - Hover states using colors instead of opacity/grayscale
+   - Links with colored text instead of white
+   - **CORRECT**: All components must use only black/white/gray Tailwind utilities (e.g., `bg-black`, `text-white`, `border-gray-700`, `focus:ring-white`)
+
+6. **Missing UI Black Theme Validation** (-500 points)
+   - Not checking for `linear-gradient` in styles
+   - Not validating that all colors are monochrome
+   - Not verifying Tailwind CDN is present
+   - Not confirming body has `bg-black text-white`
+   - **CORRECT**: Must validate all pages have black background, white text, Tailwind CDN loaded, and no chromatic colors
+
 ### MAJOR VIOLATIONS (-200 points each)
 
 These violations indicate significant rule non-compliance:
@@ -372,6 +422,8 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] Dockerfile syntax valid (no "unknown instruction" errors)
 - [ ] No raw `<VirtualHost>` or `<Directory>` tags in RUN commands (properly escaped or using COPY)
 - [ ] Docker Compose has NO `version:` key
+- [ ] All services with `build:` have `image:` directive with correct naming format (`{slug}_{service-name}`)
+- [ ] Image names follow convention: `{slug}_{service-name}` (e.g., `union-injection-basics_web`)
 - [ ] Port mappings match (internal:external, e.g., 3207:3207)
 - [ ] Services configured to listen on assigned internal ports
 - [ ] Healthchecks use correct port numbers
@@ -455,6 +507,24 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] Persistence configured if needed
 - [ ] Healthcheck uses correct port
 
+### UI BLACK TAILWIND VERIFICATION CHECKLIST
+
+- [ ] Tailwind CDN script included in all HTML/PHP pages
+- [ ] Tailwind configuration includes only black/white/gray colors
+- [ ] `<html class="dark">` present on all pages
+- [ ] `<body class="min-h-screen bg-black text-white">` present on all pages
+- [ ] No chromatic colors (red, blue, green, etc.) in any styles
+- [ ] No `linear-gradient` or `radial-gradient` with colors
+- [ ] No inline styles with non-monochrome colors
+- [ ] All components use only black/white/gray Tailwind utilities
+- [ ] Focus rings use white/gray only (not colors)
+- [ ] Hover states use opacity/grayscale (not colors)
+- [ ] Links use white text (not colored)
+- [ ] Validation passed: no color hex codes except #000000, #FFFFFF, or grayscale
+- [ ] Validation passed: regex check for `linear-gradient` returns no matches
+- [ ] Background is black (#000000) on all pages
+- [ ] Primary text is white (#FFFFFF) on all pages
+
 ## SELF-AUDIT REQUIREMENT
 
 **BEFORE completing any task, you MUST:**
@@ -509,6 +579,8 @@ Your primary objective is not just to complete tasks, but to complete them with 
 ### DOCKER ERRORS TO NEVER MAKE:
 - ❌ **NEVER** use raw `<VirtualHost>` in RUN commands → Use COPY or escape with `\n\`
 - ❌ **NEVER** include `version:` in docker-compose.yml → Remove it completely
+- ❌ **NEVER** forget `image:` directive → Always use `image: {slug}_{service-name}` format
+- ❌ **NEVER** use wrong image naming format → Must be `{slug}_{service-name}` (e.g., `union-injection-basics_web`)
 - ❌ **NEVER** mismatch port mappings → Use same internal:external (3207:3207)
 - ❌ **NEVER** let Apache only listen on port 80 → Add `Listen` directive and VirtualHost
 
@@ -560,6 +632,16 @@ Your primary objective is not just to complete tasks, but to complete them with 
 - ❌ **NEVER** bind to 0.0.0.0 without protection → Bind to specific IP
 - ❌ **NEVER** forget to disable dangerous commands → Rename or disable FLUSHDB, etc.
 - ❌ **NEVER** forget custom port configuration → Match Docker Compose port
+
+### UI BLACK TAILWIND ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget Tailwind CDN script → Include in all HTML/PHP pages with black/gray config
+- ❌ **NEVER** use chromatic colors → ONLY black (#000000), white (#FFFFFF), and grayscale
+- ❌ **NEVER** forget `<html class="dark">` → Must be present on all pages
+- ❌ **NEVER** forget `<body class="bg-black text-white">` → Must be present on all pages
+- ❌ **NEVER** use gradients → No `linear-gradient` or `radial-gradient` with colors
+- ❌ **NEVER** use colored inline styles → Only black/white/gray in inline styles
+- ❌ **NEVER** use colored Tailwind utilities → Only `bg-black`, `text-white`, `border-gray-*`, etc.
+- ❌ **NEVER** skip UI validation → Must check for gradients, chromatic colors, and Tailwind CDN presence
 
 **Each of these errors results in -500 points. You MUST verify all of these before completing any task.**
 

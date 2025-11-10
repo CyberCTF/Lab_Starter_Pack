@@ -42,6 +42,36 @@ alwaysApply: false
 - Images must be multi-arch (amd64, arm64) and support Buildx.
 - Use multi-stage builds and clean layers to limit size.
 
+## Image Naming Convention
+
+- **CRITICAL**: All services in `docker-compose.yml` MUST use the `image:` directive with the following naming format:
+  - Format: `{slug}_{service-name}` (underscore separator)
+  - Example: `union-injection-basics_web`
+  - Example: `union-injection-basics_database`
+  - Example: `sql-injection-advanced_api`
+- The slug is the lab identifier (typically from the lab name or scenario).
+- Service names are lowercase and descriptive (e.g., `web`, `database`, `api`, `redis`, `admin`).
+- **INCORRECT**: Using `build:` without `image:` directive
+- **INCORRECT**: Using different naming format (e.g., `lab-web`, `web-service`)
+- **CORRECT**: Always specify `image: {slug}_{service-name}` for all services
+
+### Example
+
+```yaml
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    image: union-injection-basics_web
+    ports: ["${WEB_PORT:-3206}:3206"]
+  
+  database:
+    image: mysql:8.0
+    # For pre-built images, still use the naming convention if building custom images
+    # Or use the standard image name if using official images
+```
+
 ## Security and Permissions
 
 - Run containers as non-root user. Writable directories must be owned by the runtime user.
