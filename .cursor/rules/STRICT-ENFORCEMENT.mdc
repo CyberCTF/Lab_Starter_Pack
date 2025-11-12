@@ -129,6 +129,33 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Index length exceeding 767 bytes with utf8mb4 on VARCHAR(255)
    - **CORRECT**: For MySQL 5.6, use Compose env vars for user creation, use prefix indexes (191) for VARCHAR(255) with utf8mb4
 
+8. **Database Name Alignment Errors** (-500 points)
+   - `DB_NAME` environment variable or `config.php` default does not match database created in SQL init scripts
+   - Application trying to connect to database that doesn't exist
+   - Database name mismatch between PHP code and SQL init scripts
+   - **CORRECT**: `DB_NAME` env/default MUST exactly match the database name created in `CREATE DATABASE IF NOT EXISTS <db>;` in init scripts
+
+9. **Missing Idempotent MySQL Init** (-500 points)
+   - Init scripts missing `CREATE DATABASE IF NOT EXISTS <db>;`
+   - Init scripts missing `USE <db>;` after database creation
+   - Tables created without `CREATE TABLE IF NOT EXISTS`
+   - Seed data not using `INSERT IGNORE` or insert-if-missing patterns
+   - **CORRECT**: Every init sequence MUST include `CREATE DATABASE IF NOT EXISTS <db>;` and `USE <db>;`, all tables use `IF NOT EXISTS`, seed data uses `INSERT IGNORE`
+
+10. **Page-to-Table Parity Errors** (-500 points)
+    - PHP pages querying tables that don't exist in SQL init scripts
+    - Tables referenced in `FROM` or `JOIN` clauses without matching `CREATE TABLE` statements
+    - "Table 'X.Y' doesn't exist" errors at runtime
+    - Example: `items.php` queries `services` table but no `CREATE TABLE services` in init SQL
+    - **CORRECT**: Every table referenced in PHP code MUST have a matching `CREATE TABLE` statement in `build/database/init/*.sql`
+
+11. **Unsafe mysqli Usage (Fatal Exceptions)** (-500 points)
+    - mysqli exception mode not disabled globally
+    - Fetching rows without checking `$result !== false` first
+    - Database errors causing fatal exceptions that crash pages
+    - Raw database error messages shown to users
+    - **CORRECT**: Disable exception mode with `mysqli_report(MYSQLI_REPORT_OFF);`, only fetch when `$result !== false`, log errors server-side (`error_log`), render neutral UI text
+
 ### APACHE-SPECIFIC CRITICAL ERRORS (-500 points each)
 
 **These Apache errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
@@ -504,6 +531,16 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] PHP/application uses `DB_PORT` environment variable (defaults to 3207, not 3306)
 - [ ] MySQL healthcheck uses correct port (`-P 3207`) with quoted password
 - [ ] MySQL 5.6 compatibility checked (no `CREATE USER IF NOT EXISTS` if using 5.6)
+- [ ] `DB_NAME` environment variable/default matches database created in SQL init scripts
+- [ ] All init scripts include `CREATE DATABASE IF NOT EXISTS <db>;` and `USE <db>;`
+- [ ] All tables use `CREATE TABLE IF NOT EXISTS`
+- [ ] Seed data uses `INSERT IGNORE` or insert-if-missing patterns
+- [ ] All tables referenced in PHP code (FROM/JOIN) have matching `CREATE TABLE` in init SQL
+- [ ] No "Table 'X.Y' doesn't exist" errors (verified by checking all PHP queries against init SQL)
+- [ ] `mysqli_report(MYSQLI_REPORT_OFF);` is set globally or in DB wrapper
+- [ ] All mysqli queries check `$result !== false` before fetching rows
+- [ ] Database errors logged server-side (`error_log`) and not shown to users
+- [ ] Neutral UI text rendered when database errors occur (no fatal exceptions)
 
 ### APACHE VERIFICATION CHECKLIST
 
@@ -685,6 +722,15 @@ Your primary objective is not just to complete tasks, but to complete them with 
 - ❌ **NEVER** use `CREATE FUNCTION` on database grants → Use `CREATE ROUTINE`
 - ❌ **NEVER** use port 3306 → Always use 3207 (or custom port from env)
 - ❌ **NEVER** skip numbered prefixes in init scripts → Use 01-, 02-, 03-
+- ❌ **NEVER** mismatch DB_NAME → `DB_NAME` env/default MUST match database created in init SQL
+- ❌ **NEVER** skip `CREATE DATABASE IF NOT EXISTS` and `USE <db>` in init scripts → Include in every init sequence
+- ❌ **NEVER** create tables without `IF NOT EXISTS` → All tables must use `CREATE TABLE IF NOT EXISTS`
+- ❌ **NEVER** seed data without `INSERT IGNORE` → Use `INSERT IGNORE` or insert-if-missing patterns
+- ❌ **NEVER** query tables that don't exist → Every table in PHP queries MUST have `CREATE TABLE` in init SQL
+- ❌ **NEVER** let "Table 'X.Y' doesn't exist" errors occur → Verify all FROM/JOIN tables exist in init SQL
+- ❌ **NEVER** fetch rows without checking `$result !== false` → Always guard mysqli fetches
+- ❌ **NEVER** enable mysqli exceptions → Always use `mysqli_report(MYSQLI_REPORT_OFF);`
+- ❌ **NEVER** show database errors to users → Log server-side only, render neutral UI text
 
 ### APACHE ERRORS TO NEVER MAKE:
 - ❌ **NEVER** forget to configure Apache for custom port → Add Listen + VirtualHost
