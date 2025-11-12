@@ -1,0 +1,99 @@
+---
+name: DATABASE-SCHEMA-RELIABILITY.mdc
+description: Prevent "table doesn't exist", empty DB, and mysqli fatals across PHP+MySQL labs (single rule)
+globs: ["build/web/src/**/*.php", "build/database/init/**/*.sql", "**/docker-compose*.yml"]
+alwaysApply: false
+---
+
+## Mandatory (do all of these)
+
+1) Database name alignment
+
+- The app DB (`DB_NAME` in compose/env and default in `web/src/config.php`) MUST equal the database created in SQL init:
+
+  - `CREATE DATABASE IF NOT EXISTS <db>;` and `USE <db>;`
+
+2) Idempotent MySQL init (re-runnable)
+
+- Every init sequence includes:
+
+  - `CREATE DATABASE IF NOT EXISTS <db>;`
+
+  - `USE <db>;`
+
+  - Tables via `CREATE TABLE IF NOT EXISTS ...`
+
+  - Seeds via `INSERT IGNORE` (or "insert-if-missing" pattern)
+
+3) Safe mysqli (no fatal exceptions)
+
+```php
+// At bootstrap (once)
+if (function_exists('mysqli_report')) { mysqli_report(MYSQLI_REPORT_OFF); }
+
+// Every query usage
+$result = $conn->query($sql);
+
+if ($result !== false) {
+  while ($row = $result->fetch_assoc()) { /* ... */ }
+  $result->free();
+} else {
+  error_log("SQL error ({$conn->errno}): {$conn->error}");
+}
+```
+
+4) Optional self-heal (app-side guard) – use when volumes persist between runs
+
+```php
+function initializeSchemaIfNeeded($conn) {
+  $conn->query("CREATE TABLE IF NOT EXISTS products (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, description TEXT, category VARCHAR(100), price DECIMAL(10,2), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+  
+  $res = $conn->query("SELECT COUNT(*) AS total FROM products");
+  $need = ($res !== false && ($row = $res->fetch_assoc())) ? ((int)$row['total'] === 0) : true;
+  if ($res !== false) { $res->free(); }
+  
+  if ($need) {
+    $conn->query("INSERT IGNORE INTO products (name,description,category,price) VALUES ('Enterprise Database Suite','Comprehensive database management solution','Software',49999.00)");
+  }
+}
+
+// Call once after successful connect
+```
+
+5) Compose health + correct port/creds
+
+```yaml
+web:
+  depends_on:
+    database:
+      condition: service_healthy
+
+database:
+  healthcheck:
+    test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" -h 127.0.0.1 -P 3207 || exit 1"]
+
+# App connects with DB_PORT=3207
+```
+
+## CI/Lint Blockers (fail the PR if any hit)
+
+- DB name mismatch:
+
+  - Compose/env `DB_NAME` ≠ DB in `CREATE DATABASE IF NOT EXISTS <db>;`
+
+- Schema–code parity:
+
+  - Any table referenced in PHP (`FROM`/`JOIN`) has no matching `CREATE TABLE` in `build/database/init/*.sql`
+
+- Unsafe mysqli:
+
+  - `while ($row = $result->fetch_assoc())` without a preceding `if ($result !== false)` in the same scope
+
+## Re-init (document this in README)
+
+```bash
+docker-compose down -v
+docker-compose up -d --build
+```
+
+- MySQL init scripts only run on a fresh data directory (volume).
