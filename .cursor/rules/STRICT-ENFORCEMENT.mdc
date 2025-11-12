@@ -336,6 +336,69 @@ These violations result in **MASSIVE point deductions** and indicate severe non-
    - Not confirming body has `bg-black text-white`
    - **CORRECT**: Must validate all pages have black background, white text, Tailwind CDN loaded, and no chromatic colors
 
+### WEBSITE-PAGES-ESSENTIALS-SPECIFIC CRITICAL ERRORS (-500 points each)
+
+**These website page structure errors are ABSOLUTELY FORBIDDEN and result in massive point loss:**
+
+1. **Missing Mandatory Page Structure** (-500 points)
+   - Missing `layout.php` (HTML head, Tailwind CDN, body structure)
+   - Missing `partials/nav.php` (main navigation)
+   - Missing `partials/footer.php`
+   - Missing core pages: `index.php`, `items.php`, `item.php`, `search.php`
+   - Missing support pages: `contact.php`, `about.php`, `privacy.php`, `terms.php`
+   - Missing admin pages: `admin/index.php`, `admin/users.php`
+   - Missing error pages: `errors/404.php`, `errors/500.php`
+   - Missing `health.php` (must return 200 without DB dependency)
+   - **CORRECT**: Create all mandatory pages as specified in WEBSITE-PAGES-ESSENTIALS rule
+
+2. **Missing Routing Configuration** (-500 points)
+   - Missing `.htaccess` file at web root
+   - Missing rewrite rules for routing
+   - Navigation links that don't resolve to real pages
+   - 404 routes not rendering `errors/404.php`
+   - **CORRECT**: Include `.htaccess` with RewriteEngine and proper routing, ensure all nav links work, 404 routes to error page
+
+3. **Missing Shared Layout/Partials** (-500 points)
+   - Pages not using shared `layout.php`
+   - Duplicated `<head>` fragments across pages
+   - Navigation not included via `partials/nav.php`
+   - Footer not included via `partials/footer.php`
+   - **CORRECT**: All pages must use shared layout and partials, no duplicated HTML structure
+
+4. **Incorrect Auth Page Implementation** (-500 points)
+   - Including auth pages when lab doesn't require auth (e.g., pure SQL injection on public endpoints)
+   - Missing auth pages when lab requires auth (e.g., auth bypass, weak login, session bugs)
+   - Registration form with email or extra fields (should only have username and password)
+   - Using external services for registration (should be local/temporary)
+   - Missing `dashboard.php` or `profile.php` when auth is required
+   - **CORRECT**: Include auth pages ONLY when lab scenario requires it, keep registration minimal (username/password only), use local storage
+
+5. **Health Endpoint Database Dependency** (-500 points)
+   - `health.php` using database queries
+   - Health endpoint failing when database is unavailable
+   - Health endpoint not returning 200 quickly
+   - **CORRECT**: Health endpoint must return 200 without any database dependency, must be fast and reliable
+
+6. **Database Errors Exposed to Users** (-500 points)
+   - Raw database error messages shown to users
+   - Fatal exceptions from mysqli queries crashing pages
+   - Missing error handling for database queries
+   - **CORRECT**: All database errors must be logged server-side (error_log), never shown to users, use safe mysqli patterns
+
+7. **Missing Home Page Content** (-500 points)
+   - Home page (`index.php`) is only a lorem-only stub
+   - Missing realistic hero/intro section
+   - Missing 1–2 content sections
+   - Home page doesn't look realistic and clean
+   - **CORRECT**: Home page must have realistic content with hero/intro and 1–2 content sections, not just placeholder text
+
+8. **Navigation Link Mismatch** (-500 points)
+   - Navigation contains links to pages that don't exist
+   - Navigation missing required links (Home, Items, Search, About, Contact)
+   - Auth links (Login/Register/Logout/Dashboard) present when auth not needed
+   - Auth links missing when auth is required
+   - **CORRECT**: Navigation must match page structure, include all required links, show/hide auth links based on lab requirements
+
 ### MAJOR VIOLATIONS (-200 points each)
 
 These violations indicate significant rule non-compliance:
@@ -525,6 +588,38 @@ Before declaring ANY task complete, you MUST verify:
 - [ ] Background is black (#000000) on all pages
 - [ ] Primary text is white (#FFFFFF) on all pages
 
+### WEBSITE-PAGES-ESSENTIALS VERIFICATION CHECKLIST
+
+- [ ] `layout.php` exists with HTML head, Tailwind CDN, and body structure
+- [ ] `partials/nav.php` exists with main navigation
+- [ ] `partials/footer.php` exists
+- [ ] Core pages exist: `index.php`, `items.php`, `item.php`, `search.php`
+- [ ] Support pages exist: `contact.php`, `about.php`, `privacy.php`, `terms.php`
+- [ ] Admin pages exist: `admin/index.php`, `admin/users.php`
+- [ ] Error pages exist: `errors/404.php`, `errors/500.php`
+- [ ] `health.php` exists and returns 200 without DB dependency
+- [ ] `.htaccess` file exists at web root with rewrite rules
+- [ ] All navigation links resolve to real pages (return 200)
+- [ ] 404 routes render `errors/404.php`
+- [ ] All pages use shared `layout.php` (no duplicated `<head>`)
+- [ ] Navigation included via `partials/nav.php` on all pages
+- [ ] Footer included via `partials/footer.php` on all pages
+- [ ] Auth pages included ONLY when lab requires auth (per-lab dynamic)
+- [ ] Registration form minimal (username/password only, no email)
+- [ ] Registration uses local/temporary storage (no external services)
+- [ ] `dashboard.php` and `profile.php` exist when auth is required
+- [ ] Auth pages omitted when lab doesn't require auth
+- [ ] Home page (`index.php`) has realistic content (hero/intro + 1–2 sections)
+- [ ] Home page is not just lorem-only stub
+- [ ] Navigation contains required links: Home, Items, Search, About, Contact
+- [ ] Auth links (Login/Register/Logout/Dashboard) shown only when auth required
+- [ ] Auth links hidden when auth not needed
+- [ ] No raw database error messages shown to users
+- [ ] Database errors logged server-side (error_log)
+- [ ] Safe mysqli patterns used (no fatal exceptions)
+- [ ] Health endpoint returns 200 quickly without database queries
+- [ ] SEO files present if applicable: `sitemap.xml`, `robots.txt`
+
 ## SELF-AUDIT REQUIREMENT
 
 **BEFORE completing any task, you MUST:**
@@ -642,6 +737,21 @@ Your primary objective is not just to complete tasks, but to complete them with 
 - ❌ **NEVER** use colored inline styles → Only black/white/gray in inline styles
 - ❌ **NEVER** use colored Tailwind utilities → Only `bg-black`, `text-white`, `border-gray-*`, etc.
 - ❌ **NEVER** skip UI validation → Must check for gradients, chromatic colors, and Tailwind CDN presence
+
+### WEBSITE-PAGES-ESSENTIALS ERRORS TO NEVER MAKE:
+- ❌ **NEVER** forget mandatory page structure → Include layout.php, partials/nav.php, partials/footer.php, all core/support/admin/error pages
+- ❌ **NEVER** forget `.htaccess` file → Include rewrite rules for routing
+- ❌ **NEVER** duplicate HTML structure → Use shared layout.php and partials on all pages
+- ❌ **NEVER** include auth pages when not needed → Only include when lab requires auth
+- ❌ **NEVER** omit auth pages when needed → Include login.php, register.php, dashboard.php, profile.php when auth required
+- ❌ **NEVER** add email to registration → Registration should only have username and password
+- ❌ **NEVER** use external services for registration → Use local/temporary storage
+- ❌ **NEVER** make health.php depend on database → Must return 200 without DB queries
+- ❌ **NEVER** show database errors to users → Log server-side only, use safe mysqli patterns
+- ❌ **NEVER** make home page a lorem stub → Include realistic hero/intro and 1–2 content sections
+- ❌ **NEVER** create broken navigation links → All nav links must resolve to real pages
+- ❌ **NEVER** show auth links when auth not needed → Hide Login/Register/Logout/Dashboard when auth omitted
+- ❌ **NEVER** hide auth links when auth needed → Show Login/Register/Logout/Dashboard when auth required
 
 **Each of these errors results in -500 points. You MUST verify all of these before completing any task.**
 
