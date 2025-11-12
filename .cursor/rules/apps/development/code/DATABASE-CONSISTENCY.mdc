@@ -1,0 +1,64 @@
+---
+description: Database consistency rules — ensure all tables referenced in PHP code are created in SQL init scripts
+globs: ["build/web/src/**/*.php", "build/database/init/**/*.sql"]
+alwaysApply: false
+---
+
+# Database Consistency Rules
+
+## Critical Requirement: Table-Query Alignment
+
+**MANDATORY**: All database tables referenced in PHP code MUST be created in the database initialization scripts.
+
+### Rules:
+
+1. **Extract all table references** from PHP files (`.php` files in `build/web/src/`)
+
+   - Scan for SQL queries: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `FROM`, `JOIN`
+
+   - Identify all table names used in queries
+
+   - Check for table references in variables, concatenations, or dynamic queries
+
+2. **Create corresponding tables** in SQL init scripts (`build/database/init/*.sql`)
+
+   - All tables referenced in PHP code MUST have a `CREATE TABLE` statement
+
+   - Tables should be created in the appropriate init script (typically `04-init-data.sql` or a dedicated table creation script)
+
+   - Use `CREATE TABLE IF NOT EXISTS` to prevent errors on re-initialization
+
+3. **Verify consistency**:
+
+   - Column names in PHP queries must match the table schema
+
+   - Data types should be appropriate for the queries
+
+   - Indexes should be created for frequently queried columns
+
+### Example:
+
+If `index.php` contains:
+
+```php
+$result = $conn->query("SELECT id, name, price FROM products WHERE active = 1");
+```
+
+Then `build/database/init/04-init-data.sql` MUST contain:
+
+```sql
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2),
+    active BOOLEAN DEFAULT TRUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+### Error Prevention:
+
+- Before finalizing the lab, verify that all tables referenced in PHP code exist in SQL init scripts
+
+- Test the application to ensure no "Table doesn't exist" errors occur
+
+- Use descriptive table and column names that match the business context
