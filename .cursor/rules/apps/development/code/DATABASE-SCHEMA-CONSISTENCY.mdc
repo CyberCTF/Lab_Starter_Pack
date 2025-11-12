@@ -1,0 +1,173 @@
+---
+description: Database schema consistency and safe MySQL init — prevent runtime fatals, guarantee idempotent initialization, standardize safe mysqli usage
+globs: ["build/web/src/**/*.php", "build/database/init/**/*.sql", "**/docker-compose*.yml"]
+alwaysApply: false
+---
+
+# Database Schema Consistency and Safe MySQL Init
+
+## Purpose
+
+- Prevent runtime fatals like "Table 'X.Y' doesn't exist".
+
+- Guarantee idempotent database initialization and schema–code alignment.
+
+- Standardize safe mysqli usage so query failures do not crash pages.
+
+## Mandatory Rules
+
+1) Schema–Code Alignment
+
+- Every table referenced in PHP (`SELECT/INSERT/UPDATE/DELETE`, `FROM/JOIN`) MUST be created in `build/database/init/*.sql`.
+
+- Table and column names used in PHP MUST match SQL exactly (case and spelling).
+
+- Applications MUST read DB settings (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`) from env; `DB_NAME` MUST match the database created by init scripts.
+
+2) Idempotent MySQL Init
+
+- Each init script MUST start with:
+
+  - `CREATE DATABASE IF NOT EXISTS <db>;`
+
+  - `USE <db>;`
+
+- Tables MUST use `CREATE TABLE IF NOT EXISTS ...`.
+
+- Seed data MUST use `INSERT IGNORE` or an "insert-if-missing" pattern.
+
+- Keep indexes/constraints in the table DDL to remain idempotent.
+
+3) mysqli Safe Usage (No Fatal Exceptions)
+
+- Disable mysqli exception mode globally at bootstrap OR in the DB wrapper:
+
+  - `mysqli_report(MYSQLI_REPORT_OFF);`
+
+- All pages MUST only iterate/fetch when `$result !== false`.
+
+- Errors MUST be logged server-side (error_log) and NOT shown to users.
+
+4) Docker/Compose Determinism
+
+- MySQL init scripts run ONLY on a fresh data dir; document the reset command:
+
+  - `docker-compose down -v && docker-compose up -d --build`
+
+- `web` MUST depend on a healthy `database` service (`depends_on: condition: service_healthy`).
+
+- DB healthcheck MUST ping correct port with quoted password.
+
+## Implementation — Minimum
+
+### SQL (transactions example)
+
+```sql
+-- 01-create-databases.sql
+CREATE DATABASE IF NOT EXISTS financepartners
+  CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- 04-init-data.sql
+USE financepartners;
+
+CREATE TABLE IF NOT EXISTS transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  transaction_id VARCHAR(50) NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  merchant_name VARCHAR(255) NOT NULL,
+  transaction_date DATETIME NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  INDEX idx_transaction_id (transaction_id),
+  INDEX idx_merchant (merchant_name),
+  INDEX idx_date (transaction_date)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT IGNORE INTO transactions (transaction_id, amount, merchant_name, transaction_date, status)
+VALUES ('TXN-2024-001', 1250.50, 'TechCorp', '2024-01-15 10:30:00', 'completed');
+```
+
+### PHP (DB wrapper + guards)
+
+```php
+// config.php
+define('DB_HOST', getenv('DB_HOST') ?: 'database');
+define('DB_PORT', getenv('DB_PORT') ?: '3207');
+define('DB_NAME', getenv('DB_NAME') ?: 'financepartners');
+define('DB_USER', getenv('DB_USER') ?: 'app_user');
+define('DB_PASS', getenv('DB_PASS') ?: 'app_password');
+
+// db.php
+if (function_exists('mysqli_report')) {
+  mysqli_report(MYSQLI_REPORT_OFF);
+}
+
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+$conn->set_charset('utf8mb4');
+
+$sql = "SELECT id, transaction_id FROM transactions ORDER BY transaction_date DESC LIMIT 20";
+$result = $conn->query($sql);
+
+$rows = [];
+if ($result !== false) {
+  while ($row = $result->fetch_assoc()) { $rows[] = $row; }
+  $result->free();
+} else {
+  error_log("SQL error (" . $conn->errno . "): " . $conn->error);
+}
+```
+
+### Compose (essentials)
+
+```yaml
+services:
+  web:
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DB_HOST: database
+      DB_PORT: "3207"
+      DB_NAME: financepartners
+      DB_USER: app_user
+      DB_PASS: app_password
+
+  database:
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p\"$MYSQL_ROOT_PASSWORD\" -h 127.0.0.1 -P 3207 || exit 1"]
+```
+
+## CI/Lint — Blockers
+
+- Fail if any PHP file contains references to tables not created in SQL init:
+
+  - Extract table names from regex: `\bFROM\s+([A-Za-z0-9_]+)` and `\bJOIN\s+([A-Za-z0-9_]+)`
+
+  - Verify each has a matching `CREATE TABLE` in `build/database/init/*.sql`.
+
+- Fail if any PHP fetches without guarding result:
+
+  - Regex: `while\s*\(\s*\$row\s*=\s*\$result->fetch_assoc\(\)\s*\)` not preceded by `if\s*\(\s*\$result\s*!==\s*false\s*\)` in same scope.
+
+- Fail if mysqli exceptions aren't disabled and no guard exists:
+
+  - Require `mysqli_report(MYSQLI_REPORT_OFF);` OR a `try { $conn->query(...) } catch (...) { return false; }`.
+
+- Fail if `DB_NAME` env does not match the database name created by SQL.
+
+## Acceptance Criteria
+
+- Opening pages perform queries without fatal errors even if DB is uninitialized (UI shows neutral message and logs server-side).
+
+- After a clean `down -v` and `up -d --build`, all referenced tables exist and pages render data.
+
+- Health endpoint does not depend on DB.
+
+- No raw DB error messages are shown to users.
+
+## Troubleshooting
+
+- If "table doesn't exist" persists: run `docker-compose down -v && docker-compose up -d --build`.
+
+- Confirm DB name in env equals the one created in `01-create-databases.sql`.
+
+- Run `SHOW TABLES LIKE 'transactions';` inside the DB container to verify schema.
